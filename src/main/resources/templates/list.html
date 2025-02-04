@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>휴게소 추천 메뉴</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .container {
+            width: 60%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333;
+        }
+        .menu-list {
+            list-style: none;
+            padding: 0;
+        }
+        .menu-item {
+            background: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .menu-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .menu-price {
+            color: #d9534f;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+        .back-button:active {
+            background-color: #3e8e41;
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 th:text="|${restName} 메뉴|"></h2>
+    <p style="color: red; font-weight: bold;">🔥 이 표시가 있는 메뉴는 대표 음식입니다!</p>
+    <ul class="menu-list">
+        <li class="menu-item" th:each="restInfo : ${lists}">
+            <span class="menu-name">
+                <span th:if="${restInfo.bestfoodyn == 'Y'}" style="color: red; font-weight: bold;">🔥 </span>
+                <span th:text="${restInfo.foodNm}"></span>
+            </span> -
+            <span class="menu-price" th:text="${restInfo.foodCost} + '원'"></span>
+        </li>
+    </ul>
+    <a href="javascript:history.back()" class="back-button">이전으로 가기</a>
+</div>
+</body>
+</html>
