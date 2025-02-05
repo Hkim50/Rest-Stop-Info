@@ -68,7 +68,7 @@ public class RestBestFoodService {
         }
 
         restJson.setList(list2);
-        System.out.println("Checked database");
+        System.out.println("Data already exist in DB");
         return restJson;
     }
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>홈</title>
+  <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        text-align: center;
+    }
+    .container {
+        width: 60%;
+        margin: 50px auto;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+        color: #333;
+    }
+    .button-container {
+        margin-top: 20px;
+    }
+    .nav-button {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .nav-button:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+    .nav-button:active {
+        background-color: #004494;
+        transform: translateY(2px);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>환영합니다!</h1>
+  <p>휴게소 정보를 검색하려면 아래 버튼을 클릭하세요.</p>
+  <div class="button-container">
+    <a href="/find" class="nav-button">휴게소 검색</a>
+    <a href="/compare" class="nav-button" style="background-color: #28a745;">휴게소 비교</a>
+  </div>
+
+</div>
+</body>
+</html>

@@ -69,6 +69,9 @@
         <li class="menu-item" th:each="restInfo : ${lists}">
             <span class="menu-name">
                 <span th:if="${restInfo.bestfoodyn == 'Y'}" style="color: red; font-weight: bold;">🔥 </span>
+                <span th:if="${restInfo.recommendyn == 'Y'}">
+                    <i class="em em-yum" role="presentation" aria-label="FACE SAVOURING DELICIOUS FOOD"></i>
+                </span>
                 <span th:text="${restInfo.foodNm}"></span>
             </span> -
             <span class="menu-price" th:text="${restInfo.foodCost} + '원'"></span>

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>휴게소 검색</title>
+    <title>휴게소 비교</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,16 +54,44 @@
         .search-box button:hover {
             background-color: #0056b3;
         }
+
+        .nav-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .nav-button {
+            padding: 12px 25px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>휴게소 검색</h2>
-    <form action="/find" method="post" class="search-box">
-        <input name="restName" type="text" placeholder="휴게소 이름을 입력하세요">
-        <button type="submit">검색</button>
+    <h2>휴게소 비교</h2>
+    <form action="/compare" method="post" class="search-box">
+        <input name="restName1" type="text" placeholder="첫 번째 휴게소 이름">
+        <input name="restName2" type="text" placeholder="두 번째 휴게소 이름">
+        <button type="submit">비교하기</button>
     </form>
+    <div class="nav-buttons">
+        <a href="/" class="nav-button">홈으로 가기</a>
+    </div>
 </div>
 
 </body>
