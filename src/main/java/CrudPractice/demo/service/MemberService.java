@@ -1,0 +1,58 @@
+package CrudPractice.demo.service;
+
+import CrudPractice.demo.domain.UserEntity;
+import CrudPractice.demo.dto.UserDto;
+import CrudPractice.demo.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+
+@RequiredArgsConstructor
+@Service
+public class MemberService implements UserDetailsService {
+
+    private final UserRepository repository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity user = repository.findByEmail(email);
+
+        if (user == null) {
+            throw new UsernameNotFoundException("가입된 계정이 없습니다: " + email);
+        }
+
+        return User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRole().toString())
+                .build();
+    }
+
+    public UserEntity saveMember(UserDto userDto) {
+        // check if email is already in the db
+        validateDuplicate(userDto.getEmail());
+        UserEntity userEntity = new UserEntity(userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()), userDto.getName());
+
+        UserEntity userEntity1 = repository.save(userEntity);
+        return userEntity1;
+    }
+
+    private void validateDuplicate(String email) {
+        UserEntity user = repository.findByEmail(email);
+
+        if (user != null) {
+            throw new IllegalStateException("이미 가입된 회원입니다.");
+        }
+    }
+
+
+}
