@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RestJson {
+public class RestJsonDto {
     @JsonProperty("list")
     private List<RestInfoDto> list;
 

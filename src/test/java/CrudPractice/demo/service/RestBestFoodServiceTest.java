@@ -1,7 +1,7 @@
 package CrudPractice.demo.service;
 
 
-import CrudPractice.demo.dto.RestJson;
+import CrudPractice.demo.dto.RestJsonDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,14 +18,14 @@ class RestBestFoodServiceTest {
         String restName = "경주(부산)휴게소";
         String restName2 = "건천(부산)휴게소";
 
-        RestJson restJson = restBestFoodService.getBestFoodList(restName);
-        RestJson restJson2 = restBestFoodService.getBestFoodList(restName2);
+        RestJsonDto restJsonDto = restBestFoodService.getBestFoodList(restName);
+        RestJsonDto restJsonDto2 = restBestFoodService.getBestFoodList(restName2);
 
 
         System.out.println("---------------");
-        System.out.println(restJson2);
+        System.out.println(restJsonDto2);
         System.out.println("---------------");
-        System.out.println(restJson);
+        System.out.println(restJsonDto);
 
 //        restJson.getList().stream()
 //                .forEach(f -> {

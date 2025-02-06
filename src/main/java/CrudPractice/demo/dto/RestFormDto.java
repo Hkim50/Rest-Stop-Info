@@ -1,6 +1,6 @@
-package CrudPractice.demo.controller;
+package CrudPractice.demo.dto;
 
-public class RestForm {
+public class RestFormDto {
     private String restName1;
     private String restName2;
 
