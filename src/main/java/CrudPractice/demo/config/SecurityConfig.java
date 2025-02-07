@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -18,17 +19,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/register").permitAll()  // 로그인 & 회원가입은 누구나 가능
+                .authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/", "/register", "/login").permitAll()  // 로그인 & 회원가입은 누구나 가능
+                        .requestMatchers("/find", "/compare").authenticated()
                         .anyRequest().authenticated()  // 나머지는 로그인해야 볼 수 있음
-                )
-                .formLogin(login -> login
+                );
+
+        http
+                .formLogin((login) -> login
                         .loginPage("/login")  // 로그인 페이지 설정
-                        .defaultSuccessUrl("/home", true)  // 로그인 성공 후 이동할 페이지
+                        .defaultSuccessUrl("/", true)  // 로그인 성공 후 이동할 페이지
+                        .usernameParameter("email")
+                        .passwordParameter("password")
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")  // 로그아웃 후 이동할 페이지
+                .logout((logout) -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                        .logoutSuccessUrl("/")  // 로그아웃 후 이동할 페이지
                         .permitAll()
                 );
 
@@ -39,4 +46,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // 비밀번호 암호화
     }
+
+
 }
