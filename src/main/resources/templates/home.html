@@ -79,11 +79,12 @@
         margin-right: 15px;
     }
   </style>
+
 </head>
 <body>
 
 <div class="auth-buttons">
-  <h2 sec:authorize="isAuthenticated()" th:text="${name} + '님'" class="user-name"></h2>
+  <a sec:authorize="isAuthenticated()" href="/info" th:text="${name} + '님'" class="user-name"></a>
   <a sec:authorize="isAnonymous()" href="/login" class="auth-button" style="background-color: #ffc107;">로그인</a>
   <a sec:authorize="isAuthenticated()" href="/logout" class="auth-button" style="background-color: #dc3545;">로그아웃</a>
   <a sec:authorize="isAnonymous()" href="/register" class="auth-button" style="background-color: #28a745; margin-left: 10px;">회원가입</a>

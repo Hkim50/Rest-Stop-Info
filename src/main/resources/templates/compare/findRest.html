@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>휴게소 비교</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,6 +82,10 @@
     </style>
 </head>
 <body>
+<div class="auth-buttons">
+    <a sec:authorize="isAuthenticated()" href="/info" th:text="${name} + '님'" class="user-name"></a>
+    <a sec:authorize="isAuthenticated()" href="/logout" class="auth-button" style="background-color: #dc3545;">로그아웃</a>
+</div>
 
 <div class="container">
     <h2>휴게소 비교</h2>

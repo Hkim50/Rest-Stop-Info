@@ -1,6 +1,8 @@
 package CrudPractice.demo.domain;
 
 import CrudPractice.demo.dto.RestInfoDto;
+import CrudPractice.demo.dto.RestListDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,106 +10,63 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="RestInfo")
+@Table(name="rest_info")
 public class RestInfoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @JsonProperty("list")
+    @JsonIgnore
+    @OneToMany(mappedBy = "restInfoEntity")
+    private List<RestListEntity> list;
+
+    @JsonProperty("count")
+    private int count;
+
     @JsonProperty("pageNo")
-    private Integer pageNo;
+    private int pageNo;
 
     @JsonProperty("numOfRows")
-    private Integer numOfRows;
+    private int numOfRows;
 
-    @JsonProperty("stdRestCd")
-    private String stdRestCd;
+    @JsonProperty("pageSize")
+    private int pageSize;
 
-    @JsonProperty("stdRestNm")
-    private String stdRestNm;
+    @JsonProperty("message")
+    private String message;
 
-    @JsonProperty("lsttmAltrUser")
-    private String lsttmAltrUser;
+    @JsonProperty("code")
+    private String code;
 
-    @JsonProperty("lsttmAltrDttm")
-    private String lsttmAltrDttm;
-
-    @JsonProperty("svarAddr")
-    private String svarAddr;
-
-    @JsonProperty("routeCd")
-    private String routeCd;
-
-    @JsonProperty("routeNm")
-    private String routeNm;
-
-    @JsonProperty("seq")
-    private String seq;
-
-    @JsonProperty("foodNm")
-    private String foodNm;
-
-    @JsonProperty("foodCost")
-    private String foodCost;
-
-    @JsonProperty("etc")
-    private String etc;
-
-    @JsonProperty("recommendyn")
-    private String recommendyn;
-
-    @JsonProperty("seasonMenu")
-    private String seasonMenu;
-
-    @JsonProperty("bestfoodyn")
-    private String bestfoodyn;
-
-    @JsonProperty("premiumyn")
-    private String premiumyn;
-
-    @JsonProperty("app")
-    private String app;
-
-    @JsonProperty("restCd")
-    private String restCd;
-
-    @JsonProperty("foodMaterial")
-    private String foodMaterial;
-
-    @JsonProperty("lastId")
-    private String lastId;
-
-    @JsonProperty("lastDtime")
-    private String lastDtime;
+    public void add() {
+        list.stream().forEach(f -> {
+            f.setRestInfoEntity(this);
+        });
+    }
 
     public RestInfoDto toDto() {
+        List<RestListDto> Rlist = new ArrayList<>();
+        list.stream().forEach(f ->{
+            Rlist.add(f.toDto());
+        });
+
         return RestInfoDto.builder()
+                .list(Rlist)
+                .count(this.count)
                 .pageNo(this.pageNo)
                 .numOfRows(this.numOfRows)
-                .stdRestCd(this.stdRestCd)
-                .stdRestNm(this.stdRestNm)
-                .lsttmAltrUser(this.lsttmAltrUser)
-                .lsttmAltrDttm(this.lsttmAltrDttm)
-                .svarAddr(this.svarAddr)
-                .routeCd(this.routeCd)
-                .routeNm(this.routeNm)
-                .seq(this.seq)
-                .foodNm(this.foodNm)
-                .foodCost(this.foodCost)
-                .etc(this.etc)
-                .recommendyn(this.recommendyn)
-                .seasonMenu(this.seasonMenu)
-                .bestfoodyn(this.bestfoodyn)
-                .premiumyn(this.premiumyn)
-                .app(this.app)
-                .restCd(this.restCd)
-                .foodMaterial(this.foodMaterial)
-                .lastId(this.lastId)
-                .lastDtime(this.lastDtime)
+                .pageSize(this.pageSize)
+                .message(this.message)
+                .code(this.code)
                 .build();
     }
 }

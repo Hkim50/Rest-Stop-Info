@@ -1,0 +1,35 @@
+.auth-button {
+        display: inline-block;
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    .auth-button:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-2px);
+    }
+    .auth-button:active {
+        background-color: #004494;
+        transform: translateY(2px);
+    }
+
+    .auth-buttons {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-name {
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+        margin-right: 15px;
+    }

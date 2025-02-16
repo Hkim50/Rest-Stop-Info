@@ -1,8 +1,10 @@
 package CrudPractice.demo.service;
 
 import CrudPractice.demo.domain.RestInfoEntity;
+import CrudPractice.demo.domain.RestListEntity;
+import CrudPractice.demo.dto.RestListDto;
 import CrudPractice.demo.dto.RestInfoDto;
-import CrudPractice.demo.dto.RestJsonDto;
+import CrudPractice.demo.repository.RestJsonRepository;
 import CrudPractice.demo.repository.RestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,20 +19,22 @@ import java.util.List;
 @Service
 public class RestBestFoodService {
     private final RestRepository repository;
+    private final RestJsonRepository restJsonRepository;
 
     @Autowired
-    public RestBestFoodService(RestRepository repository) {
+    public RestBestFoodService(RestRepository repository, RestJsonRepository restJsonRepository) {
         this.repository = repository;
+        this.restJsonRepository = restJsonRepository;
     }
 
     @Value("${rest-info-db-key}")
     private String KEY;
 
-    public RestJsonDto getBestFoodList(String restName) {
+    public RestInfoDto getBestFoodList(String restName) {
 
         // If data already exist in database
         if (repository.findByStdRestNm(restName).size() != 0) {
-            return getInfoFromDb(restName);
+            return getInfoFromDb(restName).toDto();
         }
 
         RestClient restClient = RestClient.builder()
@@ -41,37 +45,47 @@ public class RestBestFoodService {
                 .build();
         // "&bestfoodyn=Y"
 
-        RestJsonDto restJsonDto = restClient.get()
+        RestInfoDto restInfoDto = restClient.get()
                 .uri("https://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=" + KEY + "&type=json&stdRestNm=" + restName)
                 .retrieve()
-                .body(RestJsonDto.class);
+                .body(RestInfoDto.class);
 
         // Insert into database
-        save(restJsonDto);
+        save(restInfoDto);
 
-        return restJsonDto;
+        return restInfoDto;
     }
 
-    public RestJsonDto getInfoFromDb(String restName) {
-        List<RestInfoEntity> list = repository.findByStdRestNm(restName);
-        RestJsonDto restJsonDto = new RestJsonDto();
+    public RestInfoEntity getInfoFromDb(String restName) {
+        List<RestListEntity> list = repository.findByStdRestNm(restName);
+        RestListEntity restListEntity1 = list.get(0);
+        RestInfoEntity restInfoEntity = restListEntity1.getRestInfoEntity();
 
-        List<RestInfoDto> list2 = new ArrayList<>();
+        return restInfoEntity;
 
-        for (RestInfoEntity restInfoEntity : list) {
-            list2.add(restInfoEntity.toDto());
-        }
-
-        restJsonDto.setList(list2);
-        System.out.println("Data already exist in DB");
-        return restJsonDto;
+//        RestInfoDto restInfoDto = new RestInfoDto();
+//
+//        List<RestListDto> list2 = new ArrayList<>();
+//
+//        for (RestListEntity restListEntity : list) {
+//            list2.add(restListEntity.toDto());
+//        }
+//
+//        restInfoDto.setList(list2);
+//        System.out.println("Data already exist in DB");
+//        return restInfoDto;
     }
 
-    public int save(RestJsonDto restJsonDto) {
-        restJsonDto.getList().stream()
-                .forEach(f -> {
-                    repository.save(f.toEntity());
-                });
-        return restJsonDto.getList().size();
+    public int save(RestInfoDto restInfoDto) {
+        RestInfoEntity savedEntity = restJsonRepository.save(restInfoDto.toEntity());
+
+        // set fk for list
+        savedEntity.add();
+
+        savedEntity.getList().stream().forEach(f ->{
+            repository.save(f);
+        });
+
+        return restInfoDto.getList().size();
     }
 }

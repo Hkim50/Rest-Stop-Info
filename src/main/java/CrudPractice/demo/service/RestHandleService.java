@@ -1,8 +1,8 @@
 package CrudPractice.demo.service;
 
-import CrudPractice.demo.domain.RestInfoEntity;
+import CrudPractice.demo.domain.RestListEntity;
+import CrudPractice.demo.dto.RestListDto;
 import CrudPractice.demo.dto.RestInfoDto;
-import CrudPractice.demo.dto.RestJsonDto;
 import CrudPractice.demo.repository.RestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +19,17 @@ public class RestHandleService {
         this.repository = repository;
     }
 
-    public RestJsonDto findAll() {
-        List<RestInfoEntity> list = repository.findAll();
-        RestJsonDto restJsonDto = new RestJsonDto();
-        List<RestInfoDto> list2 = new ArrayList<>();
+    public RestInfoDto findAll() {
+        List<RestListEntity> list = repository.findAll();
+        RestInfoDto restInfoDto = new RestInfoDto();
+        List<RestListDto> list2 = new ArrayList<>();
 
-        for (RestInfoEntity restInfoEntity : list) {
-            list2.add(restInfoEntity.toDto());
+        for (RestListEntity restListEntity : list) {
+            list2.add(restListEntity.toDto());
         }
 
-        restJsonDto.setList(list2);
-        return restJsonDto;
+        restInfoDto.setList(list2);
+        return restInfoDto;
     }
 
 }

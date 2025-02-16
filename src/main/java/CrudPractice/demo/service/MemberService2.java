@@ -18,4 +18,8 @@ public class MemberService2 {
     public UserEntity getUserByName(String name) {
         return userRepository.findByName(name);
     }
+
+    public UserEntity getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }
