@@ -14,8 +14,8 @@
 
 
 - [DB 설계](#DB-설계)
-    - [ERD](ERD)
-    - [DB](Data-Base)
+    - [ERD](#ERD)
+    - [DB](#Data-Base)
 
 - [개발 내용](#개발-내용)
 
