@@ -130,7 +130,7 @@
 ![Image](https://github.com/user-attachments/assets/1c1e72f7-bc61-4327-a43e-f8bb34091b51)
 ![Image](https://github.com/user-attachments/assets/25b797a7-a479-4b65-866c-4cf37c521310)
 ![Image](https://github.com/user-attachments/assets/3d2d6898-1961-40b1-827f-b2278aecb355)
-Rest_List 의 나미저 column 들은 생략
+Rest_List 의 나머지 column 들은 생략.
 <br/>
 
 
