@@ -15,6 +15,7 @@
 
 - [DB 설계](#DB설계)
     - [ERD](ERD)
+    - [DB](Data-Base)
 
 - [개발 내용](#개발-내용)
 
@@ -124,6 +125,12 @@
 
 ![Image](https://github.com/user-attachments/assets/def5d560-c1e8-4cee-acab-247611c0b5e2)
 
+### Data Base
+![Image](https://github.com/user-attachments/assets/63475cbf-9eba-41fe-a1d0-1c1720ebb7ee)
+![Image](https://github.com/user-attachments/assets/1c1e72f7-bc61-4327-a43e-f8bb34091b51)
+![Image](https://github.com/user-attachments/assets/25b797a7-a479-4b65-866c-4cf37c521310)
+![Image](https://github.com/user-attachments/assets/3d2d6898-1961-40b1-827f-b2278aecb355)
+Rest_List 의 나미저 column 들은 생략
 <br/>
 
 
