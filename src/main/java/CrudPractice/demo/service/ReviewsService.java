@@ -7,6 +7,7 @@ import CrudPractice.demo.dto.ReviewsDto;
 import CrudPractice.demo.repository.ReviewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -64,6 +65,15 @@ public class ReviewsService{
         ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
         reviewsRepository.delete(reviewByNameAndCreatedAt);
     }
+
+    @Transactional
+    public void updateReview(ReviewsDto reviewsDto) {
+        ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
+
+        reviewByNameAndCreatedAt.updateReview(reviewsDto.getContent(), reviewsDto.getRating());
+    }
+
+
 
 
 }

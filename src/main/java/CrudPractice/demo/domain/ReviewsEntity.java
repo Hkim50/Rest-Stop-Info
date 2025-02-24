@@ -49,6 +49,11 @@ public class ReviewsEntity {
                 .build();
     }
 
+    public void updateReview(String content, int rating) {
+        this.content = content;
+        this.rating = rating;
+    }
+
     public void setUser(UserEntity user) {
         this.user = user;
     }

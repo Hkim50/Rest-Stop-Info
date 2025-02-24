@@ -64,12 +64,7 @@ public class ReviewController {
 
     @PostMapping("/update")
     public String updateReview(ReviewsDto reviewsDto, Model model) {
-        ReviewsEntity reviewByNameAndCreatedAt = reviewsService.getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
-
-        reviewByNameAndCreatedAt.setContent(reviewsDto.getContent());
-        reviewByNameAndCreatedAt.setRating(reviewsDto.getRating());
-
-        reviewsService.addReview(reviewByNameAndCreatedAt);
+        reviewsService.updateReview(reviewsDto);
 
         model.addAttribute("name", reviewsDto.getName());
 
