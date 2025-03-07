@@ -26,7 +26,7 @@ public class UserController {
     @GetMapping("/login")
     public String login() {
 
-        return "login";
+        return "newLogin";
     }
 
 //    @PostMapping("/login")
@@ -44,7 +44,7 @@ public class UserController {
     @GetMapping("/register")
     public String register() {
 
-        return "/register";
+        return "/newRegister";
     }
 
     @PostMapping("/register")

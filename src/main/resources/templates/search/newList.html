@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>휴게소 추천 메뉴 & 리뷰 - FoodFinder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0073bb;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo a {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d32323;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            margin-left: 20px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            color: #d32323;
+        }
+
+        .menu-toggle {
+            display: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            display: inline-block;
+            background-color: #d32323;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .btn-primary:hover {
+            background-color: #e02424;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background-color: white;
+            color: #d32323;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            border: 1px solid #d32323;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: #f8f8f8;
+        }
+
+        /* Restaurant Header */
+        .biz-header {
+            padding: 24px 0;
+            border-bottom: 1px solid #e6e6e6;
+            background-color: white;
+        }
+
+        .biz-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .biz-header-left {
+            flex: 1;
+        }
+
+        .biz-header-right {
+            display: flex;
+            gap: 16px;
+        }
+
+        .biz-page-title {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .biz-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stars-large {
+            color: #f15c4f;
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .review-count {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .price-category {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+            color: #666;
+        }
+
+        .price-category .dot {
+            margin: 0 8px;
+            font-size: 10px;
+        }
+
+        .biz-header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .action-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .action-button.write-review {
+            background-color: #d32323;
+            color: white;
+            border: none;
+        }
+
+        .action-button.write-review:hover {
+            background-color: #e02424;
+        }
+
+        .action-button.save {
+            background-color: white;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+
+        .action-button.save:hover {
+            background-color: #f8f8f8;
+        }
+
+        /* Photo Gallery */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            height: 400px;
+            overflow: hidden;
+            margin-bottom: 32px;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-img:first-child {
+            grid-column: 1 / 3;
+            grid-row: 1 / 3;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            gap: 30px;
+            margin: 32px 0;
+        }
+
+        .content-left {
+            flex: 2;
+        }
+
+        .content-right {
+            flex: 1;
+        }
+
+        /* Section Styles */
+        .section {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+            padding: 24px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            color: #333;
+            font-weight: 700;
+        }
+
+        /* Menu Section */
+        .menu-list {
+            margin-top: 16px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+
+        .menu-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-price {
+            font-weight: bold;
+            color: #d32323;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .badge-popular {
+            background-color: #d32323;
+            color: white;
+        }
+
+        .badge-recommended {
+            background-color: #0073bb;
+            color: white;
+        }
+
+        /* Business Info */
+        .business-info {
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .info-item i {
+            color: #666;
+            font-size: 20px;
+            width: 24px;
+            margin-right: 16px;
+        }
+
+        .info-text {
+            flex: 1;
+        }
+
+        .info-text a {
+            color: #0073bb;
+            font-weight: 600;
+        }
+
+        .info-text a:hover {
+            text-decoration: underline;
+        }
+
+        .hours-list {
+            margin-top: 8px;
+        }
+
+        .hours-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .day {
+            font-weight: 600;
+        }
+
+        .time {
+            color: #666;
+        }
+
+        /* Reviews Section */
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .reviews-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sort-options {
+            display: flex;
+            align-items: center;
+        }
+
+        .sort-label {
+            margin-right: 8px;
+            color: #666;
+        }
+
+        .sort-select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+        }
+
+        .review-item {
+            display: flex;
+            padding: 24px 0;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-user {
+            width: 220px;
+            padding-right: 24px;
+        }
+
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .profile-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #d32323;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 4px;
+            color: #0073bb;
+        }
+
+        .user-location {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .user-stats {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .review-content-wrapper {
+            flex: 1;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .stars {
+            color: #f15c4f;
+            font-size: 18px;
+            margin-right: 8px;
+        }
+
+        .review-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .review-text {
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .review-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .review-action-btn {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: #333;
+            border: none;
+        }
+
+        .btn-edit:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        /* Review Form */
+        .review-form {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .form-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .rating-input {
+            margin-bottom: 16px;
+        }
+
+        .rating-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .rating-select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+            font-size: 1rem;
+        }
+
+        .review-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .review-submit {
+            background-color: #d32323;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .review-submit:hover {
+            background-color: #e02424;
+        }
+
+        .login-prompt {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .login-prompt p {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #f5f5f5;
+            padding: 48px 0 24px;
+            border-top: 1px solid #e6e6e6;
+            margin-top: 48px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 8px;
+        }
+
+        .footer-section ul li a {
+            color: #666;
+        }
+
+        .footer-section ul li a:hover {
+            color: #d32323;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #e6e6e6;
+            border-radius: 50%;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: #d32323;
+            color: white;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid #e6e6e6;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .footer-links a {
+            margin-left: 16px;
+            color: #666;
+        }
+
+        .footer-links a:hover {
+            color: #d32323;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .biz-header-content {
+                flex-direction: column;
+            }
+
+            .biz-header-right {
+                margin-top: 16px;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .photo-gallery {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .photo-gallery {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .gallery-img:first-child {
+                grid-column: auto;
+                grid-row: auto;
+            }
+
+            .gallery-img {
+                height: 200px;
+            }
+
+            .review-item {
+                flex-direction: column;
+            }
+
+            .review-user {
+                width: 100%;
+                padding-right: 0;
+                margin-bottom: 16px;
+            }
+
+            .user-profile {
+                flex-direction: row;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .profile-img {
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .biz-page-title {
+                font-size: 1.8rem;
+            }
+
+            .biz-header-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .action-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/">핫플</a>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Restaurants</a>
+                <a href="#" class="nav-link">Write a Review</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary">Sign Up</a>
+                <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" th:text="${name} + '님'"></a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary">로그아웃</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<!-- Business Header -->
+<section class="biz-header">
+    <div class="container">
+        <div class="biz-header-content">
+            <div class="biz-header-left">
+                <h1 class="biz-page-title" th:text="${restName}"></h1>
+                <div class="biz-rating">
+                    <div class="stars-large">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                    <span class="review-count">254 reviews</span>
+                </div>
+                <div class="price-category">
+                    <span class="price">₩₩</span>
+                    <span class="dot">•</span>
+                    <span class="category">휴게소</span>
+                    <span class="dot">•</span>
+                    <span class="category">한식</span>
+                </div>
+            </div>
+            <div class="biz-header-right">
+                <a href="#review-form" class="action-button write-review">
+                    <i class="fas fa-star"></i>
+                    <span>리뷰 작성</span>
+                </a>
+                <button class="action-button save">
+                    <i class="far fa-bookmark"></i>
+                    <span>저장</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Photo Gallery -->
+<div class="photo-gallery">
+    <img src="https://github.com/user-attachments/assets/d0e4bd40-5212-4438-a7f5-fc673a96eb1d" alt="Restaurant Photo" class="gallery-img">
+    <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+    <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <div class="main-content">
+        <!-- Left Column -->
+        <div class="content-left">
+            <!-- Menu Section -->
+            <div class="section">
+                <h2 class="section-title">메뉴</h2>
+                <p style="color: #666; margin-bottom: 16px;">
+                    <span style="color: #d32323; font-weight: bold;">🔥</span> 표시가 있는 메뉴는 대표 음식입니다!
+                </p>
+                <ul class="menu-list">
+                    <li class="menu-item" th:each="restInfo : ${lists}">
+                        <div class="menu-name">
+                            <span th:text="${restInfo.foodNm}"></span>
+                        </div>
+                        <span class="menu-price" th:text="${restInfo.foodCost} + '원'"></span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Reviews Section -->
+            <div class="section">
+                <div class="reviews-header">
+                    <h2 class="reviews-title">리뷰</h2>
+                    <div class="sort-options">
+                        <span class="sort-label">정렬:</span>
+                        <select class="sort-select">
+                            <option>최신순</option>
+                            <option>평점 높은순</option>
+                            <option>평점 낮은순</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Review List -->
+                <div class="reviews-list">
+                    <div class="review-item" th:each="review : ${reviews}">
+                        <div class="review-user">
+                            <div class="user-profile">
+                                <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
+                                <div class="user-name" th:text="${review.name}"></div>
+                                <div class="user-location">서울</div>
+                                <div class="user-stats">
+                                    <span><i class="fas fa-star"></i> 5 리뷰</span>
+                                    <span><i class="fas fa-camera"></i> 0 사진</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="review-content-wrapper">
+                            <div class="review-rating">
+                                <div class="stars">
+                                    <span th:each="i : ${#numbers.sequence(1, review.rating)}">★</span>
+                                    <span th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">☆</span>
+                                </div>
+                                <span class="review-date" th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
+                            </div>
+                            <div class="review-text" th:text="${review.content}"></div>
+                            <div class="review-footer" th:if="${userE == review.userEntity}">
+                                <div class="review-actions">
+                                    <form action="/edit" method="post">
+                                        <input type="hidden" name="rating" th:value="${review.rating}">
+                                        <input type="hidden" name="createdAt" th:value="${review.createdAt}">
+                                        <input type="hidden" name="content" th:value="${review.content}">
+                                        <input type="hidden" name="name" th:value="${name}">
+                                        <button type="submit" class="review-action-btn btn-edit">수정</button>
+                                    </form>
+                                    <form action="/delete" method="post">
+                                        <input type="hidden" name="rating" th:value="${review.rating}">
+                                        <input type="hidden" name="createdAt" th:value="${review.createdAt}">
+                                        <input type="hidden" name="content" th:value="${review.content}">
+                                        <input type="hidden" name="name" th:value="${name}">
+                                        <button type="submit" class="review-action-btn btn-delete">삭제</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review Form -->
+                <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">
+                    <h3 class="form-title">리뷰 작성</h3>
+                    <form action="/addReview" method="post">
+                        <div class="rating-input">
+                            <label for="rating" class="rating-label">별점:</label>
+                            <select name="rating" id="rating" class="rating-select">
+                                <option value="1">★☆☆☆☆ (1점)</option>
+                                <option value="2">★★☆☆☆ (2점)</option>
+                                <option value="3">★★★☆☆ (3점)</option>
+                                <option value="4">★★★★☆ (4점)</option>
+                                <option value="5" selected>★★★★★ (5점)</option>
+                            </select>
+                        </div>
+                        <textarea name="content" class="review-textarea" placeholder="이 식당에 대한 솔직한 리뷰를 작성해주세요..."></textarea>
+                        <input type="hidden" name="restNm" th:value="${restName}">
+                        <button type="submit" class="review-submit">리뷰 등록</button>
+                    </form>
+                </div>
+
+                <!-- Login Prompt for Non-Authenticated Users -->
+                <div class="review-form login-prompt" sec:authorize="!isAuthenticated()">
+                    <p>리뷰를 작성하려면 로그인이 필요합니다.</p>
+                    <a href="/login" class="btn-primary">로그인</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="content-right">
+            <!-- Business Info -->
+            <div class="section business-info">
+                <h3 class="section-title">영업 정보</h3>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="info-text">
+                        <p>고속도로 휴게소</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <div class="info-text">
+                        <p>02-123-4567</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div class="info-text">
+                        <p><strong>영업 시간</strong></p>
+                        <ul class="hours-list">
+                            <li class="hours-item">
+                                <span class="day">월요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">화요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">수요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">목요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">금요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">토요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                            <li class="hours-item">
+                                <span class="day">일요일</span>
+                                <span class="time">24시간 영업</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-info-circle"></i>
+                    <div class="info-text">
+                        <p><strong>추가 정보</strong></p>
+                        <p>주차 가능</p>
+                        <p>화장실 구비</p>
+                        <p>편의점 있음</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Restaurants -->
+            <div class="section">
+                <h3 class="section-title">근처 휴게소</h3>
+                <div class="nearby-list">
+                    <div class="nearby-item">
+                        <a href="#" class="nearby-link">
+                            <div class="nearby-img">
+                                <img src="https://placehold.co/100x100" alt="Nearby Restaurant">
+                            </div>
+                            <div class="nearby-info">
+                                <h4>천안 휴게소</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                                <p>경부고속도로</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="nearby-item">
+                        <a href="#" class="nearby-link">
+                            <div class="nearby-img">
+                                <img src="https://placehold.co/100x100" alt="Nearby Restaurant">
+                            </div>
+                            <div class="nearby-info">
+                                <h4>안성 휴게소</h4>
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <p>경부고속도로</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About FoodFinder</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Discover</h3>
+                <ul>
+                    <li><a href="#">Collections</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Businesses</h3>
+                <ul>
+                    <li><a href="#">Business Owner Login</a></li>
+                    <li><a href="#">Claim your Business</a></li>
+                    <li><a href="#">Advertise</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FoodFinder Inc. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+
+                // Add styles for active mobile menu
+                if (navLinks.classList.contains('active')) {
+                    navLinks.style.display = 'flex';
+                    navLinks.style.flexDirection = 'column';
+                    navLinks.style.position = 'absolute';
+                    navLinks.style.top = '100%';
+                    navLinks.style.left = '0';
+                    navLinks.style.right = '0';
+                    navLinks.style.backgroundColor = 'white';
+                    navLinks.style.padding = '20px';
+                    navLinks.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                    navLinks.style.zIndex = '99';
+                } else {
+                    navLinks.style.display = '';
+                }
+            });
+        }
+
+        // Smooth scroll to review form
+        const writeReviewBtn = document.querySelector('.write-review');
+        if (writeReviewBtn) {
+            writeReviewBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const reviewForm = document.getElementById('review-form');
+                if (reviewForm) {
+                    reviewForm.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

@@ -23,6 +23,6 @@ public class HomeController {
     public String home(Model model) {
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("name", name);
-        return "home";
+        return "newhome";
     }
 }

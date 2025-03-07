@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>핫플 - 주변의 핫플</title>
+    <link rel="stylesheet" th:href="@{/css/styles2.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/">핫플</a>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Restaurants</a>
+                <a href="#" class="nav-link">Services</a>
+                <a href="#" class="nav-link">About</a>
+                <a href="/login" class="nav-link">Login</a>
+                <a href="/register" class="btn-primary">Sign Up</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>주변의 핫플레이스</h1>
+            <!-- Replace the search container section in your HTML with this -->
+            <div class="search-container">
+                <!-- Search options buttons -->
+                <div class="search-options">
+                    <button id="btn-rest-area">휴게소 검색</button>
+                    <button id="btn-restaurant" class="active">일반 음식점 검색</button>
+                </div>
+
+                <!-- Unified search box design for both forms -->
+                <div class="search-box-container">
+                    <!-- Rest area search form -->
+                    <div id="search-rest-area" class="search-box" style="display: none;">
+                        <form action="/find" method="get">
+                            <input name="name" type="text" placeholder="휴게소 이름 입력" autocomplete="off">
+                            <button id="btn-rest-search" type="submit" class="search-btn">검색</button>
+                        </form>
+                    </div>
+
+                    <!-- Restaurant search form -->
+                    <div id="search-restaurant" class="search-box">
+                        <form>
+                            <input id="restaurant-name" type="text" placeholder="일반 음식점 입력" autocomplete="off">
+                            <button id="btn-search-restaurant" type="button" class="search-btn">검색</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="quick-links">
+                <span>Popular:</span>
+                <a href="#">Delivery</a>
+                <a href="#">Takeout</a>
+                <a href="#">Reservations</a>
+                <a href="#">Outdoor Seating</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="categories">
+    <div class="container">
+        <h2>Browse by Category</h2>
+        <div class="category-grid">
+            <a href="#" class="category-card">
+                <div class="category-img">
+                    <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurants">
+                </div>
+                <h3>Restaurants</h3>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-img">
+                    <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Delivery">
+                </div>
+                <h3>Delivery</h3>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-img">
+                    <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Takeout">
+                </div>
+                <h3>Takeout</h3>
+            </a>
+            <a href="#" class="category-card">
+                <div class="category-img">
+                    <img src="https://github.com/user-attachments/assets/de37c96d-2169-4493-92b0-20639b0b5934" alt="Nightlife">
+                </div>
+                <h3>Nightlife</h3>
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="featured">
+    <div class="container">
+        <h2>Featured Restaurants</h2>
+        <div class="restaurant-grid">
+            <div class="restaurant-card">
+                <div class="restaurant-img">
+                    <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Restaurant 1">
+                </div>
+                <div class="restaurant-info">
+                    <h3>The Tasty Bistro</h3>
+                    <div class="rating">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </span>
+                        <span class="review-count">254 reviews</span>
+                    </div>
+                    <div class="categories">
+                        <span>Italian</span>
+                        <span>$$</span>
+                    </div>
+                    <p>"Amazing pasta and great service! The atmosphere is perfect for date night."</p>
+                </div>
+            </div>
+            <div class="restaurant-card">
+                <div class="restaurant-img">
+                    <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Restaurant 2">
+                </div>
+                <div class="restaurant-info">
+                    <h3>Burger Heaven</h3>
+                    <div class="rating">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </span>
+                        <span class="review-count">187 reviews</span>
+                    </div>
+                    <div class="categories">
+                        <span>American</span>
+                        <span>$$</span>
+                    </div>
+                    <p>"Best burgers in town! The fries are crispy and the milkshakes are to die for."</p>
+                </div>
+            </div>
+            <div class="restaurant-card">
+                <div class="restaurant-img">
+                    <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurant 3">
+                </div>
+                <div class="restaurant-info">
+                    <h3>Sushi Paradise</h3>
+                    <div class="rating">
+                            <span class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </span>
+                        <span class="review-count">321 reviews</span>
+                    </div>
+                    <div class="categories">
+                        <span>Japanese</span>
+                        <span>$$$</span>
+                    </div>
+                    <p>"Fresh fish and creative rolls. The chef's special is always a good choice!"</p>
+                </div>
+            </div>
+        </div>
+        <div class="view-more">
+            <a href="#" class="btn-secondary">View More Restaurants</a>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>Own a Restaurant?</h2>
+            <p>Join our platform and reach more customers. It's free to get started!</p>
+            <a href="#" class="btn-primary">Get Started</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About FoodFinder</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Investor Relations</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Discover</h3>
+                <ul>
+                    <li><a href="#">Collections</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">User Guidelines</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Businesses</h3>
+                <ul>
+                    <li><a href="#">Business Owner Login</a></li>
+                    <li><a href="#">Claim your Business</a></li>
+                    <li><a href="#">Advertise</a></li>
+                    <li><a href="#">Business Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="app-links">
+                    <a href="#" class="app-btn">
+                        <i class="fab fa-apple"></i>
+                        <span>App Store</span>
+                    </a>
+                    <a href="#" class="app-btn">
+                        <i class="fab fa-google-play"></i>
+                        <span>Google Play</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FoodFinder Inc. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Cookie Policy</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>
