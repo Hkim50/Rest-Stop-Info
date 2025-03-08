@@ -1,20 +1,28 @@
 package CrudPractice.demo.service;
 
+import CrudPractice.demo.domain.ApiListEntity;
 import CrudPractice.demo.dto.ApiListDto;
 import CrudPractice.demo.dto.ApiResponseDto;
 import CrudPractice.demo.dto.RestInfoDto;
+import CrudPractice.demo.repository.ApiListRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+import java.util.Optional;
+
 
 @Service
 public class ApiSearchService {
     private final RestClient restClient;
+    private final ApiListRepository apiListRepository;
 
-    public ApiSearchService(@Qualifier("naverApiClient") RestClient restClient) {
+    public ApiSearchService(@Qualifier("naverApiClient") RestClient restClient, ApiListRepository repository) {
         this.restClient = restClient;
+        this.apiListRepository = repository;
     }
 
 
@@ -25,18 +33,20 @@ public class ApiSearchService {
                 .retrieve()
                 .body(ApiResponseDto.class);
 
+        List<ApiListEntity> list = result.getItems().stream()
+                .map(ApiListDto::toEntity)
+                .toList();
+
+        apiListRepository.saveAll(list);
+
         return result;
 
     }
 
-    public ApiListDto findByName(String name) {
+    public Optional<ApiListEntity> findByName(String name) {
+        Optional<ApiListEntity> listEntity = apiListRepository.findByName(name);
 
-        ApiResponseDto result = restClient.get()
-                .uri("?query=" + name + "&display=1&start=1")
-                .retrieve()
-                .body(ApiResponseDto.class);
-
-        return result.getItems().get(0);
+        return listEntity;
     }
 
 

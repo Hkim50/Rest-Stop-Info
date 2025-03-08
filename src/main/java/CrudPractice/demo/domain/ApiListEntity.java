@@ -1,44 +1,45 @@
-package CrudPractice.demo.dto;
+package CrudPractice.demo.domain;
 
-import CrudPractice.demo.domain.ApiListEntity;
+import CrudPractice.demo.dto.ApiListDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.*;
 
+@Getter
 @Builder
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class ApiListDto {
+@AllArgsConstructor
+@Entity
+@Table(name="api_list")
+public class ApiListEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @JsonProperty("title")
+
+    @Column
     private String title;
 
-    @JsonProperty("link")
+    @Column
     private String link;
 
-    @JsonProperty("category")
+    @Column
     private String category;
 
-    @JsonProperty("description")
+    @Column
     private String description;
 
-    @JsonProperty("telephone")
+    @Column
     private String telephone;
 
-    @JsonProperty("address")
+    @Column
     private String address;
 
-    @JsonProperty("roadAddress")
+    @Column
     private String roadAddress;
 
-    @JsonProperty("mapx")
-    private String mapx;
 
-    @JsonProperty("mapy")
-    private String mapy;
-
-    public ApiListEntity toEntity() {
-        return ApiListEntity.builder()
+    public ApiListDto toDto() {
+        return ApiListDto.builder()
                 .id(this.id)
                 .title(this.title)
                 .link(this.link)
@@ -51,4 +52,5 @@ public class ApiListDto {
     }
 
 }
+
 

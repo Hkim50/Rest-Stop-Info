@@ -1,5 +1,6 @@
 package CrudPractice.demo.controller;
 
+import CrudPractice.demo.domain.ApiListEntity;
 import CrudPractice.demo.dto.ApiListDto;
 import CrudPractice.demo.dto.ApiResponseDto;
 import CrudPractice.demo.dto.StoreFormDto;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class ApiSearchController {
@@ -26,6 +28,13 @@ public class ApiSearchController {
     @GetMapping("/api/find")
     public String find(StoreFormDto storeFormDto, Model model) {
 
+        Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
+        if (byName.isPresent()) {
+            ApiListEntity apiListEntity = byName.get();
+            model.addAttribute("restaurant", apiListEntity);
+            return "search/searchDetail";
+        }
+
         ApiResponseDto store = apiSearchService.findStore(storeFormDto.getName());
 
         if (storeFormDto.getName().equals("") || store.getItems().size() == 0) {
@@ -33,9 +42,7 @@ public class ApiSearchController {
             return "/error/errorPage";
         }
 
-        List<ApiListDto> items = store.getItems();
-
-        model.addAttribute("restaurants", items);
+        model.addAttribute("restaurants", store.getItems());
         model.addAttribute("size", store.getTotal());
 
         return "search/newList2";
@@ -43,8 +50,8 @@ public class ApiSearchController {
     }
     @GetMapping("/api/{title}")
     public String searchDetail(@PathVariable("title") String title, Model model) {
-        ApiListDto byName = apiSearchService.findByName(title);
-        model.addAttribute("restaurant", byName);
+        ApiListDto dto =  apiSearchService.findByName(title).get().toDto();
+        model.addAttribute("restaurant", dto);
         return "search/searchDetail";
     }
 }
