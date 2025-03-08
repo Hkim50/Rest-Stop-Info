@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>검색 결과 - 핫플</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Reset and Base Styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f5f5f5;
+    }
+
+    a {
+        text-decoration: none;
+        color: #0073bb;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Header Styles */
+    header {
+        background-color: white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+    }
+
+    .logo a {
+        font-size: 24px;
+        font-weight: bold;
+        color: #d32323;
+    }
+
+    .nav-links {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-link {
+        margin-left: 20px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .nav-link:hover {
+        color: #d32323;
+    }
+
+    .menu-toggle {
+        display: none;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        display: inline-block;
+        background-color: #d32323;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-align: center;
+    }
+
+    .btn-primary:hover {
+        background-color: #e02424;
+    }
+
+    .btn-secondary {
+        display: inline-block;
+        background-color: white;
+        color: #d32323;
+        padding: 10px 16px;
+        border-radius: 4px;
+        font-weight: bold;
+        border: 1px solid #d32323;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-secondary:hover {
+        background-color: #f8f8f8;
+    }
+
+    /* Search Results Header */
+    .search-results-header {
+        background-color: white;
+        padding: 24px 0;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    .search-results-title {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .search-results-count {
+        color: #666;
+        font-size: 1rem;
+    }
+
+    /* Search Results Content */
+    .search-results-content {
+        display: flex;
+        gap: 30px;
+        margin: 32px 0;
+    }
+
+    .search-results-list {
+        flex: 2;
+    }
+
+    .search-results-map {
+        flex: 1;
+        position: sticky;
+        top: 80px;
+        height: calc(100vh - 100px);
+        background-color: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .map-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 1.2rem;
+    }
+
+    /* Restaurant Card */
+    .restaurant-card {
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 24px;
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .restaurant-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .restaurant-card-content {
+        display: flex;
+        padding: 24px;
+    }
+
+    .restaurant-card-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-right: 24px;
+        flex-shrink: 0;
+    }
+
+    .restaurant-card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .restaurant-card-info {
+        flex: 1;
+    }
+
+    .restaurant-card-title {
+        font-size: 1.4rem;
+        margin-bottom: 8px;
+        color: #0073bb;
+    }
+
+    .restaurant-card-title a:hover {
+        text-decoration: underline;
+    }
+
+    .restaurant-card-rating {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .restaurant-card-stars {
+        color: #f15c4f;
+        font-size: 18px;
+        margin-right: 8px;
+    }
+
+    .restaurant-card-review-count {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .restaurant-card-categories {
+        display: flex;
+        margin-bottom: 12px;
+        color: #666;
+        font-size: 0.95rem;
+    }
+
+    .restaurant-card-category {
+        margin-right: 8px;
+    }
+
+    .restaurant-card-category:not(:last-child)::after {
+        content: "•";
+        margin-left: 8px;
+    }
+
+    .restaurant-card-address {
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .restaurant-card-phone {
+        margin-bottom: 12px;
+        color: #333;
+    }
+
+    .restaurant-card-description {
+        margin-bottom: 16px;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    .restaurant-card-actions {
+        display: flex;
+        gap: 12px;
+    }
+
+    .restaurant-card-action {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #0073bb;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+    .restaurant-card-action:hover {
+        text-decoration: underline;
+    }
+
+    /* No results message */
+    .no-results {
+        background-color: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        padding: 32px;
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .no-results h3 {
+        font-size: 1.5rem;
+        margin-bottom: 16px;
+        color: #333;
+    }
+
+    .no-results p {
+        color: #666;
+        margin-bottom: 24px;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #f5f5f5;
+        padding: 48px 0 24px;
+        border-top: 1px solid #e6e6e6;
+        margin-top: 48px;
+    }
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 32px;
+        margin-bottom: 32px;
+    }
+
+    .footer-section h3 {
+        margin-bottom: 16px;
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .footer-section ul li {
+        margin-bottom: 8px;
+    }
+
+    .footer-section ul li a {
+        color: #666;
+    }
+
+    .footer-section ul li a:hover {
+        color: #d32323;
+    }
+
+    .social-links {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+    }
+
+    .social-links a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        background-color: #e6e6e6;
+        border-radius: 50%;
+        color: #333;
+        transition: background-color 0.3s;
+    }
+
+    .social-links a:hover {
+        background-color: #d32323;
+        color: white;
+    }
+
+    .footer-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 1px solid #e6e6e6;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    .footer-links a {
+        margin-left: 16px;
+        color: #666;
+    }
+
+    .footer-links a:hover {
+        color: #d32323;
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+        .search-results-content {
+            flex-direction: column;
+        }
+
+        .search-results-map {
+            position: static;
+            height: 400px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+
+        .restaurant-card-content {
+            flex-direction: column;
+        }
+
+        .restaurant-card-image {
+            width: 100%;
+            height: 200px;
+            margin-right: 0;
+            margin-bottom: 16px;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .search-results-title {
+            font-size: 1.5rem;
+        }
+
+        .restaurant-card-actions {
+            flex-wrap: wrap;
+        }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="/">핫플</a>
+      </div>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Restaurants</a>
+        <a href="#" class="nav-link">Write a Review</a>
+        <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
+        <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary">Sign Up</a>
+        <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" th:text="${name} + '님'"></a>
+        <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary">로그아웃</a>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Search Results Header -->
+<section class="search-results-header">
+  <div class="container">
+    <h1 class="search-results-title">검색 결과</h1>
+    <p class="search-results-count" th:text="${size} + '개의 결과가 있습니다'">10개의 결과가 있습니다</p>
+  </div>
+</section>
+
+<!-- Search Results Content -->
+<div class="container">
+  <div class="search-results-content">
+    <!-- Search Results List -->
+    <div class="search-results-list">
+      <!-- No Results Message (shown when there are no results) -->
+      <div class="no-results" th:if="${size < 0}">
+        <h3>검색 결과가 없습니다</h3>
+        <p>다른 검색어로 다시 시도해보세요.</p>
+        <a href="/" class="btn-primary">홈으로 돌아가기</a>
+      </div>
+
+      <!-- Restaurant Card (Repeated for each result) -->
+      <div class="restaurant-card" th:each="restaurant : ${restaurants}">
+        <div class="restaurant-card-content">
+          <div class="restaurant-card-image">
+            <img src="https://placehold.co/400x400" alt="Restaurant Image">
+          </div>
+          <div class="restaurant-card-info">
+            <h2 class="restaurant-card-title">
+              <a th:href="@{/api/{title}(title=${restaurant.title})}" th:text="${restaurant.title}">식당 이름</a>
+            </h2>
+            <div class="restaurant-card-rating">
+              <div class="restaurant-card-stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="restaurant-card-review-count">254 reviews</span>
+            </div>
+            <div class="restaurant-card-categories">
+              <span class="restaurant-card-category" th:text="${restaurant.category}">카테고리</span>
+              <span class="restaurant-card-category">₩₩</span>
+            </div>
+            <div class="restaurant-card-address">
+              <i class="fas fa-map-marker-alt"></i>
+              <span th:text="${restaurant.address}">주소</span>
+            </div>
+            <div class="restaurant-card-phone">
+              <i class="fas fa-phone"></i>
+              <span th:text="${restaurant.telephone}">전화번호</span>
+            </div>
+            <div class="restaurant-card-description" th:text="${restaurant.description}">
+              식당 설명이 여기에 표시됩니다.
+            </div>
+            <div class="restaurant-card-actions">
+              <a th:href="${restaurant.link}" class="restaurant-card-action">
+                <i class="fas fa-external-link-alt"></i>
+                <span>자세히 보기</span>
+              </a>
+              <a href="#" class="restaurant-card-action" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">
+                <i class="fas fa-directions"></i>
+                <span>길찾기</span>
+              </a>
+              <a href="#" class="restaurant-card-action">
+                <i class="fas fa-bookmark"></i>
+                <span>저장</span>
+              </a>
+              <a href="#" class="restaurant-card-action">
+                <i class="fas fa-share-alt"></i>
+                <span>공유</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About 핫플</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Discover</h3>
+        <ul>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Businesses</h3>
+        <ul>
+          <li><a href="#">Business Owner Login</a></li>
+          <li><a href="#">Claim your Business</a></li>
+          <li><a href="#">Advertise</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 핫플 Inc. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle
+      const menuToggle = document.querySelector('.menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      if (menuToggle) {
+          menuToggle.addEventListener('click', function() {
+              navLinks.classList.toggle('active');
+
+              // Add styles for active mobile menu
+              if (navLinks.classList.contains('active')) {
+                  navLinks.style.display = 'flex';
+                  navLinks.style.flexDirection = 'column';
+                  navLinks.style.position = 'absolute';
+                  navLinks.style.top = '100%';
+                  navLinks.style.left = '0';
+                  navLinks.style.right = '0';
+                  navLinks.style.backgroundColor = 'white';
+                  navLinks.style.padding = '20px';
+                  navLinks.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+                  navLinks.style.zIndex = '99';
+              } else {
+                  navLinks.style.display = '';
+              }
+          });
+      }
+
+      // Map functionality could be added here
+      // For example, if using Kakao Maps:
+      /*
+      if (typeof kakao !== 'undefined' && document.getElementById('map')) {
+          const map = new kakao.maps.Map(document.getElementById('map'), {
+              center: new kakao.maps.LatLng(37.566826, 126.9786567),
+              level: 8
+          });
+
+          // Add markers for each restaurant
+          document.querySelectorAll('.restaurant-card').forEach(card => {
+              const directionBtn = card.querySelector('[data-mapx][data-mapy]');
+              if (directionBtn) {
+                  const mapx = directionBtn.getAttribute('data-mapx');
+                  const mapy = directionBtn.getAttribute('data-mapy');
+                  if (mapx && mapy) {
+                      const position = new kakao.maps.LatLng(mapy, mapx);
+                      const marker = new kakao.maps.Marker({
+                          position: position,
+                          map: map
+                      });
+                  }
+              }
+          });
+      }
+      */
+  });
+</script>
+</body>
+</html>

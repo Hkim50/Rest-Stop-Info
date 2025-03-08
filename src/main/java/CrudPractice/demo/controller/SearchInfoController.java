@@ -43,11 +43,11 @@ public class SearchInfoController {
 
         if (storeFormDto.getName().equals("") || restInfoDto == null || restInfoDto.getList().size() == 0) {
             model.addAttribute("errorMessage", "음식점 이름을 다시 한번 확인해주세요.");
+
             return "/error/errorPage";
         }
 
-        RestInfoEntity infoFromDb = restBestFoodService.getInfoFromDb(storeFormDto.getName());
-        List<ReviewsDto> reviewsByInfo = reviewsService.getReviewsByInfo(infoFromDb);
+        List<ReviewsDto> reviewsByInfo = reviewsService.getReviewsByInfo(restBestFoodService.getInfoFromDb(storeFormDto.getName()));
 
         model.addAttribute("lists", restInfoDto.getList());
         model.addAttribute("restName", storeFormDto.getName());

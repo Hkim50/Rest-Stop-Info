@@ -21,9 +21,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/", "/register", "/login", "/find").permitAll()  // 로그인 & 회원가입은 누구나 가능
+                        .requestMatchers("/", "/register", "/login", "/find", "/api/find", "/api/**").permitAll()  // 로그인 & 회원가입은 누구나 가능
                         .requestMatchers( "/compare", "/info").authenticated()
-                        .anyRequest().authenticated()  // 나머지는 로그인해야 볼 수 있음
+                        .anyRequest().permitAll()  // 나머지는 로그인해야 볼 수 있음
                 );
 
         http

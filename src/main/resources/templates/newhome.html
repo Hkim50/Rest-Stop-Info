@@ -50,14 +50,14 @@
                             <button id="btn-rest-search" type="submit" class="search-btn">검색</button>
                         </form>
                     </div>
-
                     <!-- Restaurant search form -->
                     <div id="search-restaurant" class="search-box">
-                        <form>
-                            <input id="restaurant-name" type="text" placeholder="일반 음식점 입력" autocomplete="off">
-                            <button id="btn-search-restaurant" type="button" class="search-btn">검색</button>
+                        <form action="/api/find" method="get">
+                            <input name="name" type="text" placeholder="일반 음식점 입력" autocomplete="off">
+                            <button id="btn-search-restaurant" type="submit" class="search-btn">검삭</button>
                         </form>
                     </div>
+
                 </div>
             </div>
             <div class="quick-links">
@@ -73,31 +73,31 @@
 
 <section class="categories">
     <div class="container">
-        <h2>Browse by Category</h2>
+        <h2>카테고리 종류</h2>
         <div class="category-grid">
             <a href="#" class="category-card">
                 <div class="category-img">
                     <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurants">
                 </div>
-                <h3>Restaurants</h3>
+                <h3>한식</h3>
             </a>
             <a href="#" class="category-card">
                 <div class="category-img">
                     <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Delivery">
                 </div>
-                <h3>Delivery</h3>
+                <h3>일식</h3>
             </a>
             <a href="#" class="category-card">
                 <div class="category-img">
                     <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Takeout">
                 </div>
-                <h3>Takeout</h3>
+                <h3>베트남 음식</h3>
             </a>
             <a href="#" class="category-card">
                 <div class="category-img">
                     <img src="https://github.com/user-attachments/assets/de37c96d-2169-4493-92b0-20639b0b5934" alt="Nightlife">
                 </div>
-                <h3>Nightlife</h3>
+                <h3>양식</h3>
             </a>
         </div>
     </div>
@@ -105,7 +105,7 @@
 
 <section class="featured">
     <div class="container">
-        <h2>Featured Restaurants</h2>
+        <h2>탑 핫플레이스</h2>
         <div class="restaurant-grid">
             <div class="restaurant-card">
                 <div class="restaurant-img">
