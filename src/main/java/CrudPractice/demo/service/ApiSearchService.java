@@ -33,20 +33,38 @@ public class ApiSearchService {
                 .retrieve()
                 .body(ApiResponseDto.class);
 
+        // filter title name. remove <b> and </b>.
+        result.setItems(removeExc(result.getItems()));
+
         List<ApiListEntity> list = result.getItems().stream()
                 .map(ApiListDto::toEntity)
                 .toList();
 
-        apiListRepository.saveAll(list);
+        for (ApiListEntity apiListEntity : list) {
+            if (!findByName(apiListEntity.getTitle()).isPresent()) {
+                apiListRepository.save(apiListEntity);
+            }
+        }
 
         return result;
-
     }
 
     public Optional<ApiListEntity> findByName(String name) {
-        Optional<ApiListEntity> listEntity = apiListRepository.findByName(name);
+        Optional<ApiListEntity> listEntity = apiListRepository.findByTitle(name);
 
         return listEntity;
+    }
+
+    private List<ApiListDto> removeExc(List<ApiListDto> dto) {
+
+        for (ApiListDto apiListDto : dto) {
+            if (apiListDto.getTitle().contains("<b>")) {
+                String s = apiListDto.getTitle().replaceAll("<b>", "").replaceAll("</b>", "");
+                apiListDto.setTitle(s);
+            }
+        }
+        return dto;
+
     }
 
 

@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ApiListRepository extends JpaRepository<ApiListEntity, Long> {
-    Optional<ApiListEntity> findByName(String name);
+    Optional<ApiListEntity> findByTitle(String name);
 }

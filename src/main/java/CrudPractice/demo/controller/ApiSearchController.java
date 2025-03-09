@@ -27,11 +27,11 @@ public class ApiSearchController {
 
     @GetMapping("/api/find")
     public String find(StoreFormDto storeFormDto, Model model) {
-
         Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
+
         if (byName.isPresent()) {
-            ApiListEntity apiListEntity = byName.get();
-            model.addAttribute("restaurant", apiListEntity);
+            ApiListDto dto = byName.get().toDto();
+            model.addAttribute("restaurant", dto);
             return "search/searchDetail";
         }
 
