@@ -3,6 +3,7 @@ package CrudPractice.demo.service;
 import CrudPractice.demo.domain.RestInfoEntity;
 import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
+import CrudPractice.demo.dto.ApiListDto;
 import CrudPractice.demo.dto.ReviewsDto;
 import CrudPractice.demo.repository.ReviewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,15 @@ public class ReviewsService{
         ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
 
         reviewByNameAndCreatedAt.updateReview(reviewsDto.getContent(), reviewsDto.getRating());
+    }
+
+    public List<ReviewsDto> findByApiList(ApiListDto dto) {
+        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.getReviewByApiListEntity(dto.toEntity());
+
+        return reviewByApiListEntity.stream()
+                .map(ReviewsEntity::toDto)
+                .toList();
+
     }
 
 

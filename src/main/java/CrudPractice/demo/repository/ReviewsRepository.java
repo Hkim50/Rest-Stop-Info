@@ -1,5 +1,6 @@
 package CrudPractice.demo.repository;
 
+import CrudPractice.demo.domain.ApiListEntity;
 import CrudPractice.demo.domain.RestInfoEntity;
 import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
@@ -15,5 +16,8 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, Long> {
     List<ReviewsEntity> getReviewByUser(UserEntity user);
 
     ReviewsEntity getReviewByNameAndCreatedAt(String name, Timestamp timestamp);
+
+    List<ReviewsEntity> getReviewByApiListEntity(ApiListEntity apiListEntity);
+
 
 }

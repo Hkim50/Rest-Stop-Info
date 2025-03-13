@@ -102,14 +102,13 @@
         </div>
 
         <!-- Review List -->
-        <div class="reviews-list">
-          <!-- Sample Review 1 -->
-          <div class="review-item">
+<!--        <div class="reviews-list">-->
+          <div class="review-item" th:each="review : ${reviews}">
             <div class="review-user">
               <div class="user-profile">
-                <div class="profile-img">K</div>
-                <div class="user-name">김철수</div>
-                <div class="user-location">서울</div>
+                <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
+                <div class="user-name" th:text="${review.name}"></div>
+                <div class="user-location" th:text="${review.id}"></div>
                 <div class="user-stats">
                   <span><i class="fas fa-star"></i> 5 리뷰</span>
                   <span><i class="fas fa-camera"></i> 0 사진</span>
@@ -119,50 +118,57 @@
             <div class="review-content-wrapper">
               <div class="review-rating">
                 <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
+                  <span th:each="i : ${#numbers.sequence(1, review.rating > 5 ? 5 : review.rating)}">★</span>
+                  <span th:if="${review.rating < 5}" th:each="i : ${#numbers.sequence(review.rating + 1, 5)}">☆</span>
                 </div>
-                <span class="review-date">2023-05-15</span>
+                <span class="review-date" th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
               </div>
-              <div class="review-text">
-                정말 맛있는 음식과 친절한 서비스를 받았습니다. 특히 대표 메뉴는 꼭 드셔보세요. 다음에 또 방문하고 싶은 곳입니다.
+              <div class="review-text" th:text="${review.content}"></div>
+              <div class="review-footer" th:if="${name == review.userEntity}">
+                <div class="review-actions">
+                  <input type="hidden" name="rating" th:value="${review.rating}">
+                  <input type="hidden" name="createdAt" th:value="${review.createdAt}">
+                  <input type="hidden" name="content" th:value="${review.content}">
+                  <input type="hidden" name="name" th:value="${name}">
+                  <input type="hidden" id="review-id" th:value="${review.id}">
+                  <button type="submit" class="review-action-btn btn-edit" id="btn-review-edit">수정</button>
+                  <button id="btn-review-delete" class="review-action-btn btn-delete">삭제</button>
+                </div>
               </div>
             </div>
           </div>
+<!--        </div>-->
 
           <!-- Sample Review 2 -->
-          <div class="review-item">
-            <div class="review-user">
-              <div class="user-profile">
-                <div class="profile-img">L</div>
-                <div class="user-name">이영희</div>
-                <div class="user-location">부산</div>
-                <div class="user-stats">
-                  <span><i class="fas fa-star"></i> 12 리뷰</span>
-                  <span><i class="fas fa-camera"></i> 3 사진</span>
-                </div>
-              </div>
-            </div>
-            <div class="review-content-wrapper">
-              <div class="review-rating">
-                <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
-                <span class="review-date">2023-04-20</span>
-              </div>
-              <div class="review-text">
-                음식은 맛있었지만 가격이 조금 비싼 편입니다. 분위기는 좋고 직원들도 친절했습니다. 주차 공간이 충분해서 좋았어요.
-              </div>
-            </div>
-          </div>
-        </div>
+<!--          <div class="review-item">-->
+<!--            <div class="review-user">-->
+<!--              <div class="user-profile">-->
+<!--                <div class="profile-img">L</div>-->
+<!--                <div class="user-name">이영희</div>-->
+<!--                <div class="user-location">부산</div>-->
+<!--                <div class="user-stats">-->
+<!--                  <span><i class="fas fa-star"></i> 12 리뷰</span>-->
+<!--                  <span><i class="fas fa-camera"></i> 3 사진</span>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="review-content-wrapper">-->
+<!--              <div class="review-rating">-->
+<!--                <div class="stars">-->
+<!--                  <i class="fas fa-star"></i>-->
+<!--                  <i class="fas fa-star"></i>-->
+<!--                  <i class="fas fa-star"></i>-->
+<!--                  <i class="fas fa-star"></i>-->
+<!--                  <i class="far fa-star"></i>-->
+<!--                </div>-->
+<!--                <span class="review-date">2023-04-20</span>-->
+<!--              </div>-->
+<!--              <div class="review-text">-->
+<!--                음식은 맛있었지만 가격이 조금 비싼 편입니다. 분위기는 좋고 직원들도 친절했습니다. 주차 공간이 충분해서 좋았어요.-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <!-- Review Form -->
         <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">
