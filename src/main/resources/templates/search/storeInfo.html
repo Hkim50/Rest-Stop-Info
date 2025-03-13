@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${restaurant.title} + ' - 핫플'">식당 상세 - 핫플</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" th:href="@{/css/styles4.css}">
+</head>
+<body>
+<!-- Header -->
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="/">SPOT</a>
+      </div>
+      <div class="nav-links">
+        <a href="/" class="nav-link">Home</a>
+        <a href="#" class="nav-link">Restaurants</a>
+        <a href="#" class="nav-link">Write a Review</a>
+        <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
+        <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary">Sign Up</a>
+        <a sec:authorize="isAuthenticated()" href="/info" class="nav-link">내정보</a>
+        <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary">로그아웃</a>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- Business Header -->
+<section class="biz-header">
+  <div class="container">
+    <div class="biz-header-content">
+      <div class="biz-header-left">
+        <h1 class="biz-page-title" th:text="${restaurant.title}">식당 이름</h1>
+        <div class="biz-rating">
+          <div class="stars-large">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+          </div>
+          <span class="review-count">254 reviews</span>
+        </div>
+        <div class="price-category">
+          <span class="price">₩₩</span>
+          <span class="dot">•</span>
+          <span class="category" th:text="${restaurant.category}">카테고리</span>
+        </div>
+      </div>
+      <div class="biz-header-right">
+        <a href="#review-form" class="action-button write-review">
+          <i class="fas fa-star"></i>
+          <span>리뷰 작성</span>
+        </a>
+        <button class="action-button save">
+          <i class="far fa-bookmark"></i>
+          <span>저장</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Photo Gallery -->
+<div class="photo-gallery">
+  <img src="https://placehold.co/800x600" alt="Restaurant Photo" class="gallery-img">
+  <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+  <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+</div>
+
+<!-- Main Content -->
+<div class="container">
+  <div class="main-content">
+    <!-- Left Column -->
+    <div class="content-left">
+      <!-- Description Section -->
+      <div class="section description-section">
+        <h2 class="section-title">소개</h2>
+        <div class="description-text" th:text="${restaurant.description}">
+          식당 설명이 여기에 표시됩니다. 이 식당은 맛있는 음식과 좋은 서비스로 유명합니다.
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="section">
+        <div class="reviews-header">
+          <h2 class="reviews-title">리뷰</h2>
+          <div class="sort-options">
+            <span class="sort-label">정렬:</span>
+            <select class="sort-select">
+              <option>최신순</option>
+              <option>평점 높은순</option>
+              <option>평점 낮은순</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Review List -->
+        <div class="reviews-list">
+          <!-- Sample Review 1 -->
+          <div class="review-item">
+            <div class="review-user">
+              <div class="user-profile">
+                <div class="profile-img">K</div>
+                <div class="user-name">김철수</div>
+                <div class="user-location">서울</div>
+                <div class="user-stats">
+                  <span><i class="fas fa-star"></i> 5 리뷰</span>
+                  <span><i class="fas fa-camera"></i> 0 사진</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-content-wrapper">
+              <div class="review-rating">
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                </div>
+                <span class="review-date">2023-05-15</span>
+              </div>
+              <div class="review-text">
+                정말 맛있는 음식과 친절한 서비스를 받았습니다. 특히 대표 메뉴는 꼭 드셔보세요. 다음에 또 방문하고 싶은 곳입니다.
+              </div>
+            </div>
+          </div>
+
+          <!-- Sample Review 2 -->
+          <div class="review-item">
+            <div class="review-user">
+              <div class="user-profile">
+                <div class="profile-img">L</div>
+                <div class="user-name">이영희</div>
+                <div class="user-location">부산</div>
+                <div class="user-stats">
+                  <span><i class="fas fa-star"></i> 12 리뷰</span>
+                  <span><i class="fas fa-camera"></i> 3 사진</span>
+                </div>
+              </div>
+            </div>
+            <div class="review-content-wrapper">
+              <div class="review-rating">
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
+                </div>
+                <span class="review-date">2023-04-20</span>
+              </div>
+              <div class="review-text">
+                음식은 맛있었지만 가격이 조금 비싼 편입니다. 분위기는 좋고 직원들도 친절했습니다. 주차 공간이 충분해서 좋았어요.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Form -->
+        <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">
+          <h3 class="form-title">리뷰 작성</h3>
+            <div class="rating-input">
+              <label for="rating" class="rating-label">별점:</label>
+              <select id="rating" class="rating-select">
+                <option value="1">★☆☆☆☆ (1점)</option>
+                <option value="2">★★☆☆☆ (2점)</option>
+                <option value="3">★★★☆☆ (3점)</option>
+                <option value="4">★★★★☆ (4점)</option>
+                <option value="5" selected>★★★★★ (5점)</option>
+              </select>
+            </div>
+            <textarea id="review-content" class="review-textarea" placeholder="이 식당에 대한 솔직한 리뷰를 작성해주세요..."></textarea>
+            <input type="hidden" id="restNm" th:value="${restaurant.title}">
+            <button id="btn-review-submit" class="review-submit">리뷰 등록</button>
+        </div>
+
+        <!-- Login Prompt for Non-Authenticated Users -->
+        <div class="review-form login-prompt" sec:authorize="!isAuthenticated()">
+          <p>리뷰를 작성하려면 로그인이 필요합니다.</p>
+          <a href="/login" class="btn-primary">로그인</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="content-right">
+      <!-- Map Section -->
+      <div class="map-section">
+        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">
+          <div class="map-placeholder">
+            <p>지도가 여기에 표시됩니다</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Info -->
+      <div class="section business-info">
+        <h3 class="section-title">영업 정보</h3>
+        <div class="info-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="info-text">
+            <p th:text="${restaurant.address}">주소</p>
+            <p th:if="${restaurant.roadAddress}" th:text="${restaurant.roadAddress}">도로명 주소</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-phone"></i>
+          <div class="info-text">
+            <p th:text="${restaurant.telephone}">전화번호</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-link"></i>
+          <div class="info-text">
+            <a th:href="${restaurant.link}" target="_blank">웹사이트 방문</a>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-clock"></i>
+          <div class="info-text">
+            <p><strong>영업 시간</strong></p>
+            <ul class="hours-list">
+              <li class="hours-item">
+                <span class="day">월요일</span>
+                <span class="time">11:00 - 22:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">화요일</span>
+                <span class="time">11:00 - 22:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">수요일</span>
+                <span class="time">11:00 - 22:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">목요일</span>
+                <span class="time">11:00 - 22:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">금요일</span>
+                <span class="time">11:00 - 23:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">토요일</span>
+                <span class="time">11:00 - 23:00</span>
+              </li>
+              <li class="hours-item">
+                <span class="day">일요일</span>
+                <span class="time">11:00 - 22:00</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="info-item">
+          <i class="fas fa-info-circle"></i>
+          <div class="info-text">
+            <p><strong>추가 정보</strong></p>
+            <p>주차 가능</p>
+            <p>예약 가능</p>
+            <p>배달 가능</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Similar Restaurants -->
+      <div class="section">
+        <h3 class="section-title">비슷한 식당</h3>
+        <div class="similar-restaurants">
+          <div class="similar-item">
+            <div class="similar-img">
+              <img src="https://placehold.co/100x100" alt="Similar Restaurant">
+            </div>
+            <div class="similar-info">
+              <h4 class="similar-name">맛있는 식당</h4>
+              <div class="similar-rating">
+                <div class="similar-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
+                </div>
+                <span class="similar-review-count">120 reviews</span>
+              </div>
+              <p class="similar-category">한식</p>
+            </div>
+          </div>
+          <div class="similar-item">
+            <div class="similar-img">
+              <img src="https://placehold.co/100x100" alt="Similar Restaurant">
+            </div>
+            <div class="similar-info">
+              <h4 class="similar-name">좋은 식당</h4>
+              <div class="similar-rating">
+                <div class="similar-stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="similar-review-count">85 reviews</span>
+              </div>
+              <p class="similar-category">한식</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About 핫플</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Discover</h3>
+        <ul>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Businesses</h3>
+        <ul>
+          <li><a href="#">Business Owner Login</a></li>
+          <li><a href="#">Claim your Business</a></li>
+          <li><a href="#">Advertise</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 핫플 Inc. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script th:src="@{/js/script2.js}"></script>
+<script>
+</script>
+</body>
+</html>

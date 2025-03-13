@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,14 +13,16 @@
     <div class="container">
         <nav>
             <div class="logo">
-                <a href="/">핫플</a>
+                <a href="/">SPOT</a>
             </div>
             <div class="nav-links">
                 <a href="#" class="nav-link">Restaurants</a>
                 <a href="#" class="nav-link">Services</a>
                 <a href="#" class="nav-link">About</a>
-                <a href="/login" class="nav-link">Login</a>
-                <a href="/register" class="btn-primary">Sign Up</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary">Sign Up</a>
+                <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info" >내정보</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary">로그아웃</a>
             </div>
             <div class="menu-toggle">
                 <i class="fas fa-bars"></i>

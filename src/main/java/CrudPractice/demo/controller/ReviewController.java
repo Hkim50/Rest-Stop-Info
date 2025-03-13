@@ -8,6 +8,7 @@ import CrudPractice.demo.dto.ReviewsDto;
 import CrudPractice.demo.service.MemberService2;
 import CrudPractice.demo.service.RestBestFoodService;
 import CrudPractice.demo.service.ReviewsService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,23 +34,21 @@ public class ReviewController {
         this.restBestFoodService = restBestFoodService;
     }
 
-
-    @PostMapping("/addReview")
-    public String addReview(ReviewsDto reviewsDto, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
-
-        ReviewsEntity reviewsEntity = reviewsService.addUserInReview(reviewsDto, byName);
-        RestInfoEntity infoFromDb = restBestFoodService.getInfoFromDb(reviewsDto.getRestNm());
-
-        reviewsEntity.setRestInfoEntity(infoFromDb);
-
-        reviewsService.addReview(reviewsEntity);
-        model.addAttribute("name", reviewsDto.getName());
-
-        return "/search/findRest";
-    }
+//    @PostMapping("/addReview")
+//    public String addReview(ReviewsDto reviewsDto, HttpServletRequest request) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+//
+//        ReviewsEntity reviewsEntity = reviewsService.addUserInReview(reviewsDto, byName);
+//        RestInfoEntity infoFromDb = restBestFoodService.getInfoFromDb(reviewsDto.getRestNm());
+//
+//        reviewsEntity.setRestInfoEntity(infoFromDb);
+//
+//        reviewsService.addReview(reviewsEntity);
+//
+//        return "redirect:" + request.getRequestURI();
+//    }
 
     @PostMapping("/edit")
     public String showEditForm(ReviewsDto review, Model model) {

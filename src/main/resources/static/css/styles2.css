@@ -872,15 +872,24 @@ footer {
  }
 
 
- .logo a{
-     font-size: 24px;
-     font-weight: bold;
-     color: #d32323;
-      position: absolute;
-      left: 30px; /* 원하는 위치로 조정 */
-      top: 50%;
-      transform: translateY(-50%);
- }
+.logo a {
+    font-size: 28px;
+    font-weight: 800;
+    color: black;
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+.logo a:hover {
+    color: #ff4040;
+    transition: color 0.3s ease;
+}
 
  .nav-links {
      display: flex;

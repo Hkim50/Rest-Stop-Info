@@ -32,7 +32,7 @@ public class ApiSearchController {
         if (byName.isPresent()) {
             ApiListDto dto = byName.get().toDto();
             model.addAttribute("restaurant", dto);
-            return "search/searchDetail";
+            return "search/storeInfo";
         }
 
         ApiResponseDto store = apiSearchService.findStore(storeFormDto.getName());
@@ -45,13 +45,13 @@ public class ApiSearchController {
         model.addAttribute("restaurants", store.getItems());
         model.addAttribute("size", store.getTotal());
 
-        return "search/newList2";
+        return "search/resultList";
 
     }
     @GetMapping("/api/{title}")
     public String searchDetail(@PathVariable("title") String title, Model model) {
         ApiListDto dto =  apiSearchService.findByName(title).get().toDto();
         model.addAttribute("restaurant", dto);
-        return "search/searchDetail";
+        return "search/storeInfo";
     }
 }

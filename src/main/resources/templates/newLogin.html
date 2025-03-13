@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
   <div class="container">
     <nav>
       <div class="logo">
-        <a href="/">핫플</a>
+        <a href="/">SPOT</a>
       </div>
       <div class="nav-links">
         <a href="/" class="nav-link">Home</a>
@@ -49,7 +49,7 @@
         <div class="divider">
           <span>or</span>
         </div>
-        <form id="login-form" class="auth-form">
+        <form id="login-form" class="auth-form" action="/login" method="post">
           <div class="form-group">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" required>
@@ -97,7 +97,13 @@
     </div>
   </div>
 </footer>
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.has("error")) {
+    alert("로그인 실패! 이메일 또는 비밀번호를 확인하세요.");
+}
+</script>
 
-<script src="script.js"></script>
+<!--<script th:src="@{/js/script.js}"></script>-->
 </body>
 </html>

@@ -24,15 +24,16 @@ public class ReviewsService{
 
     public ReviewsEntity addUserInReview(ReviewsDto reviewsDto, UserEntity user) {
         reviewsDto.setName(user.getName());
+        reviewsDto.setUserEntity(user);
         ReviewsEntity entity = reviewsDto.toEntity();
-        entity.setUser(user);
-
+//        ReviewsEntity entity = reviewsDto.toEntity();
+//        entity.setUser(user);
         return entity;
 
     }
 
     public ReviewsEntity addReview(ReviewsEntity reviewsEntity) {
-       return  reviewsRepository.save(reviewsEntity);
+        return  reviewsRepository.save(reviewsEntity);
     }
 
     public List<ReviewsDto> getReviewsByInfo(RestInfoEntity restInfoEntity) {
@@ -64,6 +65,10 @@ public class ReviewsService{
     public void removeReview(ReviewsDto reviewsDto) {
         ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
         reviewsRepository.delete(reviewByNameAndCreatedAt);
+    }
+
+    public void deleteReview(Long id) {
+        reviewsRepository.deleteById(id);
     }
 
     @Transactional

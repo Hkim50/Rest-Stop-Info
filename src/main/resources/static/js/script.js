@@ -21,14 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
         restaurantSearch.style.display = "block";
         restAreaSearch.style.display = "none";
     });
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("error")) {
+            alert("로그인 실패! 이메일 또는 비밀번호를 확인하세요.");
+        }
 
-//    // Restaurant search API request
-//    document.getElementById("btn-search-restaurant").addEventListener("click", function() {
-//        const query = document.getElementById("restaurant-name").value;
-//
-//        if (!query.trim()) {
-//            alert("검색어를 입력해주세요!");
-//            return;
-//        }
-//    });
 });

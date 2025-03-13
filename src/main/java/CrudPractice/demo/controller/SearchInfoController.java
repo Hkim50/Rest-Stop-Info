@@ -42,17 +42,22 @@ public class SearchInfoController {
         RestInfoDto restInfoDto = restBestFoodService.getBestFoodList(storeFormDto.getName());
 
         if (storeFormDto.getName().equals("") || restInfoDto == null || restInfoDto.getList().size() == 0) {
-            model.addAttribute("errorMessage", "음식점 이름을 다시 한번 확인해주세요.");
+            model.addAttribute("errorMessage", "휴게소 이름을 다시 한번 확인해주세요.");
 
             return "/error/errorPage";
         }
 
         List<ReviewsDto> reviewsByInfo = reviewsService.getReviewsByInfo(restBestFoodService.getInfoFromDb(storeFormDto.getName()));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+
         model.addAttribute("lists", restInfoDto.getList());
         model.addAttribute("restName", storeFormDto.getName());
         model.addAttribute("reviews", reviewsByInfo);
-        return "search/newList";
+        model.addAttribute("name", byName);
+        return "search/restInfo";
     }
 
 //    @PostMapping("")

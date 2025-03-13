@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class ReviewsDto {
 
+    private Long id;
     private String content;
     private Timestamp createdAt;
     private String restNm;
@@ -28,6 +29,7 @@ public class ReviewsDto {
                 .createdAt(this.createdAt)
                 .name(this.name)
                 .rating(this.rating)
+                .user(this.userEntity)
                 .build();
     }
 }

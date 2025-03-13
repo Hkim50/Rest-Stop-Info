@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -20,16 +21,17 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/", "/register", "/login", "/find", "/api/find", "/api/**").permitAll()  // 로그인 & 회원가입은 누구나 가능
-                        .requestMatchers( "/compare", "/info").authenticated()
-                        .anyRequest().permitAll()  // 나머지는 로그인해야 볼 수 있음
+                        .requestMatchers("/css/**", "/js/**", "/images/**","/", "/register", "/login").permitAll()
+//                        .requestMatchers("/", "/register", "/login", "/find", "/api/find", "/api/**").permitAll()  // 로그인 & 회원가입은 누구나 가능
+//                        .requestMatchers( "/compare", "/info").authenticated()
+                        .anyRequest().authenticated()  // 나머지는 로그인해야 볼 수 있음
                 );
 
         http
                 .formLogin((login) -> login
                         .loginPage("/login")  // 로그인 페이지 설정
-                        .defaultSuccessUrl("/", true)  // 로그인 성공 후 이동할 페이지
+                        .defaultSuccessUrl("/")  // 로그인 성공 후 이동할 페이지
+                        .failureUrl("/login?error=true")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .permitAll()

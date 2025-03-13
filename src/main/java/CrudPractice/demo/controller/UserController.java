@@ -25,9 +25,9 @@ public class UserController {
 
     @GetMapping("/login")
     public String login() {
-
         return "newLogin";
     }
+
 
 //    @PostMapping("/login")
 //    public String userLogin(@Valid UserFormDto userFormDto, BindingResult bindingResult) {
