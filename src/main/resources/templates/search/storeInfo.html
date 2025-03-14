@@ -101,9 +101,10 @@
           </div>
         </div>
 
-        <!-- Review List -->
-<!--        <div class="reviews-list">-->
-          <div class="review-item" th:each="review : ${reviews}">
+        <!-- 전체 리뷰 섹션을 reviews-list 클래스로 감싸기 -->
+        <div class="reviews-list">
+          <!-- 각 리뷰 아이템 -->
+          <div class="review-item" th:each="review, reviewStat : ${reviews}">
             <div class="review-user">
               <div class="user-profile">
                 <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
@@ -130,45 +131,16 @@
                   <input type="hidden" name="createdAt" th:value="${review.createdAt}">
                   <input type="hidden" name="content" th:value="${review.content}">
                   <input type="hidden" name="name" th:value="${name}">
+                  <!-- 각 리뷰마다 고유한 ID 생성 -->
                   <input type="hidden" id="review-id" th:value="${review.id}">
-                  <button type="submit" class="review-action-btn btn-edit" id="btn-review-edit">수정</button>
-                  <button id="btn-review-delete" class="review-action-btn btn-delete">삭제</button>
+                  <!-- 각 버튼마다 고유한 ID 생성하고, data-review-id 속성 추가 -->
+                  <button type="button" class="review-action-btn btn-edit" th:id="'btn-review-edit-' + ${reviewStat.index}" th:data-review-id="${review.id}">수정</button>
+                  <button type="button" class="review-action-btn btn-delete" id="btn-review-delete" th:data-review-id="${review.id}">삭제</button>
                 </div>
               </div>
             </div>
           </div>
-<!--        </div>-->
-
-          <!-- Sample Review 2 -->
-<!--          <div class="review-item">-->
-<!--            <div class="review-user">-->
-<!--              <div class="user-profile">-->
-<!--                <div class="profile-img">L</div>-->
-<!--                <div class="user-name">이영희</div>-->
-<!--                <div class="user-location">부산</div>-->
-<!--                <div class="user-stats">-->
-<!--                  <span><i class="fas fa-star"></i> 12 리뷰</span>-->
-<!--                  <span><i class="fas fa-camera"></i> 3 사진</span>-->
-<!--                </div>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="review-content-wrapper">-->
-<!--              <div class="review-rating">-->
-<!--                <div class="stars">-->
-<!--                  <i class="fas fa-star"></i>-->
-<!--                  <i class="fas fa-star"></i>-->
-<!--                  <i class="fas fa-star"></i>-->
-<!--                  <i class="fas fa-star"></i>-->
-<!--                  <i class="far fa-star"></i>-->
-<!--                </div>-->
-<!--                <span class="review-date">2023-04-20</span>-->
-<!--              </div>-->
-<!--              <div class="review-text">-->
-<!--                음식은 맛있었지만 가격이 조금 비싼 편입니다. 분위기는 좋고 직원들도 친절했습니다. 주차 공간이 충분해서 좋았어요.-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+        </div>
 
         <!-- Review Form -->
         <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">

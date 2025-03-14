@@ -12,12 +12,14 @@ import CrudPractice.demo.service.RestBestFoodService;
 import CrudPractice.demo.service.ReviewsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -46,8 +48,7 @@ public class ReviewHandler {
 
         if (reviewsDto.getRestNm().contains("휴게소")) {
             reviewsEntity.setRestInfoEntity(restBestFoodService.getInfoFromDb(reviewsDto.getRestNm()));
-        }
-        else {
+        } else {
             reviewsEntity.setApiListEntity(apiSearchService.findByName(reviewsDto.getRestNm()).get());
         }
 
@@ -58,10 +59,18 @@ public class ReviewHandler {
 
     // DELETE
     @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity delete(@PathVariable("reviewId") Long id) {
+    public ResponseEntity<Long> delete(@PathVariable("reviewId") Long id) {
         reviewsService.deleteReview(id);
         return ResponseEntity.ok(id);
     }
 
+    @PutMapping("/modify/{review}")
+    public ResponseEntity modify(@RequestBody ReviewsDto dto) {
+        boolean isUpdated = reviewsService.updateReview(dto);
+        if (isUpdated) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
 }

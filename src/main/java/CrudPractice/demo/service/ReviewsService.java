@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReviewsService{
@@ -63,6 +64,12 @@ public class ReviewsService{
         return reviewByNameAndTime;
     }
 
+    public Optional<ReviewsEntity> getReviewById(Long id) {
+        Optional<ReviewsEntity> byId = reviewsRepository.findById(id);
+        return byId;
+
+    }
+
     public void removeReview(ReviewsDto reviewsDto) {
         ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
         reviewsRepository.delete(reviewByNameAndCreatedAt);
@@ -73,10 +80,13 @@ public class ReviewsService{
     }
 
     @Transactional
-    public void updateReview(ReviewsDto reviewsDto) {
-        ReviewsEntity reviewByNameAndCreatedAt = getReviewByNameAndCreatedAt(reviewsDto.getName(), reviewsDto.getCreatedAt());
-
-        reviewByNameAndCreatedAt.updateReview(reviewsDto.getContent(), reviewsDto.getRating());
+    public boolean updateReview(ReviewsDto reviewsDto) {
+        return getReviewById(reviewsDto.getId())
+                .map(review -> {
+                    review.updateReview(reviewsDto.getContent(), reviewsDto.getRating());
+                    return true;
+                })
+                .orElse(false);
     }
 
     public List<ReviewsDto> findByApiList(ApiListDto dto) {

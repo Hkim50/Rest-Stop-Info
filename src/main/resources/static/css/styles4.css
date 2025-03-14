@@ -763,3 +763,94 @@
             justify-content: center;
         }
     }
+    /* Yelp 스타일 리뷰 액션 버튼 */
+    .review-footer {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        margin-top: 16px;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .review-actions form {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Yelp 스타일 액션 버튼 */
+    .review-action-btn {
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    /* 수정 버튼 - Yelp 스타일 */
+    .btn-edit {
+        background-color: white;
+        color: #666;
+        border: 1px solid #ccc;
+    }
+
+    .btn-edit:hover {
+        background-color: #f8f8f8;
+        color: #333;
+    }
+
+    .btn-edit::before {
+        content: "\f044"; /* Font Awesome 수정 아이콘 */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900; /* 아이콘이 제대로 표시되도록 font-weight 추가 */
+        margin-right: 6px;
+        font-size: 14px;
+    }
+
+    /* 삭제 버튼 - Yelp 스타일 */
+    .btn-delete {
+        background-color: white;
+        color: #666;
+        border: 1px solid #ccc;
+    }
+
+    .btn-delete:hover {
+        background-color: #f8f8f8;
+        color: #d32323;
+    }
+
+    .btn-delete::before {
+        content: "\f2ed"; /* Font Awesome 휴지통 아이콘 */
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900; /* 아이콘이 제대로 표시되도록 font-weight 추가 */
+        margin-right: 6px;
+        font-size: 14px;
+    }
+
+    /* 반응형 스타일 */
+    @media (max-width: 576px) {
+        .review-actions {
+            flex-direction: row;
+            width: 100%;
+        }
+
+        .review-action-btn {
+            flex: 1;
+            justify-content: center;
+        }
+    }
+
+    /* 버튼 클릭 효과 */
+    .review-action-btn:active {
+        transform: translateY(1px);
+    }
