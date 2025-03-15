@@ -57,6 +57,7 @@ public class ReviewsEntity {
     public void updateReview(String content, int rating) {
         this.content = content;
         this.rating = rating;
+        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
     public void setUser(UserEntity user) {

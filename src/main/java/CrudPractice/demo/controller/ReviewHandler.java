@@ -64,8 +64,9 @@ public class ReviewHandler {
         return ResponseEntity.ok(id);
     }
 
-    @PutMapping("/modify/{review}")
+    @PutMapping("/modify")
     public ResponseEntity modify(@RequestBody ReviewsDto dto) {
+        System.out.println(dto.getId());
         boolean isUpdated = reviewsService.updateReview(dto);
         if (isUpdated) {
             return ResponseEntity.ok(true);

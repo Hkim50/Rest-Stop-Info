@@ -6,6 +6,68 @@
     <title>휴게소 추천 메뉴 & 리뷰 - FoodFinder</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/styles3.css}">
+    <style>
+        /* 인라인 수정 폼 스타일 */
+        .review-edit-form {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+            border: 1px solid #e6e6e6;
+        }
+
+        .edit-rating-select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            width: 200px;
+        }
+
+        .edit-review-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background-color: #41a700;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-save:hover {
+            background-color: #378900;
+        }
+
+        .btn-cancel {
+            background-color: #f5f5f5;
+            color: #666;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn-cancel:hover {
+            background-color: #e6e6e6;
+        }
+    </style>
 </head>
 <body>
 <header>
@@ -123,6 +185,7 @@
                             </div>
                         </div>
                         <div class="review-content-wrapper">
+                            <!-- 리뷰 내용 표시 영역 -->
                             <div class="review-rating">
                                 <div class="stars">
                                     <span th:each="i : ${#numbers.sequence(1, review.rating > 5 ? 5 : review.rating)}">★</span>
@@ -138,8 +201,28 @@
                                     <input type="hidden" name="content" th:value="${review.content}">
                                     <input type="hidden" name="name" th:value="${name}">
                                     <input type="hidden" id="review-id" th:value="${review.id}">
-                                    <button type="submit" class="review-action-btn btn-edit" id="btn-review-edit">수정</button>
-                                    <button id="btn-review-delete" class="review-action-btn btn-delete">삭제</button>
+                                    <button type="button" class="review-action-btn btn-edit" id="btn-review-edit">수정</button>
+                                    <button type="button" class="review-action-btn btn-delete" id="btn-review-delete">삭제</button>
+                                </div>
+                            </div>
+
+                            <!-- 리뷰 수정 폼 -->
+                            <div class="review-edit-form">
+                                <div class="rating-input">
+                                    <label class="rating-label">별점:</label>
+                                    <select class="edit-rating-select" id="edit-rating">
+                                        <option value="1" th:selected="${review.rating == 1}">★☆☆☆☆ (1점)</option>
+                                        <option value="2" th:selected="${review.rating == 2}">★★☆☆☆ (2점)</option>
+                                        <option value="3" th:selected="${review.rating == 3}">★★★☆☆ (3점)</option>
+                                        <option value="4" th:selected="${review.rating == 4}">★★★★☆ (4점)</option>
+                                        <option value="5" th:selected="${review.rating == 5}">★★★★★ (5점)</option>
+                                    </select>
+                                </div>
+                                <textarea class="edit-review-textarea" id="edit-content" th:text="${review.content}"></textarea>
+                                <input type="hidden" id="review-id2" th:value="${review.id}">
+                                <div class="edit-actions">
+                                    <button type="button" class="btn-save" id="btn-review-update">수정 완료</button>
+                                    <button type="button" class="btn-cancel" id="btn-review-cancel">취소</button>
                                 </div>
                             </div>
                         </div>
