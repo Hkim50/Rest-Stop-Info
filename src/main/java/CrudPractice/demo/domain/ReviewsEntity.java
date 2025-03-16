@@ -29,7 +29,12 @@ public class ReviewsEntity {
     private Timestamp createdAt;
 
     private String name;
+
     private int rating;
+
+    private String fileName;
+
+    private String filePath;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -51,6 +56,8 @@ public class ReviewsEntity {
                 .name(this.name)
                 .rating(this.rating)
                 .userEntity(this.user)
+                .fileName(this.fileName)
+                .filePath(this.filePath)
                 .build();
     }
 

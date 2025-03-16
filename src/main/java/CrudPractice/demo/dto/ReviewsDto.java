@@ -21,6 +21,8 @@ public class ReviewsDto {
     private String restNm;
     private String name;
     private int rating;
+    private String fileName;
+    private String filePath;
     private UserEntity userEntity;
 
     public ReviewsEntity toEntity() {
@@ -30,6 +32,8 @@ public class ReviewsDto {
                 .name(this.name)
                 .rating(this.rating)
                 .user(this.userEntity)
+                .fileName(this.fileName)
+                .filePath(this.filePath)
                 .build();
     }
 }

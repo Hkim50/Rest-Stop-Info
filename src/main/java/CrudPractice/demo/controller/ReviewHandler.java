@@ -17,9 +17,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -39,10 +43,24 @@ public class ReviewHandler {
 
     // CREATE
     @PostMapping("/save")
-    public ResponseEntity<ReviewsEntity> save(@RequestBody ReviewsDto reviewsDto) {
+    public ResponseEntity<ReviewsEntity> save(@ModelAttribute ReviewsDto reviewsDto,
+                                              @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+
+        if (image != null && !image.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid + "_" + image.getOriginalFilename();
+
+            File saveFile = new File(projectPath, fileName);
+            image.transferTo(saveFile);
+
+            reviewsDto.setFileName(fileName);
+            reviewsDto.setFilePath("/files/" + fileName);
+        }
+
 
         ReviewsEntity reviewsEntity = reviewsService.addUserInReview(reviewsDto, byName);
 

@@ -187,6 +187,12 @@
                 <span class="review-date" th:text="${#dates.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
               </div>
               <div class="review-text" th:text="${review.content}"></div>
+
+              <!-- 리뷰 이미지 표시 (있는 경우에만) -->
+              <div class="review-image-container" th:if="${review.fileName != null && review.filePath != null}">
+                <img th:src="${review.filePath}" alt="리뷰 이미지" class="review-image">
+              </div>
+
               <div class="review-footer" th:if="${name == review.userEntity}">
                 <div class="review-actions">
                   <input type="hidden" name="rating" th:value="${review.rating}">
@@ -213,6 +219,34 @@
                     <option value="5" th:selected="${review.rating == 5}">★★★★★ (5점)</option>
                   </select>
                 </div>
+
+
+                <!-- 이미지 업로드 필드 추가 -->
+                <div class="edit-image-upload">
+                  <!-- 기존 이미지가 있으면 표시 -->
+                  <div class="current-image-container" th:if="${review.fileName != null && review.filePath != null}">
+                    <p class="current-image-label">현재 이미지:</p>
+                    <div class="current-image-wrapper">
+                      <img th:src="${review.filePath}" alt="현재 리뷰 이미지" class="current-image">
+                      <button type="button" class="delete-image-btn" id="delete-current-image">
+                        <i class="fas fa-trash"></i> 이미지 삭제
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- 이미지 변경 필드 -->
+                  <div class="image-change-container">
+                    <label for="edit-image" class="image-upload-label">
+                      <i class="fas fa-camera"></i>
+                      <span th:text="${review.fileName != null ? '이미지 변경' : '이미지 추가'}">이미지 추가</span>
+                    </label>
+                    <input type="file" id="edit-image" class="image-upload-input" accept="image/*">
+                    <div id="edit-image-preview-container" class="image-preview-container"></div>
+                    <input type="hidden" id="delete-image-flag" value="false">
+                  </div>
+                </div>
+
+
                 <textarea class="edit-review-textarea" id="edit-content" th:text="${review.content}"></textarea>
                 <input type="hidden" id="review-id2" th:value="${review.id}">
                 <div class="edit-actions">
@@ -225,7 +259,7 @@
           </div>
         </div>
 
-        <!-- Review Form -->
+        <!-- 리뷰작성 폼 -->
         <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">
           <h3 class="form-title">리뷰 작성</h3>
             <div class="rating-input">
@@ -239,6 +273,17 @@
               </select>
             </div>
             <textarea id="review-content" class="review-textarea" placeholder="이 식당에 대한 솔직한 리뷰를 작성해주세요..."></textarea>
+
+          <!-- 사진 업로드 영역 추가 -->
+          <div class="review-image-upload">
+            <label for="review-image" class="image-upload-label">
+              <i class="fas fa-camera"></i>
+              <span>사진 추가</span>
+            </label>
+            <input type="file" id="review-image" class="image-upload-input" accept="image/*">
+            <div id="image-preview-container" class="image-preview-container"></div>
+          </div>
+
             <input type="hidden" id="restNm" th:value="${restaurant.title}">
             <button id="btn-review-submit" class="review-submit">리뷰 등록</button>
         </div>
