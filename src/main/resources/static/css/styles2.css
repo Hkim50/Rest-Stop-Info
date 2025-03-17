@@ -816,22 +816,22 @@ footer {
      padding: 0 20px;
  }
 
- /* Button Styles */
- .btn-primary {
-     display: inline-block;
-     background-color: #d32323;
-     color: white;
-     padding: 10px 16px;
-     border-radius: 4px;
-     font-weight: bold;
-     border: none;
-     cursor: pointer;
-     transition: background-color 0.3s;
- }
+/* Button Styles */
+.btn-primary {
+    display: inline-block;
+    background-color: #d32323;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
 
- .btn-primary:hover {
-     background-color: #e02424;
- }
+.btn-primary:hover {
+    background-color: #e02424;
+}
 
  .btn-secondary {
      display: inline-block;
@@ -1676,6 +1676,21 @@ footer {
         min-width: 100px;
     }
 }
+.btn-primary2 {
+    display: inline-block;
+    background-color: transparent;
+    color: #333;
+    padding: 10px 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    border-radius: 0;
+}
 
+.btn-primary2:hover {
+    background-color: transparent;
+    color: #d32323;
+}
 
 

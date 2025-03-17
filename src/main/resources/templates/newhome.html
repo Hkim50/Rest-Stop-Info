@@ -6,7 +6,6 @@
     <title>핫플 - 주변의 핫플</title>
     <link rel="stylesheet" th:href="@{/css/styles2.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 </head>
 <body>
 <header>
@@ -20,9 +19,9 @@
                 <a href="#" class="nav-link">Services</a>
                 <a href="#" class="nav-link">About</a>
                 <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
-                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary">Sign Up</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">Sign Up</a>
                 <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info" >내정보</a>
-                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary">로그아웃</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
             </div>
             <div class="menu-toggle">
                 <i class="fas fa-bars"></i>
@@ -56,7 +55,7 @@
                     <div id="search-restaurant" class="search-box">
                         <form action="/api/find" method="get">
                             <input name="name" type="text" placeholder="일반 음식점 입력" autocomplete="off">
-                            <button id="btn-search-restaurant" type="submit" class="search-btn">검삭</button>
+                            <button id="btn-search-restaurant" type="submit" class="search-btn">검색</button>
                         </form>
                     </div>
 

@@ -1102,3 +1102,19 @@
  .remove-preview-button:hover {
    background-color: rgba(0, 0, 0, 0.7);
 }
+.btn-primary2 {
+    display: inline-block;
+    background-color: transparent;
+    color: #333;
+    padding: 10px 16px;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    border-radius: 0;
+}
+
+.btn-primary2:hover {
+    background-color: transparent;
+    color: #d32323;
+}
