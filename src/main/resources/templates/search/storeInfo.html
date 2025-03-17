@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
+<!--  <meta name="_csrf" content="${_csrf.token}"/>-->
+  <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
+  <meta name="_csrf" data-th-content="${_csrf.token}" />
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title th:text="${restaurant.title} + ' - 핫플'">식당 상세 - 핫플</title>

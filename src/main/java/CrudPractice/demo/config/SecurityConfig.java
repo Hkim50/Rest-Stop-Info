@@ -19,7 +19,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
+//                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**","/", "/register", "/login", "/files/**").permitAll()
 //                        .requestMatchers("/", "/register", "/login", "/find", "/api/find", "/api/**").permitAll()  // 로그인 & 회원가입은 누구나 가능
@@ -41,6 +41,16 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")  // 로그아웃 후 이동할 페이지
                         .permitAll()
                 );
+
+        http
+                .sessionManagement((auth) -> auth
+                        .maximumSessions(1)
+                        // 초과시 기존 세션 하나 삭제
+                        .maxSessionsPreventsLogin(false));
+        http
+                .sessionManagement((auth) -> auth
+                        .sessionFixation().changeSessionId());
+
 
         return http.build();
     }

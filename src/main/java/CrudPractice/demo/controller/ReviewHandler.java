@@ -83,7 +83,8 @@ public class ReviewHandler {
     }
 
     @PutMapping("/modify")
-    public ResponseEntity modify(@RequestBody ReviewsDto dto) {
+    public ResponseEntity modify(@ModelAttribute ReviewsDto dto,
+                                 @RequestParam(value = "image", required = false) MultipartFile image) {
         System.out.println(dto.getId());
         boolean isUpdated = reviewsService.updateReview(dto);
         if (isUpdated) {

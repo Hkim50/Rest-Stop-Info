@@ -66,9 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('image', imageElement.files[0]);
         }
 
+    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         fetch('/api/save', {
             method: 'POST',
-            body: formData // JSON 대신 FormData 사용
+            headers: {
+                [csrfHeader]: csrfToken // CSRF 토큰을 'X-CSRF-TOKEN'으로 설정
+            },
+            body: formData
         })
         .then(response => {
             if (!response.ok) {
@@ -92,10 +98,13 @@ document.addEventListener("DOMContentLoaded", function () {
             return;  // 사용자가 취소를 클릭하면 삭제하지 않음
         }
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         fetch(`/api/delete/${reviewId}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                [csrfHeader]: csrfToken // CSRF 토큰을 'X-CSRF-TOKEN'으로 설정
             },
         })
         .then(response => {
@@ -142,8 +151,14 @@ document.addEventListener("DOMContentLoaded", function () {
             formData.append('image', editImageInput.files[0]);
         }
 
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
         fetch(`/api/modify`, {
             method: 'PUT',
+            headers: {
+                [csrfHeader]: csrfToken // CSRF 토큰을 'X-CSRF-TOKEN'으로 설정
+            },
             body: formData // JSON 대신 FormData 사용
         })
         .then(response => {
