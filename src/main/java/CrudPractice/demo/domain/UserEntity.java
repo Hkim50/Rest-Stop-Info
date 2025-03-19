@@ -25,12 +25,24 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private String providerId;
+
     public UserEntity(String email, String password, String name) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = Role.USER;
     }
+
+    // overloading
+    public UserEntity(String email, String password, String name, String providerId) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.role = Role.USER;
+        this.providerId = providerId;
+    }
+
 
     public UserDto toDto() {
         return UserDto.builder()

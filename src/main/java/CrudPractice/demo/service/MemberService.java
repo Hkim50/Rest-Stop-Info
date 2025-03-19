@@ -26,6 +26,12 @@ public class MemberService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("가입된 계정이 없습니다: " + email);
         }
+
+        // check if user trying to log in with Oauth2 info
+        if (user.getProviderId() != null) {
+            throw new RuntimeException("OAuth2 회원입니다. 소셜 로그인을 사용해주세요.");
+        }
+
         return new PrincipalDetails(user);
     }
 

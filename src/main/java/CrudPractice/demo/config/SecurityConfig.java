@@ -1,5 +1,6 @@
 package CrudPractice.demo.config;
 
+import CrudPractice.demo.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +39,14 @@ public class SecurityConfig {
                         .passwordParameter("password")
                         .permitAll()
                 )
+
+                .oauth2Login((oauth2) -> oauth2
+                        .loginPage("/login") // 구글 로그인도 동일한 로그인 페이지 사용
+                        .defaultSuccessUrl("/") // 성공 후 이동
+                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService))
+                )
+
                 .logout((logout) -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/")  // 로그아웃 후 이동할 페이지
