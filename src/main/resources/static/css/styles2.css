@@ -502,54 +502,6 @@ footer {
     text-align: center;
 }
 
-.social-login {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
-}
-
-.social-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    background-color: white;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.social-btn i {
-    margin-right: 10px;
-}
-
-.social-btn.google:hover {
-    background-color: #f8f8f8;
-}
-
-.social-btn.facebook {
-    background-color: #1877f2;
-    color: white;
-    border: none;
-}
-
-.social-btn.facebook:hover {
-    background-color: #166fe5;
-}
-
-.social-btn.apple {
-    background-color: black;
-    color: white;
-    border: none;
-}
-
-.social-btn.apple:hover {
-    background-color: #333;
-}
-
 .divider {
     position: relative;
     text-align: center;
@@ -1323,30 +1275,6 @@ footer {
      margin-right: 10px;
  }
 
- .social-btn.google:hover {
-     background-color: #f8f8f8;
- }
-
- .social-btn.facebook {
-     background-color: #1877f2;
-     color: white;
-     border: none;
- }
-
- .social-btn.facebook:hover {
-     background-color: #166fe5;
- }
-
- .social-btn.apple {
-     background-color: black;
-     color: white;
-     border: none;
- }
-
- .social-btn.apple:hover {
-     background-color: #333;
- }
-
  .divider {
      position: relative;
      text-align: center;
@@ -1691,6 +1619,99 @@ footer {
 .btn-primary2:hover {
     background-color: transparent;
     color: #d32323;
+}
+
+.social-login {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.social-btn i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Google button */
+.social-btn.google {
+    background-color: white;
+    color: #444;
+    border: 1px solid #ddd;
+}
+
+.social-btn.google:hover {
+    background-color: #f8f8f8;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.social-btn.google i {
+    color: #4285F4;
+}
+
+/* GitHub button */
+.social-btn.github {
+    background-color: #24292e;
+    color: white;
+    border: none;
+}
+
+.social-btn.github:hover {
+    background-color: #2f363d;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.social-btn.github i {
+    color: white;
+}
+
+/* Naver button */
+.social-btn.naver {
+    background-color: #03C75A;
+    color: white;
+    border: none;
+}
+
+.social-btn.naver:hover {
+    background-color: #02b350;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.social-btn.naver i {
+    color: white;
+}
+
+.social-btn.naver i::before {
+    content: "N";
+    font-weight: bold;
+    font-style: normal;
+    font-family: Arial, sans-serif;
+}
+
+@media (max-width: 576px) {
+    .social-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .social-btn i {
+        font-size: 16px;
+    }
 }
 
 
