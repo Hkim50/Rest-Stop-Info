@@ -461,7 +461,7 @@
 <section class="search-results-header">
   <div class="container">
     <h1 class="search-results-title">검색 결과</h1>
-    <p class="search-results-count" th:text="${size} + '개의 결과가 있습니다'">10개의 결과가 있습니다</p>
+    <p class="search-results-count" th:text="${size} + '개의 결과가 있습니다'">0개의 결과가 있습니다</p>
   </div>
 </section>
 
@@ -478,24 +478,18 @@
       </div>
 
       <!-- Restaurant Card (Repeated for each result) -->
-      <div class="restaurant-card" th:each="restaurant : ${restaurants}">
+      <div class="restaurant-card" th:each="restaurant, iterStat : ${restaurants}">
         <div class="restaurant-card-content">
           <div class="restaurant-card-image">
-            <img src="https://placehold.co/400x400" alt="Restaurant Image">
+            <img th:src="${restaurant.filePath}" alt="Restaurant Image">
           </div>
           <div class="restaurant-card-info">
             <h2 class="restaurant-card-title">
               <a th:href="@{/api/{title}(title=${restaurant.title})}" th:text="${restaurant.title}">식당 이름</a>
             </h2>
             <div class="restaurant-card-rating">
-              <div class="restaurant-card-stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
-              </div>
-              <span class="restaurant-card-review-count">254 reviews</span>
+              <span class="restaurant-card-review-count"
+                    th:text="'총 ' + ${numReviews[iterStat.index]} + '개의 리뷰'"></span>
             </div>
             <div class="restaurant-card-categories">
               <span class="restaurant-card-category" th:text="${restaurant.category}">카테고리</span>
@@ -505,29 +499,10 @@
               <i class="fas fa-map-marker-alt"></i>
               <span th:text="${restaurant.address}">주소</span>
             </div>
-            <div class="restaurant-card-phone">
-              <i class="fas fa-phone"></i>
-              <span th:text="${restaurant.telephone}">전화번호</span>
-            </div>
-            <div class="restaurant-card-description" th:text="${restaurant.description}">
-              식당 설명이 여기에 표시됩니다.
-            </div>
             <div class="restaurant-card-actions">
               <a th:href="${restaurant.link}" class="restaurant-card-action">
                 <i class="fas fa-external-link-alt"></i>
                 <span>자세히 보기</span>
-              </a>
-              <a href="#" class="restaurant-card-action" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">
-                <i class="fas fa-directions"></i>
-                <span>길찾기</span>
-              </a>
-              <a href="#" class="restaurant-card-action">
-                <i class="fas fa-bookmark"></i>
-                <span>저장</span>
-              </a>
-              <a href="#" class="restaurant-card-action">
-                <i class="fas fa-share-alt"></i>
-                <span>공유</span>
               </a>
             </div>
           </div>

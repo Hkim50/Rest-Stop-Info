@@ -1,5 +1,6 @@
 package CrudPractice.demo.service;
 
+import CrudPractice.demo.domain.ApiListEntity;
 import CrudPractice.demo.domain.RestInfoEntity;
 import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
@@ -97,6 +98,40 @@ public class ReviewsService{
                 .toList();
 
     }
+
+    public List<String> getPhotos(List<ReviewsDto> dto) {
+        List<String> photos = new ArrayList<>();
+
+        for (ReviewsDto reviewsDto : dto) {
+            if (reviewsDto.getFilePath() != null) {
+                photos.add(reviewsDto.getFilePath());
+            }
+        }
+        return photos;
+    }
+
+    public List<ApiListDto> getProfPhoto(List<ApiListEntity> list) {
+        List<ApiListDto> dtoList = new ArrayList<>();
+
+//        list.stream().forEach(f -> {
+//            dtoList.add(f.toDto());
+//        });
+
+        for (ApiListEntity entity: list) {
+            Optional<ReviewsEntity> firstByFilePathIsNotNullAndApiListEntity = reviewsRepository.findFirstByFilePathIsNotNullAndApiListEntity(entity);
+            ApiListDto dto = entity.toDto();
+            if (firstByFilePathIsNotNullAndApiListEntity.isPresent()) {
+                dto.setFilePath(firstByFilePathIsNotNullAndApiListEntity.get().getFilePath());
+            }
+            else {
+                dto.setFilePath("https://placehold.co/400x300");
+            }
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+    }
+
 
 
 

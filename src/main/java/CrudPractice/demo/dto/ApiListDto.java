@@ -37,6 +37,8 @@ public class ApiListDto {
     @JsonProperty("mapy")
     private String mapy;
 
+    private String filePath;
+
     public ApiListEntity toEntity() {
         return ApiListEntity.builder()
                 .id(this.id)

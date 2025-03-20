@@ -40,9 +40,18 @@ public class UserInfoController {
 
         List<ReviewsDto> reviews = reviewsService.getReviewByUser(byName);
 
+        double avg = 0.0;
+
+        for (ReviewsDto review : reviews) {
+            avg += review.getRating();
+        }
+        avg = avg / reviews.size();
+        avg = Math.round(avg * 100.0) / 100.0;
+
+        model.addAttribute("avg", avg);
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userDto);
 
-        return "info";
+        return "userInfo";
     }
 }

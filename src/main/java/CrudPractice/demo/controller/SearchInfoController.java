@@ -53,10 +53,16 @@ public class SearchInfoController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
 
+        List<String> photos = reviewsService.getPhotos(reviewsByInfo);
+        boolean hasImages = photos.size() > 0;
+
         model.addAttribute("lists", restInfoDto.getList());
         model.addAttribute("restName", storeFormDto.getName());
         model.addAttribute("reviews", reviewsByInfo);
         model.addAttribute("name", byName);
+        model.addAttribute("hasImages", hasImages);
+        model.addAttribute("photos", photos);
+
         return "search/restInfo";
     }
 

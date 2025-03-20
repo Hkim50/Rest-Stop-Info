@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,6 +54,18 @@ public class ApiSearchService {
         Optional<ApiListEntity> listEntity = apiListRepository.findByTitle(name);
 
         return listEntity;
+    }
+
+    public List<ApiListEntity> findByName(List<ApiListDto> list) {
+//        Optional<ApiListEntity> listEntity = apiListRepository.findByTitle(name);
+        List<ApiListEntity> newList = new ArrayList<>();
+
+        list.stream().forEach(f -> {
+            Optional<ApiListEntity> byTitle = apiListRepository.findByTitle(f.getTitle());
+            newList.add(byTitle.get());
+        });
+
+        return newList;
     }
 
     private List<ApiListDto> removeExc(List<ApiListDto> dto) {

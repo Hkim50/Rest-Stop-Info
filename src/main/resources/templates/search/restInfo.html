@@ -71,6 +71,91 @@
         .btn-cancel:hover {
             background-color: #e6e6e6;
         }
+
+        /* 포토 갤러리 스타일 수정 - 기존 스타일 덮어쓰기 */
+.photo-gallery {
+  position: relative;
+  margin-bottom: 32px;
+  overflow: hidden;
+  height: 500px;
+  width: 100%;
+  display: block; /* grid에서 block으로 변경 */
+}
+
+/* 갤러리 그리드 스타일 */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  height: 100%;
+  width: 100%;
+}
+
+/* 첫 번째 이미지는 크게 표시 */
+.gallery-item:first-child {
+  grid-row: span 2;
+}
+
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* 이미지 호버 효과 */
+.gallery-item:hover .gallery-img {
+  transform: scale(1.05);
+}
+
+/* 반응형 스타일 */
+@media (max-width: 992px) {
+  .photo-gallery {
+    height: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .photo-gallery {
+    height: 400px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
+  }
+
+  .gallery-item:first-child {
+    grid-column: span 2;
+    grid-row: 1;
+  }
+}
+
+@media (max-width: 576px) {
+  .photo-gallery {
+    height: 350px;
+  }
+
+  .gallery-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+  }
+
+  .gallery-item:not(:first-child) {
+    display: none;
+  }
+
+  .gallery-item:first-child {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}
     </style>
 </head>
 <body>
@@ -133,10 +218,42 @@
     </div>
 </section>
 
+<!-- Photo Gallery -->
 <div class="photo-gallery">
-    <img src="https://github.com/user-attachments/assets/d0e4bd40-5212-4438-a7f5-fc673a96eb1d" alt="Restaurant Photo" class="gallery-img">
-    <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
-    <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+    <!-- 이미지가 있을 때 -->
+    <div th:if="${hasImages}" class="gallery-grid">
+        <!-- 첫 번째 이미지 (항상 표시) -->
+        <div class="gallery-item main-image">
+            <img th:if="${photos.size() > 0}" th:src="${photos[0]}" alt="리뷰 이미지" class="gallery-img">
+            <img th:unless="${photos.size() > 0}" src="https://placehold.co/800x600" alt="기본 이미지" class="gallery-img">
+        </div>
+
+        <!-- 두 번째 이미지 -->
+        <div class="gallery-item">
+            <img th:if="${photos.size() > 1}" th:src="${photos[1]}" alt="리뷰 이미지" class="gallery-img">
+            <img th:unless="${photos.size() > 1}" src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+        </div>
+
+        <!-- 세 번째 이미지 -->
+        <div class="gallery-item">
+            <img th:if="${photos.size() > 2}" th:src="${photos[2]}" alt="리뷰 이미지" class="gallery-img">
+            <img th:unless="${photos.size() > 2}" src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+        </div>
+    </div>
+
+    <!-- 이미지가 하나도 없을 때 -->
+    <div th:unless="${hasImages}" class="gallery-grid">
+        <!-- 기본 이미지 3개 표시 -->
+        <div class="gallery-item main-image">
+            <img src="https://placehold.co/800x600" alt="기본 이미지" class="gallery-img">
+        </div>
+        <div class="gallery-item">
+            <img src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+        </div>
+        <div class="gallery-item">
+            <img src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+        </div>
+    </div>
 </div>
 
 <!-- Main Content -->

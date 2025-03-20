@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,9 +48,23 @@ public class ApiSearchController {
             model.addAttribute("errorMessage", "음식점 이름을 다시 한번 확인해주세요.");
             return "/error/errorPage";
         }
+        List<Integer> numOfReviews = new ArrayList<>();
+
+        store.getItems().stream().forEach(f -> {
+            ApiListDto dto = apiSearchService.findByName(f.getTitle()).get().toDto();
+            numOfReviews.add(reviewsService.findByApiList(dto).size());
+        });
 
 
-        model.addAttribute("restaurants", store.getItems());
+
+        // resultList 가져올때 store 의 프로필 사진 가져와야함.
+        List<String> profPhotos = new ArrayList<>();
+        List<ApiListEntity> entity = apiSearchService.findByName(store.getItems());
+
+        List<ApiListDto> profPhoto = reviewsService.getProfPhoto(entity);
+
+        model.addAttribute("numReviews", numOfReviews);
+        model.addAttribute("restaurants", profPhoto);
         model.addAttribute("size", store.getTotal());
 
 
@@ -60,14 +75,22 @@ public class ApiSearchController {
     public String searchDetail(@PathVariable("title") String title, Model model) {
         ApiListDto dto =  apiSearchService.findByName(title).get().toDto();
         List<ReviewsDto> byApiList = reviewsService.findByApiList(dto);
+        List<String> photos = reviewsService.getPhotos(byApiList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
 
+        boolean hasImages = photos.size() > 0;
+
+
         model.addAttribute("name", byName);
         model.addAttribute("reviews", byApiList);
         model.addAttribute("restaurant", dto);
+        model.addAttribute("numReviews", byApiList.size());
+        model.addAttribute("hasImages", hasImages);
+        model.addAttribute("photos", photos);
+
         return "search/storeInfo";
     }
 }

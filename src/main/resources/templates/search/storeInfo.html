@@ -88,6 +88,9 @@
     background-color: transparent;
     color: #d32323;
 }
+
+
+
   </style>
 </head>
 <body>
@@ -128,7 +131,7 @@
             <i class="fas fa-star"></i>
             <i class="fas fa-star-half-alt"></i>
           </div>
-          <span class="review-count">254 reviews</span>
+          <span class="review-count" th:text="'총 ' + ${numReviews} +' 개의 리뷰'"></span>
         </div>
         <div class="price-category">
           <span class="price">₩₩</span>
@@ -152,9 +155,40 @@
 
 <!-- Photo Gallery -->
 <div class="photo-gallery">
-  <img src="https://placehold.co/800x600" alt="Restaurant Photo" class="gallery-img">
-  <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
-  <img src="https://placehold.co/400x300" alt="Restaurant Photo" class="gallery-img">
+  <!-- 이미지가 있을 때 -->
+  <div th:if="${hasImages}" class="gallery-grid">
+    <!-- 첫 번째 이미지 (항상 표시) -->
+    <div class="gallery-item main-image">
+      <img th:if="${photos.size() > 0}" th:src="${photos[0]}" alt="리뷰 이미지" class="gallery-img">
+      <img th:unless="${photos.size() > 0}" src="https://placehold.co/800x600" alt="기본 이미지" class="gallery-img">
+    </div>
+
+    <!-- 두 번째 이미지 -->
+    <div class="gallery-item">
+      <img th:if="${photos.size() > 1}" th:src="${photos[1]}" alt="리뷰 이미지" class="gallery-img">
+      <img th:unless="${photos.size() > 1}" src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+    </div>
+
+    <!-- 세 번째 이미지 -->
+    <div class="gallery-item">
+      <img th:if="${photos.size() > 2}" th:src="${photos[2]}" alt="리뷰 이미지" class="gallery-img">
+      <img th:unless="${photos.size() > 2}" src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+    </div>
+  </div>
+
+  <!-- 이미지가 하나도 없을 때 -->
+  <div th:unless="${hasImages}" class="gallery-grid">
+    <!-- 기본 이미지 3개 표시 -->
+    <div class="gallery-item main-image">
+      <img src="https://placehold.co/800x600" alt="기본 이미지" class="gallery-img">
+    </div>
+    <div class="gallery-item">
+      <img src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+    </div>
+    <div class="gallery-item">
+      <img src="https://placehold.co/400x300" alt="기본 이미지" class="gallery-img">
+    </div>
+  </div>
 </div>
 
 <!-- Main Content -->
@@ -163,12 +197,12 @@
     <!-- Left Column -->
     <div class="content-left">
       <!-- Description Section -->
-      <div class="section description-section">
-        <h2 class="section-title">소개</h2>
-        <div class="description-text" th:text="${restaurant.description}">
-          식당 설명이 여기에 표시됩니다. 이 식당은 맛있는 음식과 좋은 서비스로 유명합니다.
-        </div>
-      </div>
+<!--      <div class="section description-section">-->
+<!--        <h2 class="section-title">소개</h2>-->
+<!--        <div class="description-text" th:text="${restaurant.description}">-->
+<!--          식당 설명이 여기에 표시됩니다. 이 식당은 맛있는 음식과 좋은 서비스로 유명합니다.-->
+<!--        </div>-->
+<!--      </div>-->
 
       <!-- Reviews Section -->
       <div class="section">
@@ -193,10 +227,10 @@
                 <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
                 <div class="user-name" th:text="${review.name}"></div>
                 <div class="user-location" th:text="${review.id}"></div>
-                <div class="user-stats">
-                  <span><i class="fas fa-star"></i> 5 리뷰</span>
-                  <span><i class="fas fa-camera"></i> 0 사진</span>
-                </div>
+<!--                <div class="user-stats">-->
+<!--                  <span><i class="fas fa-star"></i> 5 리뷰</span>-->
+<!--                  <span><i class="fas fa-camera"></i> 0 사진</span>-->
+<!--                </div>-->
               </div>
             </div>
             <div class="review-content-wrapper">
@@ -320,13 +354,13 @@
     <!-- Right Column -->
     <div class="content-right">
       <!-- Map Section -->
-      <div class="map-section">
-        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">
-          <div class="map-placeholder">
-            <p>지도가 여기에 표시됩니다</p>
-          </div>
-        </div>
-      </div>
+<!--      <div class="map-section">-->
+<!--        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">-->
+<!--          <div class="map-placeholder">-->
+<!--            <p>지도가 여기에 표시됩니다</p>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <!-- Business Info -->
       <div class="section business-info">
