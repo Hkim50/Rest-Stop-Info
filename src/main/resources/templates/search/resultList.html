@@ -460,7 +460,7 @@
 <!-- Search Results Header -->
 <section class="search-results-header">
   <div class="container">
-    <h1 class="search-results-title">검색 결과</h1>
+    <h1 class="search-results-title" th:text="'\'' + ${searchInput} + '\'' + ' 검색 결과'">검색 결과</h1>
     <p class="search-results-count" th:text="${size} + '개의 결과가 있습니다'">0개의 결과가 있습니다</p>
   </div>
 </section>

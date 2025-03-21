@@ -49,16 +49,10 @@
         <div class="divider">
           <span>or</span>
         </div>
-        <form id="register-form" class="auth-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="first-name">First Name</label>
-              <input type="text" id="first-name" name="firstName" required>
-            </div>
-            <div class="form-group">
-              <label for="last-name">Last Name</label>
-              <input type="text" id="last-name" name="lastName" required>
-            </div>
+        <form id="register-form" class="auth-form" th:action="@{/register}" method="post">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
           </div>
           <div class="form-group">
             <label for="email">Email</label>
@@ -67,28 +61,6 @@
           <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            <div class="password-toggle">
-              <i class="far fa-eye"></i>
-            </div>
-            <div class="password-strength">
-              <div class="strength-meter">
-                <div class="strength-segment"></div>
-                <div class="strength-segment"></div>
-                <div class="strength-segment"></div>
-                <div class="strength-segment"></div>
-              </div>
-              <span class="strength-text">Password strength</span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="zip">ZIP Code</label>
-            <input type="text" id="zip" name="zip" required>
-          </div>
-          <div class="form-options">
-            <div class="terms-checkbox">
-              <input type="checkbox" id="terms" name="terms" required>
-              <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-            </div>
           </div>
           <button type="submit" class="btn-primary btn-block">Sign Up</button>
         </form>

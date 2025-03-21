@@ -48,14 +48,14 @@ public class ApiSearchController {
             model.addAttribute("errorMessage", "음식점 이름을 다시 한번 확인해주세요.");
             return "/error/errorPage";
         }
+
+        // 스팟에 리뷰 갯수 가져오기
         List<Integer> numOfReviews = new ArrayList<>();
 
         store.getItems().stream().forEach(f -> {
             ApiListDto dto = apiSearchService.findByName(f.getTitle()).get().toDto();
             numOfReviews.add(reviewsService.findByApiList(dto).size());
         });
-
-
 
         // resultList 가져올때 store 의 프로필 사진 가져와야함.
         List<String> profPhotos = new ArrayList<>();
@@ -66,6 +66,7 @@ public class ApiSearchController {
         model.addAttribute("numReviews", numOfReviews);
         model.addAttribute("restaurants", profPhoto);
         model.addAttribute("size", store.getTotal());
+        model.addAttribute("searchInput", storeFormDto.getName());
 
 
         return "search/resultList";

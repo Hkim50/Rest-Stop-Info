@@ -33,7 +33,7 @@
 <section class="hero">
     <div class="container">
         <div class="hero-content">
-            <h1>주변의 핫플레이스</h1>
+            <h1>주변의 스팟</h1>
             <!-- Replace the search container section in your HTML with this -->
             <div class="search-container">
                 <!-- Search options buttons -->
@@ -69,37 +69,49 @@
     <div class="container">
         <h2>카테고리 종류</h2>
         <div class="category-grid">
-            <a href="#" class="category-card">
-                <div class="category-img">
-                    <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurants">
-                </div>
-                <h3>한식</h3>
-            </a>
-            <a href="#" class="category-card">
-                <div class="category-img">
-                    <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Delivery">
-                </div>
-                <h3>일식</h3>
-            </a>
-            <a href="#" class="category-card">
-                <div class="category-img">
-                    <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Takeout">
-                </div>
-                <h3>베트남 음식</h3>
-            </a>
-            <a href="#" class="category-card">
-                <div class="category-img">
-                    <img src="https://github.com/user-attachments/assets/de37c96d-2169-4493-92b0-20639b0b5934" alt="Nightlife">
-                </div>
-                <h3>양식</h3>
-            </a>
+            <form action="/api/find" method="get" class="category-card">
+                <input type="hidden" name="name" value="한식">
+                <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                    <div class="category-img">
+                        <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurants">
+                    </div>
+                    <h3>한식</h3>
+                </button>
+            </form>
+            <form action="/api/find" method="get" class="category-card">
+                <input type="hidden" name="name" value="일식">
+                <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                    <div class="category-img">
+                        <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Delivery">
+                    </div>
+                    <h3>일식</h3>
+                </button>
+            </form>
+            <form action="/api/find" method="get" class="category-card">
+                <input type="hidden" name="name" value="동남아 음식">
+                <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                    <div class="category-img">
+                        <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Takeout">
+                    </div>
+                    <h3>동남아 음식</h3>
+                </button>
+            </form>
+            <form action="/api/find" method="get" class="category-card">
+                <input type="hidden" name="name" value="양식">
+                <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
+                    <div class="category-img">
+                        <img src="https://github.com/user-attachments/assets/de37c96d-2169-4493-92b0-20639b0b5934" alt="Nightlife">
+                    </div>
+                    <h3>양식</h3>
+                </button>
+            </form>
         </div>
     </div>
 </section>
 
 <section class="featured">
     <div class="container">
-        <h2>탑 핫플레이스</h2>
+        <h2>탑 스팟</h2>
         <div class="restaurant-grid">
             <div class="restaurant-card">
                 <div class="restaurant-img">

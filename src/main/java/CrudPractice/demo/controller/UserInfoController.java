@@ -52,6 +52,6 @@ public class UserInfoController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("user", userDto);
 
-        return "userInfo";
+        return "myInfo";
     }
 }
