@@ -15,6 +15,16 @@ import java.util.Optional;
 @Repository
 public interface ReviewsRepository extends JpaRepository<ReviewsEntity, Long> {
     List<ReviewsEntity> getReviewByRestInfoEntity(RestInfoEntity restInfoEntity);
+
+    // 리뷰 최신순 (휴게소)
+    List<ReviewsEntity> findAllByRestInfoEntityOrderByCreatedAtDesc(RestInfoEntity restInfoEntity);
+
+    // 별점 높은순 (휴게소)
+    List<ReviewsEntity> findAllByRestInfoEntityOrderByRatingDesc(RestInfoEntity restInfoEntity);
+
+    // 별점 낮은순 (휴게소)
+    List<ReviewsEntity> findAllByRestInfoEntityOrderByRatingAsc(RestInfoEntity restInfoEntity);
+
     List<ReviewsEntity> getReviewByUser(UserEntity user);
 
     ReviewsEntity getReviewByNameAndCreatedAt(String name, Timestamp timestamp);

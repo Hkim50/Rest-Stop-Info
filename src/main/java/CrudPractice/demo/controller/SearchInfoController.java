@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -38,7 +39,10 @@ public class SearchInfoController {
 //        return "/search/newList";
 //    }
     @GetMapping("/find")
-    public String find(StoreFormDto storeFormDto, Model model) {
+    public String find(StoreFormDto storeFormDto,
+                       @RequestParam(value = "sort", required = false, defaultValue = "latest") String sort,
+                       Model model) {
+
         RestInfoDto restInfoDto = restBestFoodService.getBestFoodList(storeFormDto.getName());
 
         if (storeFormDto.getName().equals("") || restInfoDto == null || restInfoDto.getList().size() == 0) {
@@ -47,7 +51,7 @@ public class SearchInfoController {
             return "/error/errorPage";
         }
 
-        List<ReviewsDto> reviewsByInfo = reviewsService.getReviewsByInfo(restBestFoodService.getInfoFromDb(storeFormDto.getName()));
+        List<ReviewsDto> reviewsByInfo = reviewsService.getReviews(restInfoDto.toEntity(), sort);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -62,6 +66,7 @@ public class SearchInfoController {
         model.addAttribute("name", byName);
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);
+        model.addAttribute("currentSort", sort);
 
         return "search/restInfo";
     }

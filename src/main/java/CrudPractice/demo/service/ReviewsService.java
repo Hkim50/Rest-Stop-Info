@@ -39,15 +39,29 @@ public class ReviewsService{
         return  reviewsRepository.save(reviewsEntity);
     }
 
-    public List<ReviewsDto> getReviewsByInfo(RestInfoEntity restInfoEntity) {
-        List<ReviewsEntity> reviewsByRestInfoEntity = reviewsRepository.getReviewByRestInfoEntity(restInfoEntity);
+    public List<ReviewsDto> getReviews(RestInfoEntity restInfoEntity, String sort) {
 
-        List<ReviewsDto> list = new ArrayList<>();
-        reviewsByRestInfoEntity.stream().forEach(f -> {
-            list.add(f.toDto());
-        });
-        return list;
+        List<ReviewsEntity> reviewsByRestInfoEntity;
+        if (sort.equals("latest")) {
+            reviewsByRestInfoEntity = reviewsRepository.findAllByRestInfoEntityOrderByCreatedAtDesc(restInfoEntity);
+        } else if (sort.equals("highRating")) {
+            reviewsByRestInfoEntity = reviewsRepository.findAllByRestInfoEntityOrderByRatingDesc(restInfoEntity);
+        } else{
+            reviewsByRestInfoEntity = reviewsRepository.findAllByRestInfoEntityOrderByRatingAsc(restInfoEntity);
+        }
+
+        return reviewsByRestInfoEntity.stream().map(ReviewsEntity::toDto)
+                .toList();
+
+//        List<ReviewsDto> list = new ArrayList<>();
+//        reviewsByRestInfoEntity.stream().forEach(f -> {
+//            list.add(f.toDto());
+//        });
+//        return list;
     }
+
+
+
 
     public List<ReviewsDto> getReviewByUser(UserEntity user) {
         List<ReviewsEntity> reviewByUserEntity = reviewsRepository.getReviewByUser(user);
@@ -98,29 +112,22 @@ public class ReviewsService{
                 .toList();
     }
 
-    public List<ReviewsDto> findByApiListOrderByCreatedAtDesc(ApiListDto dto) {
-        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByCreatedAtDesc(dto.toEntity());
+    public List<ReviewsDto> findByApiList(ApiListDto dto, String sort) {
+
+        List<ReviewsEntity> reviewByApiListEntity;
+        if (sort.equals("latest")) {
+            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByCreatedAtDesc(dto.toEntity());
+        } else if (sort.equals("highRating")) {
+            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingDesc(dto.toEntity());
+        } else{
+            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingAsc(dto.toEntity());
+        }
 
         return reviewByApiListEntity.stream()
                 .map(ReviewsEntity::toDto)
                 .toList();
     }
 
-    public List<ReviewsDto> findByApiListOrderByRatingDesc(ApiListDto dto) {
-        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingDesc(dto.toEntity());
-
-        return reviewByApiListEntity.stream()
-                .map(ReviewsEntity::toDto)
-                .toList();
-    }
-
-    public List<ReviewsDto> findByApiListOrderByRatingAsc(ApiListDto dto) {
-        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingAsc(dto.toEntity());
-
-        return reviewByApiListEntity.stream()
-                .map(ReviewsEntity::toDto)
-                .toList();
-    }
 
     public List<String> getPhotos(List<ReviewsDto> dto) {
         List<String> photos = new ArrayList<>();

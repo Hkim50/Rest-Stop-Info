@@ -82,14 +82,7 @@ public class ApiSearchController {
 
         ApiListDto dto = apiSearchService.findByName(title).get().toDto();
 
-        List<ReviewsDto> byApiList;
-        if (sort.equals("latest")) {
-            byApiList = reviewsService.findByApiListOrderByCreatedAtDesc(dto);
-        } else if (sort.equals("highRating")) {
-            byApiList = reviewsService.findByApiListOrderByRatingDesc(dto);
-        } else{
-            byApiList = reviewsService.findByApiListOrderByRatingAsc(dto);
-        }
+        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto, sort);
 
 //        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto);
         List<String> photos = reviewsService.getPhotos(byApiList);

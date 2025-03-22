@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClient;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestBestFoodService {
@@ -33,7 +34,7 @@ public class RestBestFoodService {
     public RestInfoDto getBestFoodList(String restName) {
 
         // If data already exist in database
-        if (repository.findByStdRestNm(restName).size() != 0) {
+        if (repository.findByStdRestNm(restName).isPresent()) {
             return getInfoFromDb(restName).toDto();
         }
 
@@ -57,8 +58,8 @@ public class RestBestFoodService {
     }
 
     public RestInfoEntity getInfoFromDb(String restName) {
-        List<RestListEntity> list = repository.findByStdRestNm(restName);
-        RestListEntity restListEntity1 = list.get(0);
+        List<RestListEntity> list = repository.findByStdRestNm(restName).get();
+        RestListEntity restListEntity1 = list.stream().findAny().get();
         RestInfoEntity restInfoEntity = restListEntity1.getRestInfoEntity();
 
         return restInfoEntity;

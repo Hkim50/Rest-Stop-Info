@@ -60,6 +60,7 @@ public class RestInfoEntity {
         });
 
         return RestInfoDto.builder()
+                .id(this.id)
                 .list(Rlist)
                 .count(this.count)
                 .pageNo(this.pageNo)

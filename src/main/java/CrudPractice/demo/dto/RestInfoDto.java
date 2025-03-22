@@ -17,6 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RestInfoDto {
+    private Long id;
+
     @JsonProperty("list")
     private List<RestListDto> list;
 
@@ -46,6 +48,7 @@ public class RestInfoDto {
         });
 
         return RestInfoEntity.builder()
+                .id(this.id)
                 .list(Rlist)
                 .count(this.count)
                 .pageNo(this.pageNo)
