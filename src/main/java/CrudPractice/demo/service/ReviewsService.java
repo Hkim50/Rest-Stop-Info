@@ -96,7 +96,30 @@ public class ReviewsService{
         return reviewByApiListEntity.stream()
                 .map(ReviewsEntity::toDto)
                 .toList();
+    }
 
+    public List<ReviewsDto> findByApiListOrderByCreatedAtDesc(ApiListDto dto) {
+        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByCreatedAtDesc(dto.toEntity());
+
+        return reviewByApiListEntity.stream()
+                .map(ReviewsEntity::toDto)
+                .toList();
+    }
+
+    public List<ReviewsDto> findByApiListOrderByRatingDesc(ApiListDto dto) {
+        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingDesc(dto.toEntity());
+
+        return reviewByApiListEntity.stream()
+                .map(ReviewsEntity::toDto)
+                .toList();
+    }
+
+    public List<ReviewsDto> findByApiListOrderByRatingAsc(ApiListDto dto) {
+        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingAsc(dto.toEntity());
+
+        return reviewByApiListEntity.stream()
+                .map(ReviewsEntity::toDto)
+                .toList();
     }
 
     public List<String> getPhotos(List<ReviewsDto> dto) {

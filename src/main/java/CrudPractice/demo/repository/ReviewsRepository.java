@@ -21,6 +21,15 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, Long> {
 
     List<ReviewsEntity> getReviewByApiListEntity(ApiListEntity apiListEntity);
 
+    // 최신순
+    List<ReviewsEntity> findAllByApiListEntityOrderByCreatedAtDesc(ApiListEntity apiListEntity);
+
+    // 별점 높은 순
+    List<ReviewsEntity> findAllByApiListEntityOrderByRatingDesc(ApiListEntity apiListEntity);
+
+    // 별점 낮은 순
+    List<ReviewsEntity> findAllByApiListEntityOrderByRatingAsc(ApiListEntity apiListEntity);
+
     Optional<ReviewsEntity> findFirstByFilePathIsNotNullAndApiListEntity(ApiListEntity entity);
 
 //    Optional<ReviewsEntity> getReviewByApiListEntityIfFilePathIsNotNull(ApiListEntity apiListEntity);

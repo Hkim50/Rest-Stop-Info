@@ -196,13 +196,14 @@
   <div class="main-content">
     <!-- Left Column -->
     <div class="content-left">
+
       <!-- Description Section -->
-<!--      <div class="section description-section">-->
-<!--        <h2 class="section-title">소개</h2>-->
-<!--        <div class="description-text" th:text="${restaurant.description}">-->
-<!--          식당 설명이 여기에 표시됩니다. 이 식당은 맛있는 음식과 좋은 서비스로 유명합니다.-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="section description-section">
+        <h2 class="section-title">소개</h2>
+        <div class="description-text" th:text="${restaurant.description}">
+          식당 설명이 여기에 표시됩니다. 이 식당은 맛있는 음식과 좋은 서비스로 유명합니다.
+        </div>
+      </div>
 
       <!-- Reviews Section -->
       <div class="section">
@@ -210,14 +211,15 @@
           <h2 class="reviews-title">리뷰</h2>
           <div class="sort-options">
             <span class="sort-label">정렬:</span>
-            <select class="sort-select">
-              <option>최신순</option>
-              <option>평점 높은순</option>
-              <option>평점 낮은순</option>
-            </select>
+            <form th:action="@{'/api/' + ${restaurant.title}}" method="get">
+              <select name="sort" class="sort-select" onchange="this.form.submit()">
+                <option th:value="latest" th:selected="${currentSort} == 'latest'">최신순</option>
+                <option th:value="highRating" th:selected="${currentSort} == 'highRating'">평점 높은순</option>
+                <option th:value="lowRating" th:selected="${currentSort} == 'lowRating'">평점 낮은순</option>
+              </select>
+            </form>
           </div>
         </div>
-
         <!-- 전체 리뷰 섹션을 reviews-list 클래스로 감싸기 -->
         <div class="reviews-list">
           <!-- 각 리뷰 아이템 -->

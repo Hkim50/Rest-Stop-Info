@@ -14,25 +14,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/api")
 public class ApiSearchController {
 
     private final ApiSearchService apiSearchService;
     private final ReviewsService reviewsService;
     private final MemberService2 memberService2;
 
-    public ApiSearchController(ApiSearchService apiSearchService,ReviewsService reviewsService, MemberService2 memberService2) {
+    public ApiSearchController(ApiSearchService apiSearchService, ReviewsService reviewsService, MemberService2 memberService2) {
         this.apiSearchService = apiSearchService;
         this.reviewsService = reviewsService;
         this.memberService2 = memberService2;
     }
 
-    @GetMapping("/api/find")
+    @GetMapping("/find")
     public String find(StoreFormDto storeFormDto, Model model) {
         Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
 
@@ -72,10 +75,23 @@ public class ApiSearchController {
         return "search/resultList";
 
     }
-    @GetMapping("/api/{title}")
-    public String searchDetail(@PathVariable("title") String title, Model model) {
-        ApiListDto dto =  apiSearchService.findByName(title).get().toDto();
-        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto);
+
+    @GetMapping("/{title}")
+    public String searchDetail(@PathVariable("title") String title,
+                               @RequestParam(name = "sort", defaultValue = "latest") String sort, Model model) {
+
+        ApiListDto dto = apiSearchService.findByName(title).get().toDto();
+
+        List<ReviewsDto> byApiList;
+        if (sort.equals("latest")) {
+            byApiList = reviewsService.findByApiListOrderByCreatedAtDesc(dto);
+        } else if (sort.equals("highRating")) {
+            byApiList = reviewsService.findByApiListOrderByRatingDesc(dto);
+        } else{
+            byApiList = reviewsService.findByApiListOrderByRatingAsc(dto);
+        }
+
+//        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto);
         List<String> photos = reviewsService.getPhotos(byApiList);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -84,14 +100,15 @@ public class ApiSearchController {
 
         boolean hasImages = photos.size() > 0;
 
-
         model.addAttribute("name", byName);
         model.addAttribute("reviews", byApiList);
         model.addAttribute("restaurant", dto);
         model.addAttribute("numReviews", byApiList.size());
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);
+        model.addAttribute("currentSort", sort);
 
         return "search/storeInfo";
     }
+
 }
