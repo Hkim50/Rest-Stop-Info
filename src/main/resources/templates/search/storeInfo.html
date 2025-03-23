@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
-<!--  <meta name="_csrf" content="${_csrf.token}"/>-->
+  <!--  <meta name="_csrf" content="${_csrf.token}"/>-->
   <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
   <meta name="_csrf" data-th-content="${_csrf.token}" />
 
@@ -11,86 +11,189 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" th:href="@{/css/styles4.css}">
   <style>
-        /* 인라인 수정 폼 스타일 */
+    /* 인라인 수정 폼 스타일 */
     .review-edit-form {
-        display: none;
-        margin-top: 15px;
-        padding: 15px;
-        background-color: #f8f8f8;
-        border-radius: 4px;
-        border: 1px solid #e6e6e6;
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #f8f8f8;
+      border-radius: 4px;
+      border: 1px solid #e6e6e6;
     }
 
     .edit-rating-select {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin-bottom: 10px;
-        width: 200px;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      width: 200px;
     }
 
     .edit-review-textarea {
-        width: 100%;
-        min-height: 100px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        margin-bottom: 10px;
-        resize: vertical;
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      resize: vertical;
     }
 
     .edit-actions {
-        display: flex;
-        gap: 10px;
+      display: flex;
+      gap: 10px;
     }
 
     .btn-save {
-        background-color: #41a700;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
+      background-color: #41a700;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
     }
 
     .btn-save:hover {
-        background-color: #378900;
+      background-color: #378900;
     }
 
     .btn-cancel {
-        background-color: #f5f5f5;
-        color: #666;
-        border: 1px solid #ddd;
-        padding: 8px 16px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 500;
+      background-color: #f5f5f5;
+      color: #666;
+      border: 1px solid #ddd;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
     }
 
     .btn-cancel:hover {
-        background-color: #e6e6e6;
+      background-color: #e6e6e6;
     }
 
     .btn-primary2 {
-    display: inline-block;
-    background-color: transparent;
-    color: #333;
-    padding: 10px 16px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s;
-    border-radius: 0;
-}
+      display: inline-block;
+      background-color: transparent;
+      color: #333;
+      padding: 10px 16px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: color 0.3s;
+      border-radius: 0;
+    }
 
-.btn-primary2:hover {
-    background-color: transparent;
-    color: #d32323;
-}
+    .btn-primary2:hover {
+      background-color: transparent;
+      color: #d32323;
+    }
 
+    /* 신고 버튼 스타일 */
+    .report-button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    }
 
+    .report-button {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 2px 5px;
+      transition: color 0.2s;
+    }
 
+    .report-button:hover {
+      color: #d32323;
+    }
+
+    .review-content-wrapper {
+      position: relative;
+    }
+
+    /* 신고 모달 스타일 */
+    .report-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .report-modal-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    .report-modal-header h3 {
+      margin: 0;
+      color: #d32323;
+    }
+
+    .close-report-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .report-modal-body {
+      padding: 20px;
+    }
+
+    .report-reason-container {
+      margin-top: 15px;
+    }
+
+    .report-reason-select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .report-modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #e6e6e6;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .submit-report-btn {
+      background-color: #d32323;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .submit-report-btn:hover {
+      background-color: #b91d1d;
+    }
   </style>
 </head>
 <body>
@@ -102,11 +205,10 @@
         <a href="/">SPOT</a>
       </div>
       <div class="nav-links">
-        <a href="/" class="nav-link">Home</a>
-        <a href="#" class="nav-link">Restaurants</a>
-        <a href="#review-form" class="nav-link">Write a Review</a>
-        <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
-        <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">Sign Up</a>
+        <a href="/" class="nav-link">홈</a>
+        <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">로그인</a>
+        <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">회원가입</a>
+        <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link active">관리자</a>
         <a sec:authorize="isAuthenticated()" href="/info" class="nav-link">내정보</a>
         <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
       </div>
@@ -229,10 +331,10 @@
                 <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
                 <div class="user-name" th:text="${review.name}"></div>
                 <div class="user-location" th:text="${review.id}"></div>
-<!--                <div class="user-stats">-->
-<!--                  <span><i class="fas fa-star"></i> 5 리뷰</span>-->
-<!--                  <span><i class="fas fa-camera"></i> 0 사진</span>-->
-<!--                </div>-->
+                <!--                <div class="user-stats">-->
+                <!--                  <span><i class="fas fa-star"></i> 5 리뷰</span>-->
+                <!--                  <span><i class="fas fa-camera"></i> 0 사진</span>-->
+                <!--                </div>-->
               </div>
             </div>
             <div class="review-content-wrapper">
@@ -248,6 +350,13 @@
               <!-- 리뷰 이미지 표시 (있는 경우에만) -->
               <div class="review-image-container" th:if="${review.fileName != null && review.filePath != null}">
                 <img th:src="${review.filePath}" alt="리뷰 이미지" class="review-image">
+              </div>
+
+              <!-- 신고 버튼 추가 (자신의 리뷰가 아닐 경우에만) -->
+              <div class="report-button-container" th:if="${name != review.userEntity}">
+                <button class="report-button" th:data-review-id="${review.id}" th:data-reviewer-name="${review.name}" th:data-reporter-name="${name.name}">
+                  <i class="fas fa-flag"></i>
+                </button>
               </div>
 
               <div class="review-footer" th:if="${name == review.userEntity}">
@@ -319,17 +428,17 @@
         <!-- 리뷰작성 폼 -->
         <div id="review-form" class="review-form" sec:authorize="isAuthenticated()">
           <h3 class="form-title">리뷰 작성</h3>
-            <div class="rating-input">
-              <label for="rating" class="rating-label">별점:</label>
-              <select id="rating" class="rating-select">
-                <option value="1">★☆☆☆☆ (1점)</option>
-                <option value="2">★★☆☆☆ (2점)</option>
-                <option value="3">★★★☆☆ (3점)</option>
-                <option value="4">★★★★☆ (4점)</option>
-                <option value="5" selected>★★★★★ (5점)</option>
-              </select>
-            </div>
-            <textarea id="review-content" class="review-textarea" placeholder="이 식당에 대한 솔직한 리뷰를 작성해주세요..."></textarea>
+          <div class="rating-input">
+            <label for="rating" class="rating-label">별점:</label>
+            <select id="rating" class="rating-select">
+              <option value="1">★☆☆☆☆ (1점)</option>
+              <option value="2">★★☆☆☆ (2점)</option>
+              <option value="3">★★★☆☆ (3점)</option>
+              <option value="4">★★★★☆ (4점)</option>
+              <option value="5" selected>★★★★★ (5점)</option>
+            </select>
+          </div>
+          <textarea id="review-content" class="review-textarea" placeholder="이 식당에 대한 솔직한 리뷰를 작성해주세요..."></textarea>
 
           <!-- 사진 업로드 영역 추가 -->
           <div class="review-image-upload">
@@ -341,8 +450,8 @@
             <div id="image-preview-container" class="image-preview-container"></div>
           </div>
 
-            <input type="hidden" id="restNm" th:value="${restaurant.title}">
-            <button id="btn-review-submit" class="review-submit">리뷰 등록</button>
+          <input type="hidden" id="restNm" th:value="${restaurant.title}">
+          <button id="btn-review-submit" class="review-submit">리뷰 등록</button>
         </div>
 
         <!-- Login Prompt for Non-Authenticated Users -->
@@ -356,13 +465,13 @@
     <!-- Right Column -->
     <div class="content-right">
       <!-- Map Section -->
-<!--      <div class="map-section">-->
-<!--        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">-->
-<!--          <div class="map-placeholder">-->
-<!--            <p>지도가 여기에 표시됩니다</p>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="map-section">-->
+      <!--        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">-->
+      <!--          <div class="map-placeholder">-->
+      <!--            <p>지도가 여기에 표시됩니다</p>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <!-- Business Info -->
       <div class="section business-info">
@@ -529,6 +638,116 @@
 </footer>
 <script th:src="@{/js/script2.js}"></script>
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // 신고 버튼 클릭 이벤트
+      const reportButtons = document.querySelectorAll('.report-button');
+      const reportModal = document.getElementById('report-modal');
+      const closeReportModal = document.querySelector('.close-report-modal');
+      const submitReportBtn = document.getElementById('submit-report');
+      const reportReviewId = document.getElementById('report-review-id');
+      const reportReviewerName = document.getElementById('report-reviewer-name');
+      const reporterNameInput = document.getElementById('reporter-name'); // 수정된 부분
+
+      reportButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              const reviewId = this.getAttribute('data-review-id');
+              const reviewerName = this.getAttribute('data-reviewer-name');
+              const reporterName = this.getAttribute('data-reporter-name');
+
+              reporterNameInput.value = reporterName;
+              reportReviewId.value = reviewId;
+              reportReviewerName.textContent = reviewerName;
+              reportModal.style.display = 'flex';
+          });
+      });
+
+      // 모달 닫기
+      closeReportModal.addEventListener('click', function() {
+          reportModal.style.display = 'none';
+          document.getElementById('report-reason').value = '';
+      });
+
+      // 모달 외부 클릭 시 닫기
+      window.addEventListener('click', function(event) {
+          if (event.target === reportModal) {
+              reportModal.style.display = 'none';
+              document.getElementById('report-reason').value = '';
+          }
+      });
+
+      // 신고 제출
+      submitReportBtn.addEventListener('click', function() {
+          const reviewId = reportReviewId.value;
+          const reason = document.getElementById('report-reason').value;
+          const reporter = reporterNameInput.value;
+
+          if (!reason) {
+              alert('신고 사유를 선택해주세요.');
+              return;
+          }
+
+          // CSRF 토큰 가져오기
+          const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+          const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+          // 서버에 신고 데이터 전송
+          fetch('/report', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  [csrfHeader]: csrfToken
+              },
+              body: JSON.stringify({
+                  reviewId: reviewId,
+                  reason: reason,
+                  reporter: reporter
+              })
+          })
+          .then(response => {
+              if (response.ok) {
+                  alert('신고가 접수되었습니다.');
+                  reportModal.style.display = 'none';
+                  document.getElementById('report-reason').value = '';
+              } else {
+                  alert('신고 접수에 실패했습니다. 다시 시도해주세요.');
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('오류가 발생했습니다. 다시 시도해주세요.');
+          });
+      });
+  });
 </script>
+<!-- 신고 모달 -->
+<div id="report-modal" class="report-modal">
+  <div class="report-modal-content">
+    <div class="report-modal-header">
+      <h3>신고하기</h3>
+      <button class="close-report-modal">&times;</button>
+    </div>
+    <div class="report-modal-body">
+      <p>작성자: <span id="report-reviewer-name"></span></p>
+      <div class="report-reason-container">
+        <label for="report-reason">신고 사유:</label>
+        <select id="report-reason" class="report-reason-select">
+          <option value="">신고 사유를 선택해주세요</option>
+          <option value="스팸/도배">스팸홍보/도배글입니다.</option>
+          <option value="음란물">음란물입니다.</option>
+          <option value="불법정보">불법정보를 포함하고있습니다.</option>
+          <option value="청소년 유해">청소년에게 유해한 내용입니다.</option>
+          <option value="욕설/혐오">욕설/생명경시/혐오/차별적 표현입니다.</option>
+          <option value="개인정보 유출">개인정보 노출 게시물입니다.</option>
+          <option value="불쾌한 표현">불쾌한 표현이 있습니다.</option>
+        </select>
+      </div>
+      <input type="hidden" id="reporter-name">
+      <input type="hidden" id="report-review-id">
+    </div>
+    <div class="report-modal-footer">
+      <button id="submit-report" class="submit-report-btn">신고하기</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>

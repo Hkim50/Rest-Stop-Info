@@ -52,10 +52,7 @@ public class SearchInfoController {
         }
 
         List<ReviewsDto> reviewsByInfo = reviewsService.getReviews(restInfoDto.toEntity(), sort);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+        UserEntity user = memberService2.getUser();
 
         List<String> photos = reviewsService.getPhotos(reviewsByInfo);
         boolean hasImages = photos.size() > 0;
@@ -63,7 +60,7 @@ public class SearchInfoController {
         model.addAttribute("lists", restInfoDto.getList());
         model.addAttribute("restName", storeFormDto.getName());
         model.addAttribute("reviews", reviewsByInfo);
-        model.addAttribute("name", byName);
+        model.addAttribute("name", user);
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);
         model.addAttribute("currentSort", sort);

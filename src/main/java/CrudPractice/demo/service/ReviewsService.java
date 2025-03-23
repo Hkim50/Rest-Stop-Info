@@ -10,11 +10,15 @@ import CrudPractice.demo.repository.ReviewsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ReviewsService{
@@ -39,6 +43,21 @@ public class ReviewsService{
         return  reviewsRepository.save(reviewsEntity);
     }
 
+    public ReviewsDto addImage(MultipartFile image, ReviewsDto reviewsDto) throws IOException {
+        if (image != null && !image.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            UUID uuid = UUID.randomUUID();
+            String fileName = uuid + "_" + image.getOriginalFilename();
+
+            File saveFile = new File(projectPath, fileName);
+            image.transferTo(saveFile);
+
+            reviewsDto.setFileName(fileName);
+            reviewsDto.setFilePath("/files/" + fileName);
+        }
+        return reviewsDto;
+    }
+
     public List<ReviewsDto> getReviews(RestInfoEntity restInfoEntity, String sort) {
 
         List<ReviewsEntity> reviewsByRestInfoEntity;
@@ -52,12 +71,6 @@ public class ReviewsService{
 
         return reviewsByRestInfoEntity.stream().map(ReviewsEntity::toDto)
                 .toList();
-
-//        List<ReviewsDto> list = new ArrayList<>();
-//        reviewsByRestInfoEntity.stream().forEach(f -> {
-//            list.add(f.toDto());
-//        });
-//        return list;
     }
 
 
@@ -72,6 +85,16 @@ public class ReviewsService{
         });
 
         return reviews;
+    }
+
+    public double getAvg(List<ReviewsDto> reviews) {
+        double avg = 0.0;
+        for (ReviewsDto review : reviews) {
+            avg += review.getRating();
+        }
+        avg = avg / reviews.size();
+        avg = Math.round(avg * 100.0) / 100.0;
+        return avg;
     }
 
     public ReviewsEntity getReviewByNameAndCreatedAt(String name, Timestamp timestamp) {

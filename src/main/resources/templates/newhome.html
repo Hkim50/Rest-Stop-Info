@@ -15,11 +15,10 @@
                 <a href="/">SPOT</a>
             </div>
             <div class="nav-links">
-                <a href="#" class="nav-link">Restaurants</a>
-                <a href="#" class="nav-link">Services</a>
-                <a href="#" class="nav-link">About</a>
+                <a href="#" class="nav-link">소개</a>
                 <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
                 <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">Sign Up</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link active">관리자</a>
                 <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info" >내정보</a>
                 <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
             </div>

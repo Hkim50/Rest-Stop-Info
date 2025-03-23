@@ -1,8 +1,11 @@
 package CrudPractice.demo.service;
 
 import CrudPractice.demo.domain.UserEntity;
+import CrudPractice.demo.dto.PrincipalDetails;
 import CrudPractice.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +22,13 @@ public class MemberService2 {
         return userRepository.findByName(name);
     }
 
-    public UserEntity getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserEntity getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return userRepository.findByEmail(principalDetails.getUserEmail());
+    }
+
+    public Long getUserCount() {
+        return userRepository.count();
     }
 }

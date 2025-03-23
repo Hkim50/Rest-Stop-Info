@@ -31,26 +31,15 @@ public class UserInfoController {
 
     @GetMapping("/info")
     public String info(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        UserEntity user = memberService2.getUser();
 
-        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+        List<ReviewsDto> reviews = reviewsService.getReviewByUser(user);
 
-        UserDto userDto = byName.toDto();
-
-        List<ReviewsDto> reviews = reviewsService.getReviewByUser(byName);
-
-        double avg = 0.0;
-
-        for (ReviewsDto review : reviews) {
-            avg += review.getRating();
-        }
-        avg = avg / reviews.size();
-        avg = Math.round(avg * 100.0) / 100.0;
+        double avg = reviewsService.getAvg(reviews);
 
         model.addAttribute("avg", avg);
         model.addAttribute("reviews", reviews);
-        model.addAttribute("user", userDto);
+        model.addAttribute("user", user.toDto());
 
         return "myInfo";
     }

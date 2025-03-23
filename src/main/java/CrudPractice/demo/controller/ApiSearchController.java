@@ -6,10 +6,6 @@ import CrudPractice.demo.dto.*;
 import CrudPractice.demo.service.ApiSearchService;
 import CrudPractice.demo.service.MemberService2;
 import CrudPractice.demo.service.ReviewsService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +48,7 @@ public class ApiSearchController {
             return "/error/errorPage";
         }
 
-        // 스팟에 리뷰 갯수 가져오기
+        // 리뷰 갯수 가져오기
         List<Integer> numOfReviews = new ArrayList<>();
 
         store.getItems().stream().forEach(f -> {
@@ -60,20 +56,14 @@ public class ApiSearchController {
             numOfReviews.add(reviewsService.findByApiList(dto).size());
         });
 
-        // resultList 가져올때 store 의 프로필 사진 가져와야함.
-        List<String> profPhotos = new ArrayList<>();
-        List<ApiListEntity> entity = apiSearchService.findByName(store.getItems());
-
-        List<ApiListDto> profPhoto = reviewsService.getProfPhoto(entity);
+        List<ApiListDto> profPhoto = reviewsService.getProfPhoto(apiSearchService.findByName(store.getItems()));
 
         model.addAttribute("numReviews", numOfReviews);
         model.addAttribute("restaurants", profPhoto);
         model.addAttribute("size", store.getTotal());
         model.addAttribute("searchInput", storeFormDto.getName());
 
-
         return "search/resultList";
-
     }
 
     @GetMapping("/{title}")
@@ -81,19 +71,14 @@ public class ApiSearchController {
                                @RequestParam(name = "sort", defaultValue = "latest") String sort, Model model) {
 
         ApiListDto dto = apiSearchService.findByName(title).get().toDto();
-
         List<ReviewsDto> byApiList = reviewsService.findByApiList(dto, sort);
 
-//        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto);
         List<String> photos = reviewsService.getPhotos(byApiList);
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
+        UserEntity user = memberService2.getUser();
 
         boolean hasImages = photos.size() > 0;
 
-        model.addAttribute("name", byName);
+        model.addAttribute("name", user);
         model.addAttribute("reviews", byApiList);
         model.addAttribute("restaurant", dto);
         model.addAttribute("numReviews", byApiList.size());
@@ -103,5 +88,6 @@ public class ApiSearchController {
 
         return "search/storeInfo";
     }
+
 
 }

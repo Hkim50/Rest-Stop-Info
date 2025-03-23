@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+  <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
+  <meta name="_csrf" data-th-content="${_csrf.token}" />
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>신고된 리뷰 관리 - SPOT</title>
+  <link rel="stylesheet" th:href="@{/css/styles2.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="/">SPOT</a>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-link">소개</a>
+        <a sec:authorize="isAuthenticated()" href="/admin" class="nav-link active">관리자</a>
+        <a sec:authorize="isAuthenticated()" href="/info" class="nav-link">내정보</a>
+        <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="admin-header">
+  <div class="container">
+    <div class="admin-profile-container">
+      <div class="profile-avatar">
+        <span th:text="${#strings.substring(admin.name, 0, 1)}">A</span>
+      </div>
+      <div class="admin-info">
+        <h1 th:text="${admin.name}">관리자명</h1>
+        <p th:text="${admin.email}">admin@example.com</p>
+        <div class="admin-badge">관리자</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="admin-content">
+  <div class="container">
+    <div class="admin-tabs">
+      <a href="/admin" class="admin-tab">대시보드</a>
+      <a href="/admin/reported-reviews" class="admin-tab active">신고된 리뷰</a>
+      <a href="/admin/users" class="admin-tab">사용자 관리</a>
+      <a href="/admin/restaurants" class="admin-tab">식당 관리</a>
+    </div>
+
+    <div class="admin-section">
+      <div class="section-header">
+        <h2><i class="fas fa-flag"></i> 신고된 리뷰 관리</h2>
+        <div class="filter-controls">
+          <div class="search-container">
+<!--            <div class="search-box">-->
+<!--              <input type="text" placeholder="검색어를 입력하세요..." class="search-input">-->
+<!--              <button class="search-btn"><i class="fas fa-search"></i></button>-->
+<!--            </div>-->
+          </div>
+<!--          <div class="filter-dropdown">-->
+<!--            <select class="filter-select">-->
+<!--              <option value="all">모든 상태</option>-->
+<!--              <option value="pending">처리 대기</option>-->
+<!--              <option value="approved">승인됨</option>-->
+<!--              <option value="rejected">거부됨</option>-->
+<!--            </select>-->
+<!--          </div>-->
+        </div>
+      </div>
+
+      <div class="no-reported-reviews" th:if="${#lists.isEmpty(reportedReviews)}">
+        <i class="far fa-flag"></i>
+        <p>현재 신고된 리뷰가 없습니다.</p>
+      </div>
+
+      <div class="reported-reviews-table" th:unless="${#lists.isEmpty(reportedReviews)}">
+        <div class="table-header">
+          <div class="header-cell report-id">신고 ID</div>
+          <div class="header-cell report-date">신고일</div>
+          <div class="header-cell report-reason">신고 사유</div>
+          <div class="header-cell review-content">리뷰 내용</div>
+          <div class="header-cell reporter">신고자</div>
+<!--          <div class="header-cell status">상태</div>-->
+<!--          <div class="header-cell actions">작업</div>-->
+        </div>
+
+        <div class="table-row" th:each="report : ${reportedReviews}">
+          <div class="table-cell report-id" th:text="${report.id}">123</div>
+          <div class="table-cell report-date" th:text="${#dates.format(report.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01</div>
+          <div class="table-cell report-reason" th:text="${report.reason}">부적절한 내용</div>
+          <div class="table-cell review-content">
+            <div class="review-preview" th:text="${#strings.abbreviate(report.review.content, 50)}">리뷰 내용 미리보기...</div>
+            <button class="view-details-btn" th:data-report-id="${report.id}">상세 보기</button>
+          </div>
+          <div class="table-cell reporter" th:text="${report.reporterName}">신고자명</div>
+<!--          <div class="table-cell status">-->
+<!--            <span class="status-badge" th:classappend="${report.status == '처리 대기' ? 'pending' : (report.status == '승인됨' ? 'approved' : 'rejected')}" th:text="${report.status}">처리 대기</span>-->
+<!--          </div>-->
+<!--          <div class="table-cell actions">-->
+<!--            <button class="action-btn approve" th:if="${report.status == '처리 대기'}"><i class="fas fa-check"></i></button>-->
+<!--            <button class="action-btn reject" th:if="${report.status == '처리 대기'}"><i class="fas fa-times"></i></button>-->
+<!--            <button class="action-btn delete"><i class="fas fa-trash"></i></button>-->
+<!--          </div>-->
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- 리뷰 상세 모달 -->
+<div class="report-detail-modal" id="reportDetailModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>신고 상세 정보</h3>
+      <button class="close-modal"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="report-info-section">
+        <h4>신고 정보</h4>
+        <div class="info-grid">
+          <div class="info-label">신고 ID:</div>
+          <div class="info-value" id="modalReportId">123</div>
+
+          <div class="info-label">신고일:</div>
+          <div class="info-value" id="modalReportDate">2023-01-01 12:00</div>
+
+          <div class="info-label">신고 사유:</div>
+          <div class="info-value" id="modalReportReason">부적절한 내용</div>
+
+          <div class="info-label">신고자:</div>
+          <div class="info-value" id="modalReporter">신고자명</div>
+
+        </div>
+      </div>
+
+      <div class="report-description-section">
+        <h4>신고 내용</h4>
+        <p id="modalReportDescription">이 리뷰는 부적절한 내용을 포함하고 있습니다.</p>
+      </div>
+
+      <div class="original-review-section">
+        <h4>원본 리뷰</h4>
+        <div class="review-item">
+          <div class="review-user">
+            <div class="user-profile">
+              <div class="profile-img" id="modalReviewerInitial">U</div>
+              <div class="user-name" id="modalReviewerName">사용자명</div>
+            </div>
+          </div>
+          <div class="review-content-wrapper">
+            <div class="review-rating">
+              <div class="stars" id="modalReviewStars">
+                <span>★</span><span>★</span><span>★</span><span>☆</span><span>☆</span>
+              </div>
+              <span class="review-date" id="modalReviewDate">2023-01-01</span>
+            </div>
+            <div class="review-text" id="modalReviewContent">리뷰 내용입니다.</div>
+            <div class="review-image-container" id="modalReviewImageContainer">
+              <img src="/placeholder.svg" alt="리뷰 이미지" class="review-image" id="modalReviewImage">
+            </div>
+            <div class="review-restaurant">
+              <strong>식당:</strong> <a href="#" id="modalRestaurantLink">식당명</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-approve" id="modalBtnApprove"><i class="fas fa-check"></i> 승인</button>
+      <button class="btn-reject" id="modalBtnReject"><i class="fas fa-times"></i> 거부</button>
+      <button class="btn-delete" id="modalBtnDelete"><i class="fas fa-trash"></i> 리뷰 삭제</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About SPOT</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Investor Relations</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Discover</h3>
+        <ul>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">User Guidelines</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Businesses</h3>
+        <ul>
+          <li><a href="#">Business Owner Login</a></li>
+          <li><a href="#">Claim your Business</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Business Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="app-links">
+          <a href="#" class="app-btn">
+            <i class="fab fa-apple"></i>
+            <span>App Store</span>
+          </a>
+          <a href="#" class="app-btn">
+            <i class="fab fa-google-play"></i>
+            <span>Google Play</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 SPOT Inc. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // 모달 기능
+  document.addEventListener('DOMContentLoaded', function() {
+      // 모달 요소 가져오기
+      const modal = document.getElementById('reportDetailModal');
+      const closeModalBtn = document.querySelector('.close-modal');
+      const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
+
+      // 상세 보기 버튼 클릭 이벤트
+      viewDetailsBtns.forEach(btn => {
+          btn.addEventListener('click', function() {
+              const reportId = this.getAttribute('data-report-id');
+              // 여기서 AJAX 요청으로 상세 정보를 가져올 수 있습니다
+              // 예시로 모달을 표시만 합니다
+              modal.style.display = 'flex';
+
+              // 모달 내용 채우기 (실제로는 AJAX 응답으로 채워야 함)
+              document.getElementById('modalReportId').textContent = reportId;
+              // 기타 필요한 정보 채우기
+          });
+      });
+
+      // 모달 닫기 버튼 클릭 이벤트
+      closeModalBtn.addEventListener('click', function() {
+          modal.style.display = 'none';
+      });
+
+      // 모달 외부 클릭 시 닫기
+      window.addEventListener('click', function(event) {
+          if (event.target === modal) {
+              modal.style.display = 'none';
+          }
+      });
+
+      // 모달 내 버튼 이벤트
+      document.getElementById('modalBtnApprove').addEventListener('click', function() {
+          const reportId = document.getElementById('modalReportId').textContent;
+          // 승인 처리 AJAX 요청
+          alert('신고를 승인했습니다.');
+          modal.style.display = 'none';
+      });
+
+      document.getElementById('modalBtnReject').addEventListener('click', function() {
+          const reportId = document.getElementById('modalReportId').textContent;
+          // 거부 처리 AJAX 요청
+          alert('신고를 거부했습니다.');
+          modal.style.display = 'none';
+      });
+
+      document.getElementById('modalBtnDelete').addEventListener('click', function() {
+          const reportId = document.getElementById('modalReportId').textContent;
+          if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+              // 삭제 처리 AJAX 요청
+              alert('리뷰를 삭제했습니다.');
+              modal.style.display = 'none';
+          }
+      });
+  });
+</script>
+</body>
+</html>

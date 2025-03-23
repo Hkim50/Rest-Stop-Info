@@ -45,24 +45,12 @@ public class ReviewHandler {
     @PostMapping("/save")
     public ResponseEntity<ReviewsEntity> save(@ModelAttribute ReviewsDto reviewsDto,
                                               @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserEntity byName = memberService2.getUserByEmail(principalDetails.getUserEmail());
 
-        if (image != null && !image.isEmpty()) {
-            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-            UUID uuid = UUID.randomUUID();
-            String fileName = uuid + "_" + image.getOriginalFilename();
+        UserEntity user = memberService2.getUser();
 
-            File saveFile = new File(projectPath, fileName);
-            image.transferTo(saveFile);
+        reviewsService.addImage(image, reviewsDto);
 
-            reviewsDto.setFileName(fileName);
-            reviewsDto.setFilePath("/files/" + fileName);
-        }
-
-
-        ReviewsEntity reviewsEntity = reviewsService.addUserInReview(reviewsDto, byName);
+        ReviewsEntity reviewsEntity = reviewsService.addUserInReview(reviewsDto, user);
 
         if (reviewsDto.getRestNm().contains("휴게소")) {
             reviewsEntity.setRestInfoEntity(restBestFoodService.getInfoFromDb(reviewsDto.getRestNm()));
