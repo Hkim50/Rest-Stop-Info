@@ -92,24 +92,46 @@
 <!--          <div class="header-cell actions">작업</div>-->
         </div>
 
-        <div class="table-row" th:each="report : ${reportedReviews}">
+<!--        <div class="table-row" th:each="report : ${reportedReviews}">-->
+<!--          <div class="table-cell report-id" th:text="${report.id}">123</div>-->
+<!--          <div class="table-cell report-date" th:text="${#dates.format(report.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01</div>-->
+<!--          <div class="table-cell report-reason" th:text="${report.reason}">부적절한 내용</div>-->
+<!--          <div class="table-cell review-content">-->
+<!--            <div class="review-preview" th:text="${#strings.abbreviate(report.review.content, 50)}">리뷰 내용 미리보기...</div>-->
+<!--            <button class="view-details-btn" th:data-report-id="${report.id}">상세 보기</button>-->
+<!--          </div>-->
+<!--          <div class="table-cell reporter" th:text="${report.reporterName}">신고자명</div>-->
+<!--        </div>-->
+
+        <div class="table-row"
+             th:each="report : ${reportedReviews}">
           <div class="table-cell report-id" th:text="${report.id}">123</div>
           <div class="table-cell report-date" th:text="${#dates.format(report.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01</div>
           <div class="table-cell report-reason" th:text="${report.reason}">부적절한 내용</div>
           <div class="table-cell review-content">
             <div class="review-preview" th:text="${#strings.abbreviate(report.review.content, 50)}">리뷰 내용 미리보기...</div>
-            <button class="view-details-btn" th:data-report-id="${report.id}">상세 보기</button>
+            <button class="view-details-btn"
+                    th:data-review-id="${report.review.id}"
+                    th:data-report-id="${report.id}"
+                    th:data-report-date="${#dates.format(report.createdAt, 'yyyy-MM-dd HH:mm')}"
+                    th:data-report-reason="${report.reason}"
+                    th:data-reporter-name="${report.reporterName}"
+                    th:data-review-content="${report.review.content}"
+                    th:data-reviewer-name="${report.review.name}"
+                    th:data-reviewer-initial="${#strings.substring(report.review.name, 0, 1)}"
+                    th:data-review-date="${#dates.format(report.review.createdAt, 'yyyy-MM-dd')}"
+                    th:data-review-stars="${report.review.rating}"
+                    th:data-review-image-url="${report.review.filePath != null ? report.review.filePath : ''}"
+                    th:data-restaurant-name="${report.review.apiListEntity.title}"
+                    th:data-restaurant-link="@{'/api/' + ${report.review.apiListEntity.title}}"
+
+            >상세 보기</button>
           </div>
           <div class="table-cell reporter" th:text="${report.reporterName}">신고자명</div>
-<!--          <div class="table-cell status">-->
-<!--            <span class="status-badge" th:classappend="${report.status == '처리 대기' ? 'pending' : (report.status == '승인됨' ? 'approved' : 'rejected')}" th:text="${report.status}">처리 대기</span>-->
-<!--          </div>-->
-<!--          <div class="table-cell actions">-->
-<!--            <button class="action-btn approve" th:if="${report.status == '처리 대기'}"><i class="fas fa-check"></i></button>-->
-<!--            <button class="action-btn reject" th:if="${report.status == '처리 대기'}"><i class="fas fa-times"></i></button>-->
-<!--            <button class="action-btn delete"><i class="fas fa-trash"></i></button>-->
-<!--          </div>-->
         </div>
+
+
+
       </div>
 
     </div>
@@ -129,6 +151,9 @@
         <div class="info-grid">
           <div class="info-label">신고 ID:</div>
           <div class="info-value" id="modalReportId">123</div>
+
+          <div class="info-label">리뷰 ID:</div>
+          <div class="info-value" id="data-review-id">321</div>
 
           <div class="info-label">신고일:</div>
           <div class="info-value" id="modalReportDate">2023-01-01 12:00</div>
@@ -165,7 +190,7 @@
             </div>
             <div class="review-text" id="modalReviewContent">리뷰 내용입니다.</div>
             <div class="review-image-container" id="modalReviewImageContainer">
-              <img src="/placeholder.svg" alt="리뷰 이미지" class="review-image" id="modalReviewImage">
+              <img src="" alt="리뷰 이미지" class="review-image" id="modalReviewImage">
             </div>
             <div class="review-restaurant">
               <strong>식당:</strong> <a href="#" id="modalRestaurantLink">식당명</a>
@@ -175,7 +200,6 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn-approve" id="modalBtnApprove"><i class="fas fa-check"></i> 승인</button>
       <button class="btn-reject" id="modalBtnReject"><i class="fas fa-times"></i> 거부</button>
       <button class="btn-delete" id="modalBtnDelete"><i class="fas fa-trash"></i> 리뷰 삭제</button>
     </div>
@@ -244,62 +268,157 @@
 </footer>
 
 <script>
-  // 모달 기능
   document.addEventListener('DOMContentLoaded', function() {
-      // 모달 요소 가져오기
       const modal = document.getElementById('reportDetailModal');
       const closeModalBtn = document.querySelector('.close-modal');
       const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
 
-      // 상세 보기 버튼 클릭 이벤트
       viewDetailsBtns.forEach(btn => {
           btn.addEventListener('click', function() {
               const reportId = this.getAttribute('data-report-id');
-              // 여기서 AJAX 요청으로 상세 정보를 가져올 수 있습니다
-              // 예시로 모달을 표시만 합니다
-              modal.style.display = 'flex';
+              const reportDate = this.getAttribute('data-report-date');
+              const reportReason = this.getAttribute('data-report-reason');
+              const reporterName = this.getAttribute('data-reporter-name');
+              const reviewContent = this.getAttribute('data-review-content');
+              const reviewerName = this.getAttribute('data-reviewer-name');
+              const reviewerInitial = this.getAttribute('data-reviewer-initial');
+              const reviewDate = this.getAttribute('data-review-date');
+              const reviewStars = parseInt(this.getAttribute('data-review-stars'));
+              const reviewImageUrl = this.getAttribute('data-review-image-url');
+              const restaurantName = this.getAttribute('data-restaurant-name');
+              const restaurantLink = this.getAttribute('data-restaurant-link');
+              const reviewId = this.getAttribute('data-review-id'); // 리뷰 ID를 추가
 
-              // 모달 내용 채우기 (실제로는 AJAX 응답으로 채워야 함)
+
+              // 모달에 값 넣기
+              document.getElementById('data-review-id').textContent = reviewId;
               document.getElementById('modalReportId').textContent = reportId;
-              // 기타 필요한 정보 채우기
+              document.getElementById('modalReportDate').textContent = reportDate;
+              document.getElementById('modalReportReason').textContent = reportReason;
+              document.getElementById('modalReporter').textContent = reporterName;
+              document.getElementById('modalReportDescription').textContent = reportReason;
+
+              document.getElementById('modalReviewerName').textContent = reviewerName;
+              document.getElementById('modalReviewerInitial').textContent = reviewerInitial;
+              document.getElementById('modalReviewDate').textContent = reviewDate;
+              document.getElementById('modalReviewContent').textContent = reviewContent;
+
+              // 별점
+              const starsContainer = document.getElementById('modalReviewStars');
+              starsContainer.innerHTML = '';
+              for (let i = 1; i <= 5; i++) {
+                  starsContainer.innerHTML += i <= reviewStars ? '<span>★</span>' : '<span>☆</span>';
+              }
+
+              // 리뷰 이미지
+              const reviewImageContainer = document.getElementById('modalReviewImageContainer');
+              const reviewImage = document.getElementById('modalReviewImage');
+              if (reviewImageUrl && reviewImageUrl.trim() !== '') {
+                  reviewImage.src = reviewImageUrl;
+                  reviewImageContainer.style.display = 'block';
+              } else {
+                  reviewImageContainer.style.display = 'none';
+              }
+
+              // 식당 링크
+              const restaurantLinkEl = document.getElementById('modalRestaurantLink');
+              restaurantLinkEl.textContent = restaurantName;
+              restaurantLinkEl.href = restaurantLink;
+
+              modal.setAttribute('data-review-id', reviewId);
+
+              modal.style.display = 'flex';
           });
       });
 
-      // 모달 닫기 버튼 클릭 이벤트
       closeModalBtn.addEventListener('click', function() {
           modal.style.display = 'none';
       });
 
-      // 모달 외부 클릭 시 닫기
       window.addEventListener('click', function(event) {
           if (event.target === modal) {
               modal.style.display = 'none';
           }
       });
 
-      // 모달 내 버튼 이벤트
-      document.getElementById('modalBtnApprove').addEventListener('click', function() {
-          const reportId = document.getElementById('modalReportId').textContent;
-          // 승인 처리 AJAX 요청
-          alert('신고를 승인했습니다.');
-          modal.style.display = 'none';
-      });
 
-      document.getElementById('modalBtnReject').addEventListener('click', function() {
-          const reportId = document.getElementById('modalReportId').textContent;
-          // 거부 처리 AJAX 요청
-          alert('신고를 거부했습니다.');
-          modal.style.display = 'none';
-      });
 
-      document.getElementById('modalBtnDelete').addEventListener('click', function() {
-          const reportId = document.getElementById('modalReportId').textContent;
-          if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
-              // 삭제 처리 AJAX 요청
-              alert('리뷰를 삭제했습니다.');
-              modal.style.display = 'none';
-          }
-      });
+
+
+         // 신고 거부 버튼 이벤트
+    document.getElementById('modalBtnReject').addEventListener('click', function() {
+        const reportId = document.getElementById('modalReportId').textContent;
+
+        if (confirm('이 신고를 거부하시겠습니까?')) {
+            rejectReport(reportId);
+        }
+
+        modal.style.display = 'none';
+    });
+
+    // 리뷰 삭제 버튼 이벤트
+    document.getElementById('modalBtnDelete').addEventListener('click', function() {
+        const reportId = document.getElementById('modalReportId').textContent;
+        const reviewId = document.getElementById('data-review-id').textContent;
+
+        if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
+            deleteReview(reportId, reviewId);
+        }
+
+        modal.style.display = 'none';
+    });
+
+    // 신고 거부 처리 함수
+    function rejectReport(reportId) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch(`/report/reject/${reportId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('신고가 거부되었습니다.');
+                location.reload(); // 페이지 새로고침
+                return;
+            }
+            throw new Error('신고 거부 처리에 실패했습니다.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message);
+        });
+    }
+
+    // 리뷰 삭제 처리 함수
+    function deleteReview(reportId, reviewId) {
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        fetch(`/report/delete/${reviewId}?reportId=${reportId}`, {
+            method: 'DELETE',
+            headers: {
+                [csrfHeader]: csrfToken
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('리뷰가 삭제되었습니다.');
+                location.reload(); // 페이지 새로고침
+                return;
+            }
+            throw new Error('리뷰 삭제에 실패했습니다.');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(error.message);
+        });
+    }
+
   });
 </script>
 </body>
