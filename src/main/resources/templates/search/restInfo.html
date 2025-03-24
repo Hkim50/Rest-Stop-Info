@@ -156,6 +156,113 @@
     grid-row: 1;
   }
 }
+
+
+        /* 신고 버튼 스타일 */
+    .report-button-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 5;
+    }
+
+    .report-button {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 0.8rem;
+      cursor: pointer;
+      padding: 2px 5px;
+      transition: color 0.2s;
+    }
+
+    .report-button:hover {
+      color: #d32323;
+    }
+
+    .review-content-wrapper {
+      position: relative;
+    }
+
+    /* 신고 모달 스타일 */
+    .report-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .report-modal-content {
+      background-color: white;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .report-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      border-bottom: 1px solid #e6e6e6;
+    }
+
+    .report-modal-header h3 {
+      margin: 0;
+      color: #d32323;
+    }
+
+    .close-report-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .report-modal-body {
+      padding: 20px;
+    }
+
+    .report-reason-container {
+      margin-top: 15px;
+    }
+
+    .report-reason-select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .report-modal-footer {
+      padding: 15px 20px;
+      border-top: 1px solid #e6e6e6;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .submit-report-btn {
+      background-color: #d32323;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .submit-report-btn:hover {
+      background-color: #b91d1d;
+    }
     </style>
 </head>
 <body>
@@ -321,6 +428,13 @@
                             <!-- 리뷰 이미지 표시 (있는 경우에만) -->
                             <div class="review-image-container" th:if="${review.fileName != null && review.filePath != null}">
                                 <img th:src="${review.filePath}" alt="리뷰 이미지" class="review-image">
+                            </div>
+
+                            <!-- 신고 버튼 추가 (자신의 리뷰가 아닐 경우에만) -->
+                            <div class="report-button-container" th:if="${name != review.userEntity}">
+                                <button class="report-button" th:data-review-id="${review.id}" th:data-reviewer-name="${review.name}" th:data-reporter-name="${name.name}">
+                                    <i class="fas fa-flag"></i>
+                                </button>
                             </div>
 
                             <div class="review-footer" th:if="${name == review.userEntity}">
@@ -583,5 +697,119 @@
     </div>
 </footer>
 <script th:src="@{/js/script2.js}"></script>
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+    // 신고 버튼 클릭 이벤트
+    const reportButtons = document.querySelectorAll('.report-button');
+    const reportModal = document.getElementById('report-modal');
+    const closeReportModal = document.querySelector('.close-report-modal');
+    const submitReportBtn = document.getElementById('submit-report');
+    const reportReviewId = document.getElementById('report-review-id');
+    const reportReviewerName = document.getElementById('report-reviewer-name');
+    const reporterNameInput = document.getElementById('reporter-name'); // 수정된 부분
+
+    reportButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const reviewId = this.getAttribute('data-review-id');
+            const reviewerName = this.getAttribute('data-reviewer-name');
+            const reporterName = this.getAttribute('data-reporter-name');
+
+            reporterNameInput.value = reporterName;
+            reportReviewId.value = reviewId;
+            reportReviewerName.textContent = reviewerName;
+            reportModal.style.display = 'flex';
+        });
+    });
+
+    // 모달 닫기
+    closeReportModal.addEventListener('click', function() {
+        reportModal.style.display = 'none';
+        document.getElementById('report-reason').value = '';
+    });
+
+    // 모달 외부 클릭 시 닫기
+    window.addEventListener('click', function(event) {
+        if (event.target === reportModal) {
+            reportModal.style.display = 'none';
+            document.getElementById('report-reason').value = '';
+        }
+    });
+
+    // 신고 제출
+    submitReportBtn.addEventListener('click', function() {
+        const reviewId = reportReviewId.value;
+        const reason = document.getElementById('report-reason').value;
+        const reporter = reporterNameInput.value;
+
+        if (!reason) {
+            alert('신고 사유를 선택해주세요.');
+            return;
+        }
+
+        // CSRF 토큰 가져오기
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // 서버에 신고 데이터 전송
+        fetch('/report', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+                reviewId: reviewId,
+                reason: reason,
+                reporter: reporter
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('신고가 접수되었습니다.');
+                reportModal.style.display = 'none';
+                document.getElementById('report-reason').value = '';
+            } else {
+                alert('신고 접수에 실패했습니다. 다시 시도해주세요.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        });
+    });
+});
+
+</script>
+<!-- 신고 모달 -->
+<div id="report-modal" class="report-modal">
+    <div class="report-modal-content">
+        <div class="report-modal-header">
+            <h3>신고하기</h3>
+            <button class="close-report-modal">&times;</button>
+        </div>
+        <div class="report-modal-body">
+            <p>작성자: <span id="report-reviewer-name"></span></p>
+            <div class="report-reason-container">
+                <label for="report-reason">신고 사유:</label>
+                <select id="report-reason" class="report-reason-select">
+                    <option value="">신고 사유를 선택해주세요</option>
+                    <option value="스팸/도배">스팸홍보/도배글입니다.</option>
+                    <option value="음란물">음란물입니다.</option>
+                    <option value="불법정보">불법정보를 포함하고있습니다.</option>
+                    <option value="청소년 유해">청소년에게 유해한 내용입니다.</option>
+                    <option value="욕설/혐오">욕설/생명경시/혐오/차별적 표현입니다.</option>
+                    <option value="개인정보 유출">개인정보 노출 게시물입니다.</option>
+                    <option value="불쾌한 표현">불쾌한 표현이 있습니다.</option>
+                </select>
+            </div>
+            <input type="hidden" id="reporter-name">
+            <input type="hidden" id="report-review-id">
+        </div>
+        <div class="report-modal-footer">
+            <button id="submit-report" class="submit-report-btn">신고하기</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
