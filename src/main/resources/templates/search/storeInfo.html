@@ -330,10 +330,6 @@
                 <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
                 <div class="user-name" th:text="${review.name}"></div>
                 <div class="user-location" th:text="${review.id}"></div>
-                <!--                <div class="user-stats">-->
-                <!--                  <span><i class="fas fa-star"></i> 5 리뷰</span>-->
-                <!--                  <span><i class="fas fa-camera"></i> 0 사진</span>-->
-                <!--                </div>-->
               </div>
             </div>
             <div class="review-content-wrapper">
@@ -463,14 +459,6 @@
 
     <!-- Right Column -->
     <div class="content-right">
-      <!-- Map Section -->
-      <!--      <div class="map-section">-->
-      <!--        <div id="map" style="width:100%;height:100%;" th:attr="data-mapx=${restaurant.mapx}, data-mapy=${restaurant.mapy}">-->
-      <!--          <div class="map-placeholder">-->
-      <!--            <p>지도가 여기에 표시됩니다</p>-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
 
       <!-- Business Info -->
       <div class="section business-info">
@@ -541,50 +529,7 @@
         </div>
       </div>
 
-      <!-- Similar Restaurants -->
-      <div class="section">
-        <h3 class="section-title">비슷한 식당</h3>
-        <div class="similar-restaurants">
-          <div class="similar-item">
-            <div class="similar-img">
-              <img src="https://placehold.co/100x100" alt="Similar Restaurant">
-            </div>
-            <div class="similar-info">
-              <h4 class="similar-name">맛있는 식당</h4>
-              <div class="similar-rating">
-                <div class="similar-stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
-                <span class="similar-review-count">120 reviews</span>
-              </div>
-              <p class="similar-category">한식</p>
-            </div>
-          </div>
-          <div class="similar-item">
-            <div class="similar-img">
-              <img src="https://placehold.co/100x100" alt="Similar Restaurant">
-            </div>
-            <div class="similar-info">
-              <h4 class="similar-name">좋은 식당</h4>
-              <div class="similar-rating">
-                <div class="similar-stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star-half-alt"></i>
-                </div>
-                <span class="similar-review-count">85 reviews</span>
-              </div>
-              <p class="similar-category">한식</p>
-            </div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 </div>
