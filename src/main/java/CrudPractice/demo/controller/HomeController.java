@@ -21,8 +21,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        model.addAttribute("name", name);
+        UserEntity user = memberService2.getUser();
+        model.addAttribute("name", user.getName());
         return "newhome";
     }
 }
