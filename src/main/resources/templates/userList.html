@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+  <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
+  <meta name="_csrf" data-th-content="${_csrf.token}" />
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사용자 관리 - SPOT</title>
+  <link rel="stylesheet" th:href="@{/css/styles2.css}">
+  <link rel="stylesheet" th:href="@{/css/admin.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* 사용자 관리 페이지 추가 스타일 */
+    .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    .table-header {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 150px;
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #e6e6e6;
+        font-weight: 600;
+        padding: 12px 0;
+    }
+
+    .header-cell {
+        padding: 0 15px;
+    }
+
+    .table-row {
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 150px;
+        border-bottom: 1px solid #e6e6e6;
+        align-items: center;
+        padding: 12px 0;
+    }
+
+    .table-row:hover {
+        background-color: #f9f9f9;
+    }
+
+    .table-cell {
+        padding: 0 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .role-badge.admin {
+        background-color: #d32323;
+        color: white;
+    }
+
+    .role-badge.user {
+        background-color: #0073bb;
+        color: white;
+    }
+
+    .search-filter-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .search-box {
+        display: flex;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        width: 300px;
+    }
+
+    .search-input {
+        border: none;
+        padding: 8px 12px;
+        flex: 1;
+    }
+
+    .search-button {
+        background-color: #d32323;
+        color: white;
+        border: none;
+        padding: 0 15px;
+        cursor: pointer;
+    }
+
+    .filter-select {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        margin-left: 10px;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 5px;
+    }
+
+    .action-btn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+    }
+
+    .action-btn.edit {
+        background-color: #0073bb;
+    }
+
+    .action-btn.delete {
+        background-color: #d32323;
+    }
+
+    .action-btn.promote {
+        background-color: #41a700;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .page-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        margin: 0 5px;
+        border-radius: 50%;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.2s;
+    }
+
+    .page-link:hover {
+        background-color: #f5f5f5;
+    }
+
+    .page-link.active {
+        background-color: #d32323;
+        color: white;
+    }
+
+    /* 모달 스타일 */
+    .user-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background-color: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e6e6e6;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        color: #333;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .modal-body {
+        padding: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .modal-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #e6e6e6;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-save {
+        background-color: #d32323;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .btn-cancel {
+        background-color: #f5f5f5;
+        color: #666;
+        border: 1px solid #ddd;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        .table-header, .table-row {
+            grid-template-columns: 80px 1fr 150px;
+        }
+
+        .header-cell.email-header, .table-cell.email-cell {
+            display: none;
+        }
+
+        .search-filter-container {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .table-header, .table-row {
+            grid-template-columns: 1fr 150px;
+        }
+
+        .header-cell.id-header, .table-cell.id-cell {
+            display: none;
+        }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">
+        <a href="/">SPOT</a>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="nav-link">소개</a>
+        <a sec:authorize="isAuthenticated()" href="/admin" class="nav-link">관리자</a>
+        <a sec:authorize="isAuthenticated()" href="/info" class="nav-link">내정보</a>
+        <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
+      </div>
+      <div class="menu-toggle">
+        <i class="fas fa-bars"></i>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<section class="admin-header">
+  <div class="container">
+    <div class="admin-profile-container">
+      <div class="profile-avatar">
+        <span th:text="${#strings.substring(admin.name, 0, 1)}">A</span>
+      </div>
+      <div class="admin-info">
+        <h1 th:text="${admin.name}">관리자명</h1>
+        <p th:text="${admin.email}">admin@example.com</p>
+        <div class="admin-badge">관리자</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="admin-content">
+  <div class="container">
+    <div class="admin-tabs">
+      <a href="/admin" class="admin-tab">대시보드</a>
+      <a href="/admin/reported-reviews" class="admin-tab">신고된 리뷰</a>
+      <a href="/admin/users" class="admin-tab active">사용자 관리</a>
+    </div>
+
+    <div class="admin-section">
+      <div class="section-header">
+        <h2><i class="fas fa-users"></i> 사용자 관리</h2>
+<!--        <div class="search-filter-container">-->
+<!--          <div class="search-box">-->
+<!--            <input type="text" id="search-input" class="search-input" placeholder="이름 또는 이메일로 검색...">-->
+<!--            <button id="search-button" class="search-button"><i class="fas fa-search"></i></button>-->
+<!--          </div>-->
+<!--          <select id="role-filter" class="filter-select">-->
+<!--            <option value="all">모든 역할</option>-->
+<!--            <option value="user">일반 사용자</option>-->
+<!--            <option value="admin">관리자</option>-->
+<!--          </select>-->
+<!--        </div>-->
+      </div>
+
+      <div class="users-table">
+        <div class="table-header">
+          <div class="header-cell id-header">ID</div>
+          <div class="header-cell name-header">이름</div>
+          <div class="header-cell email-header">이메일</div>
+          <div class="header-cell role-header">역할</div>
+        </div>
+
+        <div class="table-row" th:each="user : ${users}">
+          <div class="table-cell id-cell" th:text="${user.id}">1</div>
+          <div class="table-cell name-cell" th:text="${user.name}">홍길동</div>
+          <div class="table-cell email-cell" th:text="${user.email}">user@example.com</div>
+          <div class="table-cell role-cell">
+                        <span class="role-badge" th:classappend="${user.role == 'ADMIN' ? 'admin' : 'user'}"
+                              th:text="${user.role.name() == 'ADMIN' ? '관리자' : '일반 사용자'}">일반 사용자</span>
+<!--            <div class="user-actions">-->
+<!--              <button class="action-btn edit" th:data-user-id="${user.id}" title="사용자 정보 수정">-->
+<!--                <i class="fas fa-edit"></i>-->
+<!--              </button>-->
+<!--              <button class="action-btn delete" th:data-user-id="${user.id}" title="사용자 삭제"-->
+<!--                      th:if="${user.role != 'ADMIN'}">-->
+<!--                <i class="fas fa-trash"></i>-->
+<!--              </button>-->
+<!--              <button class="action-btn promote" th:data-user-id="${user.id}" title="관리자로 승격"-->
+<!--                      th:if="${user.role != 'ADMIN'}">-->
+<!--                <i class="fas fa-user-shield"></i>-->
+<!--              </button>-->
+<!--            </div>-->
+          </div>
+        </div>
+      </div>
+
+      <!-- 페이지네이션 -->
+<!--      <div class="pagination" th:if="${totalPages > 1}">-->
+<!--        <a href="#" class="page-link prev" th:if="${currentPage > 1}"-->
+<!--           th:href="@{/admin/users(page=${currentPage - 1})}">-->
+<!--          <i class="fas fa-chevron-left"></i>-->
+<!--        </a>-->
+<!--        <span th:each="i : ${#numbers.sequence(1, totalPages)}">-->
+<!--                    <a href="#" class="page-link" th:classappend="${i == currentPage ? 'active' : ''}"-->
+<!--                       th:href="@{/admin/users(page=${i})}" th:text="${i}">1</a>-->
+<!--                </span>-->
+<!--        <a href="#" class="page-link next" th:if="${currentPage < totalPages}"-->
+<!--           th:href="@{/admin/users(page=${currentPage + 1})}">-->
+<!--          <i class="fas fa-chevron-right"></i>-->
+<!--        </a>-->
+<!--      </div>-->
+    </div>
+  </div>
+</section>
+
+<!-- 사용자 편집 모달 -->
+<div id="edit-user-modal" class="user-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>사용자 정보 수정</h3>
+      <button class="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="edit-user-form">
+        <input type="hidden" id="edit-user-id">
+        <div class="form-group">
+          <label for="edit-name">이름</label>
+          <input type="text" id="edit-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-email">이메일</label>
+          <input type="email" id="edit-email" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label for="edit-role">역할</label>
+          <select id="edit-role" class="form-control">
+            <option value="USER">일반 사용자</option>
+            <option value="ADMIN">관리자</option>
+          </select>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button id="save-user" class="btn-save">저장</button>
+      <button class="btn-cancel">취소</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>About SPOT</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Investor Relations</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Discover</h3>
+        <ul>
+          <li><a href="#">Collections</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">User Guidelines</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Businesses</h3>
+        <ul>
+          <li><a href="#">Business Owner Login</a></li>
+          <li><a href="#">Claim your Business</a></li>
+          <li><a href="#">Advertise</a></li>
+          <li><a href="#">Business Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Follow Us</h3>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="app-links">
+          <a href="#" class="app-btn">
+            <i class="fab fa-apple"></i>
+            <span>App Store</span>
+          </a>
+          <a href="#" class="app-btn">
+            <i class="fab fa-google-play"></i>
+            <span>Google Play</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 SPOT Inc. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // CSRF 토큰 가져오기
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+      // 모달 요소
+      const modal = document.getElementById('edit-user-modal');
+      const closeModalBtn = document.querySelector('.close-modal');
+      const cancelBtn = document.querySelector('.btn-cancel');
+
+      // 사용자 편집 버튼 이벤트 리스너
+      const editButtons = document.querySelectorAll('.action-btn.edit');
+      editButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              const userId = this.getAttribute('data-user-id');
+              openEditModal(userId);
+          });
+      });
+
+      // 사용자 삭제 버튼 이벤트 리스너
+      const deleteButtons = document.querySelectorAll('.action-btn.delete');
+      deleteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              const userId = this.getAttribute('data-user-id');
+              if (confirm('이 사용자를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+                  deleteUser(userId);
+              }
+          });
+      });
+
+      // 관리자 승격 버튼 이벤트 리스너
+      const promoteButtons = document.querySelectorAll('.action-btn.promote');
+      promoteButtons.forEach(button => {
+          button.addEventListener('click', function() {
+              const userId = this.getAttribute('data-user-id');
+              if (confirm('이 사용자를 관리자로 승격시키겠습니까?')) {
+                  promoteUser(userId);
+              }
+          });
+      });
+
+      // 모달 닫기
+      closeModalBtn.addEventListener('click', function() {
+          modal.style.display = 'none';
+      });
+
+      cancelBtn.addEventListener('click', function() {
+          modal.style.display = 'none';
+      });
+
+      // 모달 외부 클릭 시 닫기
+      window.addEventListener('click', function(event) {
+          if (event.target === modal) {
+              modal.style.display = 'none';
+          }
+      });
+
+      // 사용자 정보 저장
+      document.getElementById('save-user').addEventListener('click', function() {
+          const userId = document.getElementById('edit-user-id').value;
+          const name = document.getElementById('edit-name').value;
+          const email = document.getElementById('edit-email').value;
+          const role = document.getElementById('edit-role').value;
+
+          if (!name || !email) {
+              alert('모든 필드를 입력해주세요.');
+              return;
+          }
+
+          updateUser(userId, name, email, role);
+      });
+
+      // 검색 기능
+      document.getElementById('search-button').addEventListener('click', function() {
+          const searchTerm = document.getElementById('search-input').value;
+          const roleFilter = document.getElementById('role-filter').value;
+
+          window.location.href = `/admin/users?search=${encodeURIComponent(searchTerm)}&role=${roleFilter}`;
+      });
+
+      // 엔터 키로 검색
+      document.getElementById('search-input').addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+              document.getElementById('search-button').click();
+          }
+      });
+
+      // 역할 필터 변경 시 자동 검색
+      document.getElementById('role-filter').addEventListener('change', function() {
+          const searchTerm = document.getElementById('search-input').value;
+          const roleFilter = this.value;
+
+          window.location.href = `/admin/users?search=${encodeURIComponent(searchTerm)}&role=${roleFilter}`;
+      });
+
+      // 사용자 편집 모달 열기
+      function openEditModal(userId) {
+          // 사용자 정보 가져오기
+          fetch(`/api/admin/users/${userId}`, {
+              method: 'GET',
+              headers: {
+                  [csrfHeader]: csrfToken
+              }
+          })
+          .then(response => {
+              if (response.ok) {
+                  return response.json();
+              }
+              throw new Error('사용자 정보를 가져오는데 실패했습니다.');
+          })
+          .then(user => {
+              // 모달에 사용자 정보 채우기
+              document.getElementById('edit-user-id').value = user.id;
+              document.getElementById('edit-name').value = user.name;
+              document.getElementById('edit-email').value = user.email;
+              document.getElementById('edit-role').value = user.role;
+
+              // 모달 표시
+              modal.style.display = 'flex';
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert(error.message);
+          });
+      }
+
+      // 사용자 정보 업데이트
+      function updateUser(userId, name, email, role) {
+          fetch(`/api/admin/users/${userId}`, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json',
+                  [csrfHeader]: csrfToken
+              },
+              body: JSON.stringify({
+                  name: name,
+                  email: email,
+                  role: role
+              })
+          })
+          .then(response => {
+              if (response.ok) {
+                  alert('사용자 정보가 업데이트되었습니다.');
+                  modal.style.display = 'none';
+                  location.reload();
+                  return;
+              }
+              throw new Error('사용자 정보 업데이트에 실패했습니다.');
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert(error.message);
+          });
+      }
+
+      // 사용자 삭제
+      function deleteUser(userId) {
+          fetch(`/api/admin/users/${userId}`, {
+              method: 'DELETE',
+              headers: {
+                  [csrfHeader]: csrfToken
+              }
+          })
+          .then(response => {
+              if (response.ok) {
+                  alert('사용자가 삭제되었습니다.');
+                  location.reload();
+                  return;
+              }
+              throw new Error('사용자 삭제에 실패했습니다.');
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert(error.message);
+          });
+      }
+
+      // 사용자 관리자로 승격
+      function promoteUser(userId) {
+          fetch(`/api/admin/users/${userId}/promote`, {
+              method: 'PUT',
+              headers: {
+                  [csrfHeader]: csrfToken
+              }
+          })
+          .then(response => {
+              if (response.ok) {
+                  alert('사용자가 관리자로 승격되었습니다.');
+                  location.reload();
+                  return;
+              }
+              throw new Error('사용자 승격에 실패했습니다.');
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert(error.message);
+          });
+      }
+  });
+</script>
+
+</body>
+</html>

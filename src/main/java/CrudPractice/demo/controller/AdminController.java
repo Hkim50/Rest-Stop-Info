@@ -52,4 +52,14 @@ public class AdminController {
 
         return "reportList";
     }
+
+    @GetMapping("/users")
+    public String userList(Model model) {
+        UserEntity user = memberService2.getUser();
+        List<UserEntity> allUsers = memberService2.getAllUsers();
+
+        model.addAttribute("admin", user);
+        model.addAttribute("users", allUsers);
+        return "userList";
+    }
 }
