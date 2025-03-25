@@ -15,10 +15,9 @@
         <a href="/">SPOT</a>
       </div>
       <div class="nav-links">
-        <a href="/" class="nav-link">Home</a>
-        <a href="#" class="nav-link">Restaurants</a>
-        <a href="#" class="nav-link">Services</a>
-        <a href="/login" class="nav-link">Login</a>
+        <a href="/" class="nav-link">홈</a>
+        <a href="#" class="nav-link">소개</a>
+        <a href="/login" class="nav-link">로그인</a>
       </div>
       <div class="menu-toggle">
         <i class="fas fa-bars"></i>
@@ -31,19 +30,19 @@
   <div class="container">
     <div class="auth-container">
       <div class="auth-form-container">
-        <h1>Create an Account</h1>
+        <h1>회원가입</h1>
         <div class="social-login">
           <a href="/oauth2/authorization/google" class="social-btn google">
             <i class="fab fa-google"></i>
-            Continue with Google
+            Google 계정으로 로그인 하기
           </a>
           <a href="/oauth2/authorization/github" class="social-btn github">
             <i class="fab fa-github"></i>
-            Continue with GitHub
+            Github 계정으로 로그인 하기
           </a>
           <a href="/oauth2/authorization/naver" class="social-btn naver">
             <i class="fas fa-n"></i>
-            Continue with Naver
+            Naver 계정으로 로그인 하기
           </a>
         </div>
         <div class="divider">
@@ -51,28 +50,28 @@
         </div>
         <form id="register-form" class="auth-form" th:action="@{/register}" method="post">
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">이름</label>
             <input type="text" id="name" name="name" required>
           </div>
           <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">이메일</label>
             <input type="email" id="email" name="email" required>
           </div>
           <div class="form-group">
-            <label for="password">Password</label>
+            <label for="password">비밀번호</label>
             <input type="password" id="password" name="password" required>
           </div>
-          <button type="submit" class="btn-primary btn-block">Sign Up</button>
+          <button type="submit" class="btn-primary btn-block">회원가입</button>
         </form>
         <div class="auth-footer">
-          <p>Already have an account? <a href="/login">Log in</a></p>
+          <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
         </div>
       </div>
       <div class="auth-image">
         <img src="https://thumbs.dreamstime.com/z/join-us-symbol-concept-word-black-chalk-background-beautiful-sea-business-copy-space-315137259.jpg?ct=jpeg" alt="Sign Up Image">
         <div class="auth-image-overlay">
-          <h2>Join Our Community of Food Lovers</h2>
-          <p>Create an account to save your favorite restaurants, write reviews, and get personalized recommendations.</p>
+          <h2>커뮤니티에 함께하세요</h2>
+          <p>계정을 만들어 좋아하는 레스토랑 리뷰를 작성하며, 맞춤 추천을 받아보세요.</p>
         </div>
       </div>
     </div>

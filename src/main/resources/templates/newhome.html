@@ -16,8 +16,8 @@
             </div>
             <div class="nav-links">
                 <a href="#" class="nav-link">소개</a>
-                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">Login</a>
-                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">Sign Up</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">로그인</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">회원가입</a>
                 <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link active">관리자</a>
                 <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info" >내정보</a>
                 <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
@@ -145,9 +145,9 @@
 <section class="cta">
     <div class="container">
         <div class="cta-content">
-            <h2>Own a Restaurant?</h2>
-            <p>Join our platform and reach more customers. It's free to get started!</p>
-            <a href="#" class="btn-primary">Get Started</a>
+            <h2>음식점을 운영하시나요?</h2>
+            <p>우리 플랫폼에 가입하고 더 많은 고객을 만나보세요. 무료로 시작할 수 있습니다!</p>
+            <a href="#" class="btn-primary">시작하기</a>
         </div>
     </div>
 </section>
