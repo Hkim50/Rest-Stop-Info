@@ -37,6 +37,19 @@ public class ApiListEntity {
     @Column
     private String roadAddress;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ApiListEntity)) return false;
+        ApiListEntity that = (ApiListEntity) o;
+        return this.id != null && this.id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
 
     public ApiListDto toDto() {
         return ApiListDto.builder()

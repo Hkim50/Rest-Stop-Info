@@ -39,6 +39,10 @@ public class ApiListDto {
 
     private String filePath;
 
+    private int numOfReviews;
+
+    private String topDesc;
+
     public ApiListEntity toEntity() {
         return ApiListEntity.builder()
                 .id(this.id)

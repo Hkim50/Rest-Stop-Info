@@ -79,5 +79,9 @@ public class ApiSearchService {
         return dto;
     }
 
-
+    public List<ApiListEntity> findAll() {
+        return apiListRepository.findAll();
     }
+
+
+}

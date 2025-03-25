@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +34,12 @@ public class ApiSearchController {
     }
 
     @GetMapping("/find")
-    public String find(StoreFormDto storeFormDto, Model model) {
+    public String find(StoreFormDto storeFormDto, Model model) throws UnsupportedEncodingException {
         Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
 
         if (byName.isPresent()) {
-            ApiListDto dto = byName.get().toDto();
-            model.addAttribute("restaurant", dto);
-            return "search/storeInfo";
+            String encodedTitle = URLEncoder.encode(byName.get().getTitle(), "UTF-8");
+            return "redirect:/api/" + encodedTitle;
         }
 
         ApiResponseDto store = apiSearchService.findStore(storeFormDto.getName());

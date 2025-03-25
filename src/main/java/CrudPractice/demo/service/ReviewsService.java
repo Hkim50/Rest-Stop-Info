@@ -175,6 +175,7 @@ public class ReviewsService{
             ApiListDto dto = entity.toDto();
             if (firstByFilePathIsNotNullAndApiListEntity.isPresent()) {
                 dto.setFilePath(firstByFilePathIsNotNullAndApiListEntity.get().getFilePath());
+                dto.setTopDesc(firstByFilePathIsNotNullAndApiListEntity.get().getContent());
             }
             else {
                 dto.setFilePath("https://placehold.co/400x300");
@@ -184,7 +185,6 @@ public class ReviewsService{
 
         return dtoList;
     }
-
 
 
 

@@ -81,7 +81,7 @@
                 <input type="hidden" name="name" value="일식">
                 <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
                     <div class="category-img">
-                        <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Delivery">
+                        <img src="https://www.dailysecu.com/news/photo/201705/20531_14250_1819.jpg" alt="Delivery">
                     </div>
                     <h3>일식</h3>
                 </button>
@@ -112,36 +112,15 @@
     <div class="container">
         <h2>TOP 스팟</h2>
         <div class="restaurant-grid">
-            <div class="restaurant-card">
-                <div class="restaurant-img">
-                    <img src="https://github.com/user-attachments/assets/a0ce32f5-dceb-4103-a427-14dd26098d24" alt="Restaurant 1">
-                </div>
-                <div class="restaurant-info">
-                    <h3>The Tasty Bistro</h3>
-                    <div class="rating">
-                            <span class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>
-                            </span>
-                        <span class="review-count">254 reviews</span>
+            <!-- Thymeleaf 반복문 시작 -->
+            <div th:each="spot : ${topSpots}" class="restaurant-card">
+                    <input type="hidden" name="name" th:value="${spot.title}">
+                    <div class="restaurant-img">
+                        <img th:src="${spot.filePath}" alt="Spot Image">
                     </div>
-                    <div class="categories">
-                        <span>Italian</span>
-                        <span>$$</span>
-                    </div>
-                    <p>"Amazing pasta and great service! The atmosphere is perfect for date night."</p>
-                </div>
-            </div>
-            <div class="restaurant-card">
-                <div class="restaurant-img">
-                    <img src="https://github.com/user-attachments/assets/41289d7d-b230-476c-b87b-6b089bf21fd6" alt="Restaurant 2">
-                </div>
-                <div class="restaurant-info">
-                    <h3>Burger Heaven</h3>
-                    <div class="rating">
+                    <div class="restaurant-info">
+                        <h3 th:text="${spot.title}">스팟 이름</h3>
+                        <div class="rating">
                             <span class="stars">
                                 <i class="fas fa-star"></i>
                                 <i class="fas fa-star"></i>
@@ -149,44 +128,19 @@
                                 <i class="fas fa-star"></i>
                                 <i class="far fa-star"></i>
                             </span>
-                        <span class="review-count">187 reviews</span>
+                            <span class="review-count" th:text="${spot.numOfReviews + ' reviews'}">0 reviews</span>
+                        </div>
+                        <div class="categories">
+                            <span th:text="${spot.category}">카테고리</span>
+                        </div>
+                        <p th:text="${spot.topDesc}">리뷰 내용</p>
                     </div>
-                    <div class="categories">
-                        <span>American</span>
-                        <span>$$</span>
-                    </div>
-                    <p>"Best burgers in town! The fries are crispy and the milkshakes are to die for."</p>
-                </div>
             </div>
-            <div class="restaurant-card">
-                <div class="restaurant-img">
-                    <img src="https://github.com/user-attachments/assets/9cbc197d-cc64-437d-b3c2-b914e62d276f" alt="Restaurant 3">
-                </div>
-                <div class="restaurant-info">
-                    <h3>Sushi Paradise</h3>
-                    <div class="rating">
-                            <span class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                            </span>
-                        <span class="review-count">321 reviews</span>
-                    </div>
-                    <div class="categories">
-                        <span>Japanese</span>
-                        <span>$$$</span>
-                    </div>
-                    <p>"Fresh fish and creative rolls. The chef's special is always a good choice!"</p>
-                </div>
-            </div>
-        </div>
-        <div class="view-more">
-            <a href="#" class="btn-secondary">View More Restaurants</a>
+            <!-- Thymeleaf 반복문 끝 -->
         </div>
     </div>
 </section>
+
 
 <section class="cta">
     <div class="container">
