@@ -41,7 +41,7 @@ public class ApiListDto {
 
     private int numOfReviews;
 
-    private String topDesc;
+    private String topReview;
 
     public ApiListEntity toEntity() {
         return ApiListEntity.builder()

@@ -1,6 +1,7 @@
 package CrudPractice.demo.controller;
 
 import CrudPractice.demo.domain.ApiListEntity;
+import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.dto.ApiListDto;
 import CrudPractice.demo.dto.ReviewsDto;
@@ -33,27 +34,23 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
 
-        HashMap<ApiListEntity, Integer> map = new HashMap<>();
         List<ApiListEntity> all = apiSearchService.findAll();
+        List<ReviewsEntity> allReviews = reviewsService.findByApiList(all);
 
-        all.stream().forEach(f -> {
-            List<ReviewsDto> byApiList = reviewsService.findByApiList(f.toDto());
-            map.put(f, byApiList.size());
-        });
+        Map<ApiListEntity, Long> reviewCountMap = allReviews.stream()
+                .collect(Collectors.groupingBy(ReviewsEntity::getApiListEntity, Collectors.counting()));
 
-        // 리뷰 수 기준으로 정렬 후 상위 3개만 추출
-        List<ApiListEntity> sortedSpots = map.entrySet().stream()
-                .sorted(Map.Entry.<ApiListEntity, Integer>comparingByValue().reversed()) // 내림차순
+        // 정렬 후 상위 3개 추출
+        List<ApiListEntity> sortedSpots = reviewCountMap.entrySet().stream()
+                .sorted(Map.Entry.<ApiListEntity, Long>comparingByValue().reversed()) // 내림차순 정렬
                 .limit(3)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
 
-        List<ApiListDto> topSpots = reviewsService.getProfPhoto(sortedSpots);
+        List<ApiListDto> topSpots = reviewsService.getProfPhoto(sortedSpots, allReviews);
 
-        topSpots.stream().forEach(f ->{
-            f.setNumOfReviews(map.get(f.toEntity()).intValue());
-        });
-
+        // DTO에 리뷰 개수 설정
+        topSpots.forEach(dto -> dto.setNumOfReviews(reviewCountMap.getOrDefault(dto.toEntity(), 0L).intValue()));
 
         model.addAttribute("topSpots", topSpots);
         return "newhome";

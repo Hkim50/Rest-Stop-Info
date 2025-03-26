@@ -36,7 +36,7 @@ public class ReviewsEntity {
 
     private String filePath;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 

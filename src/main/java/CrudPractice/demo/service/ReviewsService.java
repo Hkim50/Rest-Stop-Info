@@ -15,10 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class ReviewsService{
@@ -127,6 +126,15 @@ public class ReviewsService{
                 .orElse(false);
     }
 
+    public List<ReviewsEntity> findByApiList(List<ApiListEntity> apiList) {
+//        List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.getReviewByApiListEntity(dto.toEntity());
+//
+//        return reviewByApiListEntity.stream()
+//                .map(ReviewsEntity::toDto)
+//                .toList();
+        return reviewsRepository.findAllByApiListEntities(apiList);
+    }
+
     public List<ReviewsDto> findByApiList(ApiListDto dto) {
         List<ReviewsEntity> reviewByApiListEntity = reviewsRepository.getReviewByApiListEntity(dto.toEntity());
 
@@ -175,11 +183,38 @@ public class ReviewsService{
             ApiListDto dto = entity.toDto();
             if (firstByFilePathIsNotNullAndApiListEntity.isPresent()) {
                 dto.setFilePath(firstByFilePathIsNotNullAndApiListEntity.get().getFilePath());
-                dto.setTopDesc(firstByFilePathIsNotNullAndApiListEntity.get().getContent());
+                dto.setTopReview(firstByFilePathIsNotNullAndApiListEntity.get().getContent());
             }
             else {
                 dto.setFilePath("https://placehold.co/400x300");
             }
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+    }
+
+    public List<ApiListDto> getProfPhoto(List<ApiListEntity> list, List<ReviewsEntity> allReviews) {
+        List<ApiListDto> dtoList = new ArrayList<>();
+
+        // filePath가 존재하는 리뷰만 필터링
+        Map<ApiListEntity, ReviewsEntity> reviewMap = allReviews.stream()
+                .filter(r -> r.getFilePath() != null)
+                // getapilistentity 를 해서 얻은 값을 key, 현재 allreview.stream 값을 value, 이미 존재하는 key 가 있다면 원래 있던 값으로 유지
+                .collect(Collectors.toMap(ReviewsEntity::getApiListEntity, Function.identity(), (existing, replacement) -> existing));
+
+        // DTO 변환
+        for (ApiListEntity entity : list) {
+            ApiListDto dto = entity.toDto();
+
+            ReviewsEntity review = reviewMap.get(entity);
+            if (review != null) {
+                dto.setFilePath(review.getFilePath());
+                dto.setTopReview(review.getContent());
+            } else {
+                dto.setFilePath("https://placehold.co/400x300");
+            }
+
             dtoList.add(dto);
         }
 

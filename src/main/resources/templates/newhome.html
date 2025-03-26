@@ -114,7 +114,9 @@
         <div class="restaurant-grid">
             <!-- Thymeleaf 반복문 시작 -->
             <div th:each="spot : ${topSpots}" class="restaurant-card">
+                <form th:action="@{'/api/' + ${spot.title}}" method="get" class="category-card">
                     <input type="hidden" name="name" th:value="${spot.title}">
+                    <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
                     <div class="restaurant-img">
                         <img th:src="${spot.filePath}" alt="Spot Image">
                     </div>
@@ -133,8 +135,10 @@
                         <div class="categories">
                             <span th:text="${spot.category}">카테고리</span>
                         </div>
-                        <p th:text="${spot.topDesc}">리뷰 내용</p>
+                        <p th:text="${spot.topReview}">리뷰 내용</p>
                     </div>
+                    </button>
+                </form>
             </div>
             <!-- Thymeleaf 반복문 끝 -->
         </div>
@@ -156,63 +160,20 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About FoodFinder</h3>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Careers</a></li>
-                    <li><a href="#">Press</a></li>
-                    <li><a href="#">Investor Relations</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Discover</h3>
-                <ul>
-                    <li><a href="#">Collections</a></li>
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">User Guidelines</a></li>
-                    <li><a href="#">Support</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Businesses</h3>
-                <ul>
-                    <li><a href="#">Business Owner Login</a></li>
-                    <li><a href="#">Claim your Business</a></li>
-                    <li><a href="#">Advertise</a></li>
-                    <li><a href="#">Business Support</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Follow Us</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                </div>
-                <div class="app-links">
-                    <a href="#" class="app-btn">
-                        <i class="fab fa-apple"></i>
-                        <span>App Store</span>
-                    </a>
-                    <a href="#" class="app-btn">
-                        <i class="fab fa-google-play"></i>
-                        <span>Google Play</span>
-                    </a>
-                </div>
+                <p><strong>저자:</strong> DevKim</p>
+                <p><strong>이메일:</strong> <a href="mailto:plavix1177@gmail.com">plavix1177@gmail.com</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/Hkim50/Rest-Stop-Info" target="_blank">GitHub</a></p>
+                <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/hyunwoo-kim-38a1b6261/" target="_blank">LinkedIn</a></p>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 FoodFinder Inc. All rights reserved.</p>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Cookie Policy</a>
-            </div>
+            <p>&copy; 2025 SPOT. All rights reserved.</p>
         </div>
     </div>
 </footer>
 
+
 <script th:src="@{/js/script.js}"></script>
+
 </body>
 </html>

@@ -6,6 +6,8 @@ import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.dto.ApiListDto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -30,6 +32,9 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, Long> {
     ReviewsEntity getReviewByNameAndCreatedAt(String name, Timestamp timestamp);
 
     List<ReviewsEntity> getReviewByApiListEntity(ApiListEntity apiListEntity);
+
+    @Query("SELECT r FROM ReviewsEntity r WHERE r.apiListEntity IN :apiLists")
+    List<ReviewsEntity> findAllByApiListEntities(@Param("apiLists") List<ApiListEntity> apiLists);
 
     // 최신순
     List<ReviewsEntity> findAllByApiListEntityOrderByCreatedAtDesc(ApiListEntity apiListEntity);
