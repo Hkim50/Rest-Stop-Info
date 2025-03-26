@@ -19,7 +19,7 @@ public class ReportedEntity {
     @CreationTimestamp
     private Timestamp createdAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id")
     private ReviewsEntity review;
 

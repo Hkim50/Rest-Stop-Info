@@ -40,11 +40,11 @@ public class ReviewsEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restInfoEntity_id")
     private RestInfoEntity restInfoEntity;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "apiListEntity_id")
     private ApiListEntity apiListEntity;
 

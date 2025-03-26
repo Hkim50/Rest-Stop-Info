@@ -2,6 +2,7 @@ package CrudPractice.demo.repository;
 
 import CrudPractice.demo.domain.ReportedEntity;
 import CrudPractice.demo.domain.ReviewsEntity;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 public interface ReportRepository extends JpaRepository<ReportedEntity, Long> {
     Optional<ReportedEntity> findByReview(ReviewsEntity entity);
 
-    List<ReportedEntity> findTop3ByOrderByCreatedAtDesc();
+    @EntityGraph(attributePaths = "review")
+    List<ReportedEntity> findByOrderByCreatedAtDesc();
 
 }

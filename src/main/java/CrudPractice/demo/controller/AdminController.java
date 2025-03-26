@@ -29,13 +29,11 @@ public class AdminController {
 
         Long userCount = memberService2.getUserCount();
         UserEntity user = memberService2.getUser();
-        Long reportedCount = reportService.getTotal();
-        List<ReportedEntity> reportedList = reportService.getRecentReportedList();
 
+        List<ReportedEntity> reportedList = reportService.getRecentReportedList();
 
         model.addAttribute("admin", user);
         model.addAttribute("totalUsers", userCount);
-        model.addAttribute("reportedReviews", reportedCount);
         model.addAttribute("recentReportedReviews", reportedList);
 
         return "admin";
@@ -45,7 +43,7 @@ public class AdminController {
     public String reportedList(Model model) {
 
         UserEntity user = memberService2.getUser();
-        List<ReportedEntity> reportedList = reportService.getReportedList();
+        List<ReportedEntity> reportedList = reportService.getRecentReportedList();
 
         model.addAttribute("admin", user);
         model.addAttribute("reportedReviews", reportedList);

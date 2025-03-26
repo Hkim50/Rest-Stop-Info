@@ -70,7 +70,7 @@
                 </div>
                 <div class="stat-info">
                     <h3>신고된 리뷰</h3>
-                    <p class="stat-number" th:text="${reportedReviews}">23</p>
+                    <p class="stat-number" th:text="${recentReportedReviews.size()}">23</p>
                 </div>
             </div>
         </div>
@@ -87,19 +87,16 @@
             </div>
 
             <div class="reported-reviews-list" th:unless="${#lists.isEmpty(recentReportedReviews)}">
-                <div class="reported-review-item" th:each="report : ${recentReportedReviews}">
-                    <div class="report-header">
+                <div class="reported-review-item" th:each="report, iterStat : ${recentReportedReviews}">
+                    <div class="report-header" th:if="${iterStat.index < 3}">
                         <div class="report-info">
                             <span class="report-id" th:text="${'신고 #' + report.id}">신고 #123</span>
                             <span class="report-date" th:text="${#dates.format(report.createdAt, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</span>
                             <span class="report-reason" th:text="${report.reason}">부적절한 내용</span>
                         </div>
-<!--                        <div class="report-status" th:classappend="${report.status == '처리 대기' ? 'pending' : (report.status == '승인됨' ? 'approved' : 'rejected')}">-->
-<!--                            <span th:text="${report.status}">처리 대기</span>-->
-<!--                        </div>-->
                     </div>
 
-                    <div class="review-item">
+                    <div class="review-item" th:if="${iterStat.index < 3}">
                         <div class="review-user">
                             <div class="user-profile">
                                 <div class="profile-img" th:text="${#strings.substring(report.review.name, 0, 1)}">U</div>
@@ -107,7 +104,7 @@
                                 <div class="user-location" th:text="${report.review.id}">ID</div>
                             </div>
                         </div>
-                        <div class="review-content-wrapper">
+                        <div class="review-content-wrapper" >
                             <div class="review-rating">
                                 <div class="stars">
                                     <span th:each="i : ${#numbers.sequence(1, 5)}"
@@ -166,18 +163,6 @@
                             <div class="user-info-label">역할:</div>
                             <div class="user-info-value">관리자</div>
                         </div>
-<!--                        <div class="user-info-item">-->
-<!--                            <div class="user-info-label">가입일:</div>-->
-<!--                            <div class="user-info-value" th:text="${#temporals.format(admin.createdAt, 'yyyy-MM-dd')}">2023-01-01</div>-->
-<!--                        </div>-->
-<!--                        <div class="user-info-item">-->
-<!--                            <div class="user-info-label">마지막 로그인:</div>-->
-<!--                            <div class="user-info-value" th:text="${#temporals.format(admin.lastLogin, 'yyyy-MM-dd HH:mm')}">2023-01-01 12:00</div>-->
-<!--                        </div>-->
-<!--                        <div class="user-info-item">-->
-<!--                            <div class="user-info-label">전화번호:</div>-->
-<!--                            <div class="user-info-value" th:text="${admin.phone}">010-1234-5678</div>-->
-<!--                        </div>-->
                     </div>
 
                     <div class="admin-permissions">

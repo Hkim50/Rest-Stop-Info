@@ -47,7 +47,7 @@ public class ReviewReportService {
     }
 
     public List<ReportedEntity> getRecentReportedList() {
-        return repository.findTop3ByOrderByCreatedAtDesc();
+        return repository.findByOrderByCreatedAtDesc();
     }
 
     public Long getTotal() {
