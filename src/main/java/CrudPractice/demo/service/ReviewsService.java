@@ -138,20 +138,36 @@ public class ReviewsService{
                 .toList();
     }
 
-    public List<ReviewsDto> findByApiList(ApiListDto dto, String sort) {
-
-        List<ReviewsEntity> reviewByApiListEntity;
-        if (sort.equals("latest")) {
-            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByCreatedAtDesc(dto.toEntity());
-        } else if (sort.equals("highRating")) {
-            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingDesc(dto.toEntity());
-        } else{
-            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingAsc(dto.toEntity());
+    public List<ReviewsEntity> findByApiList(String title, String sort) {
+        List<ReviewsEntity> list;
+        switch (sort) {
+            case "highRating":
+                list = reviewsRepository.findReviewsByTitleWithApiHighRating(title);
+                break;
+            case "lowRating":
+                list = reviewsRepository.findReviewsByTitleWithApiLowRating(title);
+                break;
+            default:
+                list = reviewsRepository.findReviewsByTitleWithApiLatest(title);
+                break;
         }
+        return list;
 
-        return reviewByApiListEntity.stream()
-                .map(ReviewsEntity::toDto)
-                .toList();
+//        return reviewsRepository.findReviewsByTitleWithApi(title, sort);
+
+
+//        List<ReviewsEntity> reviewByApiListEntity;
+//        if (sort.equals("latest")) {
+//            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByCreatedAtDesc(dto.toEntity());
+//        } else if (sort.equals("highRating")) {
+//            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingDesc(dto.toEntity());
+//        } else{
+//            reviewByApiListEntity = reviewsRepository.findAllByApiListEntityOrderByRatingAsc(dto.toEntity());
+//        }
+//
+//        return reviewByApiListEntity.stream()
+//                .map(ReviewsEntity::toDto)
+//                .toList();
     }
 
 
@@ -165,6 +181,17 @@ public class ReviewsService{
         }
         return photos;
     }
+    public List<String> getPhotos2(List<ReviewsEntity> reviews) {
+        List<String> photos = new ArrayList<>();
+
+        for (ReviewsEntity entity : reviews) {
+            if (entity.getFilePath() != null) {
+                photos.add(entity.getFilePath());
+            }
+        }
+        return photos;
+    }
+
 
     public List<ApiListDto> getProfPhoto(List<ApiListEntity> list) {
         List<ApiListDto> dtoList = new ArrayList<>();
@@ -195,7 +222,7 @@ public class ReviewsService{
         // filePath가 존재하는 리뷰만 필터링
         Map<ApiListEntity, ReviewsEntity> reviewMap = allReviews.stream()
                 .filter(r -> r.getFilePath() != null)
-                // getapilistentity 를 해서 얻은 값을 key, 현재 allreview.stream 값을 value, 이미 존재하는 key 가 있다면 원래 있던 값으로 유지
+                // getapilistentity 를 해서 얻은 값을 key, 현재 allreview.stream 값을 value, 이미 존재하는 key 가 있다면 원래 있던 value 유지
                 .collect(Collectors.toMap(ReviewsEntity::getApiListEntity, Function.identity(), (existing, replacement) -> existing));
 
         // DTO 변환

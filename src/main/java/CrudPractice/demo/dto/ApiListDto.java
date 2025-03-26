@@ -39,7 +39,7 @@ public class ApiListDto {
 
     private String filePath;
 
-    private int numOfReviews;
+    private Long numOfReviews;
 
     private String topReview;
 

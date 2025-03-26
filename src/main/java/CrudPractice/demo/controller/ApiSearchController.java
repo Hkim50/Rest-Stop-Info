@@ -1,6 +1,7 @@
 package CrudPractice.demo.controller;
 
 import CrudPractice.demo.domain.ApiListEntity;
+import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.dto.*;
 import CrudPractice.demo.service.ApiSearchService;
@@ -19,7 +20,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api")
@@ -37,6 +40,7 @@ public class ApiSearchController {
 
     @GetMapping("/find")
     public String find(StoreFormDto storeFormDto, Model model) throws UnsupportedEncodingException {
+
         Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
 
         if (byName.isPresent()) {
@@ -51,19 +55,20 @@ public class ApiSearchController {
             return "/error/errorPage";
         }
 
-        // 리뷰 갯수 가져오기
-        List<Integer> numOfReviews = new ArrayList<>();
+        List<ApiListEntity> entities = apiSearchService.findByString(store);
+        List<ReviewsEntity> reviews = reviewsService.findByApiList(entities);
 
-        store.getItems().stream().forEach(f -> {
-            ApiListDto dto = apiSearchService.findByName(f.getTitle()).get().toDto();
-            numOfReviews.add(reviewsService.findByApiList(dto).size());
+        List<ApiListDto> dtos = reviewsService.getProfPhoto(entities, reviews);
+
+        Map<ApiListEntity, Long> reviewCountMap = reviews.stream()
+                .collect(Collectors.groupingBy(ReviewsEntity::getApiListEntity, Collectors.counting()));
+
+        dtos.stream().forEach(f -> {
+            f.setNumOfReviews(reviewCountMap.getOrDefault(f.toEntity(), 0L));
         });
 
-        List<ApiListDto> profPhoto = reviewsService.getProfPhoto(apiSearchService.findByName(store.getItems()));
 
-        model.addAttribute("numReviews", numOfReviews);
-        model.addAttribute("restaurants", profPhoto);
-        model.addAttribute("size", store.getTotal());
+        model.addAttribute("restaurants", dtos);
         model.addAttribute("searchInput", storeFormDto.getName());
 
         return "search/resultList";
@@ -73,18 +78,24 @@ public class ApiSearchController {
     public String searchDetail(@PathVariable("title") String title,
                                @RequestParam(name = "sort", defaultValue = "latest") String sort, Model model) {
 
-        ApiListDto dto = apiSearchService.findByName(title).get().toDto();
-        List<ReviewsDto> byApiList = reviewsService.findByApiList(dto, sort);
+        List<ReviewsEntity> reviews = reviewsService.findByApiList(title, sort);
 
-        List<String> photos = reviewsService.getPhotos(byApiList);
+        ApiListDto dto;
+        if (reviews.size() == 0) {
+            dto = apiSearchService.findByName(title).get().toDto();
+        }
+        else {
+            dto = reviews.get(0).getApiListEntity().toDto();
+        }
+
+        List<String> photos = reviewsService.getPhotos2(reviews);
         UserEntity user = memberService2.getUser();
-
         boolean hasImages = photos.size() > 0;
 
         model.addAttribute("name", user);
-        model.addAttribute("reviews", byApiList);
+        model.addAttribute("reviews", reviews);
         model.addAttribute("restaurant", dto);
-        model.addAttribute("numReviews", byApiList.size());
+        model.addAttribute("numReviews", reviews.size());
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);
         model.addAttribute("currentSort", sort);

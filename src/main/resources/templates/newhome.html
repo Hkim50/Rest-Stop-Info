@@ -115,7 +115,6 @@
             <!-- Thymeleaf 반복문 시작 -->
             <div th:each="spot : ${topSpots}" class="restaurant-card">
                 <form th:action="@{'/api/' + ${spot.title}}" method="get" class="category-card">
-                    <input type="hidden" name="name" th:value="${spot.title}">
                     <button type="submit" style="all: unset; cursor: pointer; width: 100%;">
                     <div class="restaurant-img">
                         <img th:src="${spot.filePath}" alt="Spot Image">

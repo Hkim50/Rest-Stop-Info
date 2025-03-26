@@ -14,6 +14,8 @@ import org.springframework.web.client.RestClient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -41,19 +43,38 @@ public class ApiSearchService {
                 .map(ApiListDto::toEntity)
                 .toList();
 
-        for (ApiListEntity apiListEntity : list) {
-            if (!findByName(apiListEntity.getTitle()).isPresent()) {
-                apiListRepository.save(apiListEntity);
-            }
-        }
+        List<String> titles = list.stream().map(ApiListEntity::getTitle).collect(Collectors.toList());
+        List<ApiListEntity> existEntities = apiListRepository.findByTitles(titles);
+
+        Set<String> existingTitles = existEntities.stream()
+                .map(ApiListEntity::getTitle)
+                .collect(Collectors.toSet());
+
+
+        List<ApiListEntity> newList = list.stream().filter(apiListEntity -> !existingTitles.contains(apiListEntity.getTitle())).toList();
+        apiListRepository.saveAll(newList);
+
+
+//        for (ApiListEntity apiListEntity : list) {
+//            if (!findByName(apiListEntity.getTitle()).isPresent()) {
+//                apiListRepository.save(apiListEntity);
+//            }
+//        }
 
         return result;
     }
 
     public Optional<ApiListEntity> findByName(String name) {
-        Optional<ApiListEntity> listEntity = apiListRepository.findByTitle(name);
+        return apiListRepository.findByTitle(name);
+    }
 
-        return listEntity;
+    public List<ApiListEntity> findByString(ApiResponseDto dto) {
+
+        List<String> titles = dto.getItems().stream()
+                .map(ApiListDto::getTitle)
+                .collect(Collectors.toList());
+
+        return apiListRepository.findByTitles(titles);
     }
 
     public List<ApiListEntity> findByName(List<ApiListDto> list) {

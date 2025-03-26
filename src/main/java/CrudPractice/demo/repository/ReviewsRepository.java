@@ -47,6 +47,24 @@ public interface ReviewsRepository extends JpaRepository<ReviewsEntity, Long> {
 
     Optional<ReviewsEntity> findFirstByFilePathIsNotNullAndApiListEntity(ApiListEntity entity);
 
+//    @Query("SELECT r FROM ReviewsEntity r JOIN FETCH r.apiListEntity WHERE r.apiListEntity.title = :title ORDER BY " +
+//            "CASE WHEN :sort = 'latest' THEN r.createdAt END DESC, " +
+//            "CASE WHEN :sort = 'highRating' THEN r.rating END DESC, " +
+//            "CASE WHEN :sort = 'lowRating' THEN r.rating END ASC")
+//    List<ReviewsEntity> findReviewsByTitleWithApi(@Param("title") String title, @Param("sort") String sort);
+
+    @Query("SELECT r FROM ReviewsEntity r JOIN FETCH r.apiListEntity WHERE r.apiListEntity.title = :title ORDER BY r.createdAt DESC")
+    List<ReviewsEntity> findReviewsByTitleWithApiLatest(@Param("title") String title);
+
+    @Query("SELECT r FROM ReviewsEntity r JOIN FETCH r.apiListEntity WHERE r.apiListEntity.title = :title ORDER BY r.rating DESC")
+    List<ReviewsEntity> findReviewsByTitleWithApiHighRating(@Param("title") String title);
+
+    @Query("SELECT r FROM ReviewsEntity r JOIN FETCH r.apiListEntity WHERE r.apiListEntity.title = :title ORDER BY r.rating ASC")
+    List<ReviewsEntity> findReviewsByTitleWithApiLowRating(@Param("title") String title);
+
+
+
+
 //    Optional<ReviewsEntity> getReviewByApiListEntityIfFilePathIsNotNull(ApiListEntity apiListEntity);
 
 

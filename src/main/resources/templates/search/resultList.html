@@ -460,7 +460,7 @@
 <section class="search-results-header">
   <div class="container">
     <h1 class="search-results-title" th:text="'\'' + ${searchInput} + '\'' + ' 검색 결과'">검색 결과</h1>
-    <p class="search-results-count" th:text="${size} + '개의 결과가 있습니다'">0개의 결과가 있습니다</p>
+    <p class="search-results-count" th:text="${restaurants.size()} + '개의 결과가 있습니다'">0개의 결과가 있습니다</p>
   </div>
 </section>
 
@@ -470,14 +470,14 @@
     <!-- Search Results List -->
     <div class="search-results-list">
       <!-- No Results Message (shown when there are no results) -->
-      <div class="no-results" th:if="${size < 0}">
+      <div class="no-results" th:if="${restaurants.size() < 0}">
         <h3>검색 결과가 없습니다</h3>
         <p>다른 검색어로 다시 시도해보세요.</p>
         <a href="/" class="btn-primary">홈으로 돌아가기</a>
       </div>
 
       <!-- Restaurant Card (Repeated for each result) -->
-      <div class="restaurant-card" th:each="restaurant, iterStat : ${restaurants}">
+      <div class="restaurant-card" th:each="restaurant : ${restaurants}">
         <div class="restaurant-card-content">
           <div class="restaurant-card-image">
             <img th:src="${restaurant.filePath}" alt="Restaurant Image">
@@ -488,7 +488,7 @@
             </h2>
             <div class="restaurant-card-rating">
               <span class="restaurant-card-review-count"
-                    th:text="'총 ' + ${numReviews[iterStat.index]} + '개의 리뷰'"></span>
+                    th:text="'총 ' + ${restaurant.numOfReviews} + '개의 리뷰'"></span>
             </div>
             <div class="restaurant-card-categories">
               <span class="restaurant-card-category" th:text="${restaurant.category}">카테고리</span>

@@ -324,7 +324,7 @@
         <!-- 전체 리뷰 섹션을 reviews-list 클래스로 감싸기 -->
         <div class="reviews-list">
           <!-- 각 리뷰 아이템 -->
-          <div class="review-item" th:each="review, reviewStat : ${reviews}">
+          <div class="review-item" th:each="review : ${reviews}">
             <div class="review-user">
               <div class="user-profile">
                 <div class="profile-img" th:text="${review.name.substring(0, 1)}"></div>
@@ -348,13 +348,13 @@
               </div>
 
               <!-- 신고 버튼 추가 (자신의 리뷰가 아닐 경우에만) -->
-              <div class="report-button-container" th:if="${name != review.userEntity}">
+              <div class="report-button-container" th:if="${name != review.user}">
                 <button class="report-button" th:data-review-id="${review.id}" th:data-reviewer-name="${review.name}" th:data-reporter-name="${name.name}">
                   <i class="fas fa-flag"></i>
                 </button>
               </div>
 
-              <div class="review-footer" th:if="${name == review.userEntity}">
+              <div class="review-footer" th:if="${name == review.user}">
                 <div class="review-actions">
                   <input type="hidden" name="rating" th:value="${review.rating}">
                   <input type="hidden" name="createdAt" th:value="${review.createdAt}">

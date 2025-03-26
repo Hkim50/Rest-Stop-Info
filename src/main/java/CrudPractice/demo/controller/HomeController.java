@@ -50,7 +50,7 @@ public class HomeController {
         List<ApiListDto> topSpots = reviewsService.getProfPhoto(sortedSpots, allReviews);
 
         // DTO에 리뷰 개수 설정
-        topSpots.forEach(dto -> dto.setNumOfReviews(reviewCountMap.getOrDefault(dto.toEntity(), 0L).intValue()));
+        topSpots.forEach(dto -> dto.setNumOfReviews(reviewCountMap.getOrDefault(dto.toEntity(), 0L)));
 
         model.addAttribute("topSpots", topSpots);
         return "newhome";
