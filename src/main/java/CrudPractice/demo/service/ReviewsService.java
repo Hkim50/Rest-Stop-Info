@@ -57,7 +57,7 @@ public class ReviewsService{
         return reviewsDto;
     }
 
-    public List<ReviewsDto> getReviews(RestInfoEntity restInfoEntity, String sort) {
+    public List<ReviewsEntity> getReviews(RestInfoEntity restInfoEntity, String sort) {
 
         List<ReviewsEntity> reviewsByRestInfoEntity;
         if (sort.equals("latest")) {
@@ -68,8 +68,7 @@ public class ReviewsService{
             reviewsByRestInfoEntity = reviewsRepository.findAllByRestInfoEntityOrderByRatingAsc(restInfoEntity);
         }
 
-        return reviewsByRestInfoEntity.stream().map(ReviewsEntity::toDto)
-                .toList();
+        return reviewsByRestInfoEntity;
     }
 
 
@@ -171,17 +170,17 @@ public class ReviewsService{
     }
 
 
-    public List<String> getPhotos(List<ReviewsDto> dto) {
-        List<String> photos = new ArrayList<>();
-
-        for (ReviewsDto reviewsDto : dto) {
-            if (reviewsDto.getFilePath() != null) {
-                photos.add(reviewsDto.getFilePath());
-            }
-        }
-        return photos;
-    }
-    public List<String> getPhotos2(List<ReviewsEntity> reviews) {
+//    public List<String> getPhotos(List<ReviewsDto> dto) {
+//        List<String> photos = new ArrayList<>();
+//
+//        for (ReviewsDto reviewsDto : dto) {
+//            if (reviewsDto.getFilePath() != null) {
+//                photos.add(reviewsDto.getFilePath());
+//            }
+//        }
+//        return photos;
+//    }
+    public List<String> getPhotos(List<ReviewsEntity> reviews) {
         List<String> photos = new ArrayList<>();
 
         for (ReviewsEntity entity : reviews) {

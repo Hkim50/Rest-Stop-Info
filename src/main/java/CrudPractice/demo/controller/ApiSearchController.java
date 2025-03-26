@@ -88,7 +88,7 @@ public class ApiSearchController {
             dto = reviews.get(0).getApiListEntity().toDto();
         }
 
-        List<String> photos = reviewsService.getPhotos2(reviews);
+        List<String> photos = reviewsService.getPhotos(reviews);
         UserEntity user = memberService2.getUser();
         boolean hasImages = photos.size() > 0;
 

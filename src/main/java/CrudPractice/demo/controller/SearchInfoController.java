@@ -1,6 +1,7 @@
 package CrudPractice.demo.controller;
 
 import CrudPractice.demo.domain.RestInfoEntity;
+import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.dto.*;
 import CrudPractice.demo.service.MemberService2;
@@ -51,15 +52,15 @@ public class SearchInfoController {
             return "/error/errorPage";
         }
 
-        List<ReviewsDto> reviewsByInfo = reviewsService.getReviews(restInfoDto.toEntity(), sort);
+        List<ReviewsEntity> reviews = reviewsService.getReviews(restInfoDto.toEntity(), sort);
         UserEntity user = memberService2.getUser();
 
-        List<String> photos = reviewsService.getPhotos(reviewsByInfo);
+        List<String> photos = reviewsService.getPhotos(reviews);
         boolean hasImages = photos.size() > 0;
 
         model.addAttribute("lists", restInfoDto.getList());
         model.addAttribute("restName", storeFormDto.getName());
-        model.addAttribute("reviews", reviewsByInfo);
+        model.addAttribute("reviews", reviews);
         model.addAttribute("name", user);
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);

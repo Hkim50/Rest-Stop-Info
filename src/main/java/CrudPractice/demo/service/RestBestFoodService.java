@@ -47,7 +47,7 @@ public class RestBestFoodService {
         // "&bestfoodyn=Y"
 
         RestInfoDto restInfoDto = restClient.get()
-                .uri("https://data.ex.co.kr/openapi/restinfo/restBestfoodList?key=" + KEY + "&type=json&stdRestNm=" + restName)
+                .uri("/openapi/restinfo/restBestfoodList?key=" + KEY + "&type=json&stdRestNm=" + restName)
                 .retrieve()
                 .body(RestInfoDto.class);
 
