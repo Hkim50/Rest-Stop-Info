@@ -76,12 +76,7 @@ public class ReviewsService{
 
 
     public List<ReviewsDto> getReviewByUser(UserEntity user) {
-        List<ReviewsEntity> reviewByUserEntity = reviewsRepository.getReviewByUser(user);
-        List<ReviewsDto> reviews = new ArrayList<>();
-
-        reviewByUserEntity.stream().forEach(f -> {
-            reviews.add(f.toDto());
-        });
+        List<ReviewsDto> reviews = reviewsRepository.getReviewByUser(user).stream().map(ReviewsEntity::toDto).toList();
 
         return reviews;
     }
