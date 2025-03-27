@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPOT - 소개</title>
+    <link rel="stylesheet" th:href="@{/css/styles2.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 소개 페이지 추가 스타일 */
+        .about-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .about-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .about-header p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .about-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-text h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #333;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .about-text h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #d32323;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mission-section {
+            background-color: #f9f9f9;
+            padding: 60px 0;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .mission-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .mission-content h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .mission-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .team-section {
+            padding: 60px 0;
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .team-header h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .team-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .team-member {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-image {
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .member-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-info {
+            padding: 25px;
+        }
+
+        .member-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .member-info h4 {
+            font-size: 1rem;
+            color: #d32323;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .member-info p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .social-links a:hover {
+            background-color: #d32323;
+            color: white;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px 0;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: #d32323;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border: 4px solid #d32323;
+            border-radius: 50%;
+            top: 15px;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(odd)::after {
+            right: -12px;
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: -12px;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-content h3 {
+            margin-bottom: 10px;
+            color: #d32323;
+        }
+
+        .timeline-content p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        .timeline-date {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            .timeline-item:nth-child(odd)::after,
+            .timeline-item:nth-child(even)::after {
+                left: 19px;
+            }
+
+            .about-content {
+                flex-direction: column;
+            }
+
+            .about-image {
+                order: -1;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/">SPOT</a>
+            </div>
+            <div class="nav-links">
+                <a href="/about" class="nav-link active">소개</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">로그인</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">회원가입</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link">관리자</a>
+                <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info">내정보</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<section class="about-section">
+    <div class="container">
+        <div class="about-header">
+            <h1>SPOT에 오신 것을 환영합니다</h1>
+            <p>맛있는 음식과 특별한 장소를 발견하는 새로운 방법</p>
+        </div>
+
+        <div class="about-content">
+            <div class="about-text">
+                <h2>SPOT의 시작</h2>
+                <p>SPOT은 2025년 1월, 맛있는 음식점을 찾기 어려웠던 개인적인 경험에서 시작되었습니다. 미국의 Yelp 처럼 솔직한 리뷰만을 자유롭게 남기는 플랫폼이 아직 한국에는 없었고 모두가 신뢰할 수 있는 정보를 쉽게 얻을 수 있는 플랫폼이 필요하다고 생각했습니다.</p>
+
+                <p>사용자들이 자신의 경험을 공유하고, 다른 사람들의 솔직한 리뷰를 통해 좋은 장소를 발견할 수 있는 커뮤니티를 만들고자 했습니다.</p>
+
+                <p>계속해서 플랫폼을 개선하고, 더 많은 기능을 추가하여 사용자 경험을 향상시키기 위해 노력하고 있습니다.</p>
+            </div>
+
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Restaurant Interior">
+            </div>
+        </div>
+
+        <div class="mission-section">
+            <div class="mission-content">
+                <h2>미션</h2>
+                <p>SPOT의 미션은 사람들이 어디서든 맛있는 음식과 특별한 경험을 발견할 수 있도록 돕는 것입니다. 정확하고 신뢰할 수 있는 정보를 제공하여 사용자들이 자신에게 맞는 완벽한 장소를 찾을 수 있도록 지원합니다.</p>
+                <p>특 소규모 음식점에서 더 많은 고객을 만날 수 있도록 돕고, 그들의 이야기를 더 많은 사람들에게 전달하고자 합니다. SPOT은 음식을 통해 사람들을 연결하고, 새로운 경험을 공유하는 플랫폼입니다.</p>
+            </div>
+        </div>
+
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Developer Working">
+            </div>
+
+            <div class="about-text">
+                <h2>개발자 소개</h2>
+                <p>안녕하세요 김현우 입니다. 소프트웨어 개발과 음식에 대한 열정을 가진 개발자로, 사람들이 더 나은 식사 경험을 할 수 있도록 돕는 솔루션을 만드는 것을 좋아합니다.</p>
+
+                <p>저는 컴퓨터 과학을 전공하고, 다양한 웹 및 모바일 애플리케이션 개발 경험을 가지고 있습니다. SPOT은 제가 개인적으로 겪었던 문제를 해결하기 위해 시작한 프로젝트로, 많은 사람들에게 도움이 되는 것을 보며 큰 보람을 느끼고 있습니다.</p>
+
+                <p>저는 항상 새로운 기술을 배우고, 사용자 경험을 개선하는 방법을 연구하고 있습니다. SPOT을 통해 더 많은 사람들이 좋은 음식과 장소를 발견하고, 특별한 경험을 할 수 있기를 바랍니다.</p>
+
+                <div class="social-links">
+                    <a href="mailto:plavix1177@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="https://github.com/Hkim50/Rest-Stop-Info" target="_blank"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/hyunwoo-kim-38a1b6261/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <h2 style="text-align: center; margin: 60px 0 30px;">SPOT의 성장 과정</h2>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023년 1월</div>
+                    <h3>아이디어 탄생</h3>
+                    <p>여행 중 좋은 휴게소 음식을 찾기 어려웠던 경험에서 SPOT의 아이디어가 탄생했습니다.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023년 3월</div>
+                    <h3>개발 시작</h3>
+                    <p>첫 번째 프로토타입 개발을 시작하고, 기본적인 기능을 구현했습니다.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023년 6월</div>
+                    <h3>베타 출시</h3>
+                    <p>제한된 사용자들을 대상으로 베타 버전을 출시하고 피드백을 수집했습니다.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2023년 9월</div>
+                    <h3>공식 출시</h3>
+                    <p>SPOT의 첫 번째 공식 버전을 출시하고, 사용자들의 리뷰를 받기 시작했습니다.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2024년 1월</div>
+                    <h3>일반 음식점 확장</h3>
+                    <p>휴게소뿐만 아니라 일반 음식점까지 서비스를 확장했습니다.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-date">2024년 현재</div>
+                    <h3>지속적인 성장</h3>
+                    <p>새로운 기능을 추가하고, 사용자 경험을 개선하며 계속해서 성장하고 있습니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <div class="cta-content">
+            <h2>SPOT과 함께하세요</h2>
+            <p>지금 바로 가입하고 맛있는 음식과 특별한 장소를 발견하세요. 여러분의 경험을 공유하고, 다른 사람들의 리뷰를 통해 새로운 장소를 발견해보세요.</p>
+            <a href="/register" class="btn-primary">회원가입</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p><strong>저자:</strong> DevKim</p>
+                <p><strong>이메일:</strong> <a href="mailto:plavix1177@gmail.com">plavix1177@gmail.com</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/Hkim50/Rest-Stop-Info" target="_blank">GitHub</a></p>
+                <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/hyunwoo-kim-38a1b6261/" target="_blank">LinkedIn</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SPOT. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/script.js}"></script>
+</body>
+</html>

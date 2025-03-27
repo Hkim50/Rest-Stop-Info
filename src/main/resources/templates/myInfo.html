@@ -329,7 +329,7 @@
         <a href="/">SPOT</a>
       </div>
       <div class="nav-links">
-        <a href="#" class="nav-link">소개</a>
+        <a href="/intro" class="nav-link">소개</a>
         <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link active">관리자</a>
         <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info">내정보</a>
         <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>

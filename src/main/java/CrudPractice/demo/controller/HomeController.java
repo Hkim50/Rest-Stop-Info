@@ -24,6 +24,7 @@ public class HomeController {
     private final MemberService2 memberService2;
     private final ApiSearchService apiSearchService;
     private final ReviewsService reviewsService;
+
     @Autowired
     public HomeController(MemberService2 memberService2, ApiSearchService apiSearchService, ReviewsService reviewsService) {
         this.memberService2 = memberService2;
@@ -54,5 +55,10 @@ public class HomeController {
 
         model.addAttribute("topSpots", topSpots);
         return "newhome";
+    }
+
+    @GetMapping("/intro")
+    public String intro() {
+        return "intro";
     }
 }

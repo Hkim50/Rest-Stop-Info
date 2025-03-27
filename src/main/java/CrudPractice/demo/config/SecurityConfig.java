@@ -24,7 +24,7 @@ public class SecurityConfig {
         http
 //                .csrf(csrf -> csrf.disable())  // CSRF 보호 비활성화 (테스트용)
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**","/", "/register", "/login", "/files/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**","/", "/register", "/login", "/files/**", "/intro").permitAll()
                         .requestMatchers("/admin").hasRole("ADMIN")
                         .anyRequest().authenticated()  // 나머지는 로그인해야 볼 수 있음
                 );
