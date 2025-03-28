@@ -104,5 +104,9 @@ public class ApiSearchService {
         return apiListRepository.findAll();
     }
 
+    public Long save(ApiListDto dto) {
+        return apiListRepository.save(dto.toEntity()).getId();
+    }
+
 
 }

@@ -40,13 +40,13 @@ public class SearchInfoController {
 //        return "/search/newList";
 //    }
     @GetMapping("/find")
-    public String find(StoreFormDto storeFormDto,
+    public String find(@RequestParam("name") String name,
                        @RequestParam(value = "sort", required = false, defaultValue = "latest") String sort,
                        Model model) {
 
-        RestInfoDto restInfoDto = restBestFoodService.getBestFoodList(storeFormDto.getName());
+        RestInfoDto restInfoDto = restBestFoodService.getBestFoodList(name);
 
-        if (storeFormDto.getName().equals("") || restInfoDto == null || restInfoDto.getList().size() == 0) {
+        if (name.equals("") || restInfoDto == null || restInfoDto.getList().size() == 0) {
             model.addAttribute("errorMessage", "휴게소 이름을 다시 한번 확인해주세요.");
 
             return "/error/errorPage";
@@ -59,7 +59,7 @@ public class SearchInfoController {
         boolean hasImages = photos.size() > 0;
 
         model.addAttribute("lists", restInfoDto.getList());
-        model.addAttribute("restName", storeFormDto.getName());
+        model.addAttribute("restName", name);
         model.addAttribute("reviews", reviews);
         model.addAttribute("name", user);
         model.addAttribute("hasImages", hasImages);

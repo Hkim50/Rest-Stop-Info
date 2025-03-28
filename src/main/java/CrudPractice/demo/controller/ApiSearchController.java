@@ -39,18 +39,18 @@ public class ApiSearchController {
     }
 
     @GetMapping("/find")
-    public String find(StoreFormDto storeFormDto, Model model) throws UnsupportedEncodingException {
+    public String find(@RequestParam("name") String name, Model model) throws UnsupportedEncodingException {
 
-        Optional<ApiListEntity> byName = apiSearchService.findByName(storeFormDto.getName());
+        Optional<ApiListEntity> byName = apiSearchService.findByName(name);
 
         if (byName.isPresent()) {
             String encodedTitle = URLEncoder.encode(byName.get().getTitle(), "UTF-8");
             return "redirect:/api/" + encodedTitle;
         }
 
-        ApiResponseDto store = apiSearchService.findStore(storeFormDto.getName());
+        ApiResponseDto store = apiSearchService.findStore(name);
 
-        if (storeFormDto.getName().equals("") || store.getItems().size() == 0) {
+        if (name.equals("") || store.getItems().size() == 0) {
             model.addAttribute("errorMessage", "음식점 이름을 다시 한번 확인해주세요.");
             return "/error/errorPage";
         }
@@ -69,7 +69,7 @@ public class ApiSearchController {
 
 
         model.addAttribute("restaurants", dtos);
-        model.addAttribute("searchInput", storeFormDto.getName());
+        model.addAttribute("searchInput", name);
 
         return "search/resultList";
     }

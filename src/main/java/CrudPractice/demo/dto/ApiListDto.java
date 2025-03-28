@@ -1,5 +1,6 @@
 package CrudPractice.demo.dto;
 
+import CrudPractice.demo.domain.StoreForm;
 import CrudPractice.demo.domain.ApiListEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -45,6 +46,19 @@ public class ApiListDto {
 
     public ApiListEntity toEntity() {
         return ApiListEntity.builder()
+                .id(this.id)
+                .title(this.title)
+                .link(this.link)
+                .category(this.category)
+                .description(this.description)
+                .telephone(this.telephone)
+                .address(this.address)
+                .roadAddress(this.roadAddress)
+                .build();
+    }
+
+    public StoreForm toStoreForm() {
+        return StoreForm.builder()
                 .id(this.id)
                 .title(this.title)
                 .link(this.link)

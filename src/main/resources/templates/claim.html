@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>비즈니스 등록 - SPOT</title>
+    <link rel="stylesheet" th:href="@{/css/styles2.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 비즈니스 등록 페이지 스타일 */
+        .claim-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .claim-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .claim-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .claim-header p {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .claim-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 120px;
+            position: relative;
+        }
+
+        .step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background-color: #e6e6e6;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #e6e6e6;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step.active .step-number {
+            background-color: #d32323;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background-color: #41a700;
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .claim-form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .form-step {
+            display: none;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group .hint {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .form-group.error input,
+        .form-group.error select,
+        .form-group.error textarea {
+            border-color: #d32323;
+        }
+
+        .error-message {
+            color: #d32323;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .form-group.error .error-message {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn-back {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: #e6e6e6;
+        }
+
+        .btn-next {
+            background-color: #d32323;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-next:hover {
+            background-color: #c02020;
+        }
+
+        .btn-next:disabled {
+            background-color: #f5a5a5;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            color: #41a700;
+            margin-bottom: 20px;
+        }
+
+        .success-message h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .success-message p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        /* 비즈니스 검색 결과 스타일 */
+        .search-result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+            display: none;
+        }
+
+        .search-result.success {
+            border-color: #41a700;
+            background-color: #f0fff0;
+        }
+
+        .search-result.error {
+            border-color: #d32323;
+            background-color: #fff0f0;
+        }
+
+        .search-result-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .search-result.success .search-result-icon {
+            color: #41a700;
+        }
+
+        .search-result.error .search-result-icon {
+            color: #d32323;
+        }
+
+        .search-result-text {
+            display: inline-block;
+            vertical-align: middle;
+            font-weight: 600;
+        }
+
+        /* 시간 선택 그리드 */
+        .hours-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .hours-day {
+            display: flex;
+            align-items: center;
+        }
+
+        .hours-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .hours-input select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .hours-separator {
+            font-weight: bold;
+        }
+
+        /* 카테고리 선택 */
+        .category-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .category-option {
+            display: flex;
+            align-items: center;
+        }
+
+        .category-option input {
+            margin-right: 8px;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <a href="/">SPOT</a>
+            </div>
+            <div class="nav-links">
+                <a href="/intro" class="nav-link">소개</a>
+                <a sec:authorize="!isAuthenticated()" href="/login" class="nav-link">로그인</a>
+                <a sec:authorize="!isAuthenticated()" href="/register" class="btn-primary2">회원가입</a>
+                <a sec:authorize="hasRole('ROLE_ADMIN')" href="/admin" class="nav-link active">관리자</a>
+                <a sec:authorize="isAuthenticated()" href="/info" class="nav-link" id="my-info" >내정보</a>
+                <a sec:authorize="isAuthenticated()" href="/logout" class="btn-primary2">로그아웃</a>
+            </div>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<div class="claim-container">
+    <div class="claim-header">
+        <h1>비즈니스 등록하기</h1>
+        <p>SPOT에 비즈니스를 등록하고 더 많은 고객을 만나보세요. 무료로 시작할 수 있습니다!</p>
+    </div>
+
+    <div class="claim-steps">
+        <div class="step active" id="step-1">
+            <div class="step-number">1</div>
+            <div class="step-label">비즈니스 검색</div>
+        </div>
+        <div class="step" id="step-2">
+            <div class="step-number">2</div>
+            <div class="step-label">정보 입력</div>
+        </div>
+        <div class="step" id="step-3">
+            <div class="step-number">3</div>
+            <div class="step-label">완료</div>
+        </div>
+    </div>
+
+    <div class="claim-form-container">
+        <!-- 1단계: 비지니스 이름 검색 -->
+        <div class="form-step active" id="form-step-1">
+            <h2>비지니스 이름 검색</h2>
+            <p>등록하려는 비즈니스의 이름을 입력해주세요. 이미 등록된 비즈니스인지 확인합니다.</p>
+
+            <div class="form-group" id="business-name-group">
+                <label for="business-name">비지니스 이름</label>
+                <input type="text" id="business-name" placeholder="예: 맛있는 식당">
+                <div class="error-message" id="business-name-error">비지니스 이름을 입력해주세요.</div>
+            </div>
+
+            <div class="search-result" id="search-result">
+                <i class="search-result-icon"></i>
+                <span class="search-result-text"></span>
+            </div>
+
+            <div class="form-actions">
+                <div></div> <!-- 빈 div로 공간 확보 -->
+                <button type="button" id="btn-check-name" class="btn-next">
+                    다음 단계
+                    <span class="loading-spinner" id="name-check-spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 2단계: 비즈니스 정보 입력 -->
+        <div class="form-step" id="form-step-2">
+            <h2>비즈니스 정보 입력</h2>
+            <p>비즈니스에 대한 상세 정보를 입력해주세요. 정확한 정보를 입력할수록 고객들에게 더 잘 노출됩니다.</p>
+
+            <div class="form-group">
+                <label for="business-category">카테고리</label>
+                <select id="business-category">
+                    <option value="">카테고리 선택</option>
+                    <option value="한식">한식</option>
+                    <option value="일식">일식</option>
+                    <option value="중식">중식</option>
+                    <option value="양식">양식</option>
+                    <option value="동남아 음식">동남아 음식</option>
+                    <option value="카페/디저트">카페/디저트</option>
+                    <option value="패스트푸드">패스트푸드</option>
+                    <option value="기타">기타</option>
+                </select>
+                <div class="error-message" id="category-error">카테고리를 선택해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="business-address">주소</label>
+                <input type="text" id="business-address" placeholder="예: 서울시 강남구 테헤란로 123">
+                <div class="error-message" id="address-error">주소를 입력해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="business-road-address">도로명 주소 (선택사항)</label>
+                <input type="text" id="business-road-address" placeholder="예: 테헤란로 123">
+            </div>
+
+            <div class="form-group">
+                <label for="business-phone">전화번호</label>
+                <input type="tel" id="business-phone" placeholder="예: 02-1234-5678">
+                <div class="error-message" id="phone-error">전화번호를 입력해주세요.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="business-website">웹사이트 및 SNS주소 (선택사항)</label>
+                <input type="url" id="business-website" placeholder="예: https://www.example.com">
+            </div>
+
+            <div class="form-group">
+                <label>영업 시간</label>
+
+                <div class="hours-grid">
+                    <div class="hours-day">
+                        <label for="monday-open">월요일</label>
+                    </div>
+                    <div class="hours-input">
+                        <select id="monday-open">
+                            <option value="closed">휴무</option>
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00" selected>11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                        <span class="hours-separator">~</span>
+                        <select id="monday-close">
+                            <option value="closed">휴무</option>
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00" selected>22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 다른 요일도 동일한 패턴으로 추가 -->
+                <div class="hours-grid">
+                    <div class="hours-day">
+                        <label for="tuesday-open">화요일</label>
+                    </div>
+                    <div class="hours-input">
+                        <select id="tuesday-open">
+                            <option value="closed">휴무</option>
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00" selected>11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00">22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                        <span class="hours-separator">~</span>
+                        <select id="tuesday-close">
+                            <option value="closed">휴무</option>
+                            <option value="00:00">00:00</option>
+                            <option value="01:00">01:00</option>
+                            <option value="02:00">02:00</option>
+                            <option value="03:00">03:00</option>
+                            <option value="04:00">04:00</option>
+                            <option value="05:00">05:00</option>
+                            <option value="06:00">06:00</option>
+                            <option value="07:00">07:00</option>
+                            <option value="08:00">08:00</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                            <option value="21:00">21:00</option>
+                            <option value="22:00" selected>22:00</option>
+                            <option value="23:00">23:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 나머지 요일들도 추가 -->
+            </div>
+
+            <div class="form-group">
+                <label for="business-description">비즈니스 설명 (선택사항)</label>
+                <textarea id="business-description" placeholder="비즈니스에 대한 간략한 설명을 입력해주세요."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="btn-back-step1" class="btn-back">이전 단계</button>
+                <button type="button" id="btn-submit" class="btn-next">
+                    등록하기
+                    <span class="loading-spinner" id="submit-spinner" style="display: none;"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- 3단계: 완료 -->
+        <div class="form-step" id="form-step-3">
+            <div class="success-message">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>비즈니스 등록이 완료되었습니다!</h2>
+                <p>등록해주셔서 감사합니다. 검토 후 승인되면 SPOT에서 비즈니스를 확인하실 수 있습니다.</p>
+                <a href="/" class="btn-next">홈으로 돌아가기</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <p><strong>저자:</strong> DevKim</p>
+                <p><strong>이메일:</strong> <a href="mailto:plavix1177@gmail.com">plavix1177@gmail.com</a></p>
+                <p><strong>GitHub:</strong> <a href="https://github.com/Hkim50/Rest-Stop-Info" target="_blank">GitHub</a></p>
+                <p><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/hyunwoo-kim-38a1b6261/" target="_blank">LinkedIn</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 SPOT. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // CSRF 토큰 가져오기
+        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        // 요소 참조
+        const businessNameInput = document.getElementById('business-name');
+        const businessNameGroup = document.getElementById('business-name-group');
+        const businessNameError = document.getElementById('business-name-error');
+        const searchResult = document.getElementById('search-result');
+        const searchResultIcon = searchResult.querySelector('.search-result-icon');
+        const searchResultText = searchResult.querySelector('.search-result-text');
+        const nameCheckSpinner = document.getElementById('name-check-spinner');
+        const submitSpinner = document.getElementById('submit-spinner');
+
+        // 버튼 참조
+        const btnCheckName = document.getElementById('btn-check-name');
+        const btnBackStep1 = document.getElementById('btn-back-step1');
+        const btnSubmit = document.getElementById('btn-submit');
+
+        // 단계 참조
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+
+        // 폼 단계 참조
+        const formStep1 = document.getElementById('form-step-1');
+        const formStep2 = document.getElementById('form-step-2');
+        const formStep3 = document.getElementById('form-step-3');
+
+        // 비즈니스 이름 검증
+        let validBusinessName = '';
+
+        // 비즈니스 이름 검증 함수
+        async function validateBusinessName() {
+            const businessName = businessNameInput.value.trim();
+
+            // 입력값 검증
+            if (!businessName) {
+                businessNameGroup.classList.add('error');
+                businessNameError.textContent = '비즈니스 이름을 입력해주세요.';
+                searchResult.style.display = 'none';
+                return false;
+            }
+
+            // 로딩 상태 표시
+            nameCheckSpinner.style.display = 'inline-block';
+            btnCheckName.disabled = true;
+
+            try {
+                // 서버에 비즈니스 이름 검증 요청
+                const response = await fetch(`/claim/name?name=${encodeURIComponent(businessName)}`, {
+                    method: 'GET',
+                    headers: {
+                        [csrfHeader]: csrfToken
+                    }
+                });
+
+                // 응답 처리
+                if (response.ok) {
+                    // 사용 가능한 이름
+                    searchResult.className = 'search-result success';
+                    searchResultIcon.className = 'fas fa-check-circle search-result-icon';
+                    searchResultText.textContent = '사용 가능한 비즈니스 이름입니다.';
+                    businessNameGroup.classList.remove('error');
+                    validBusinessName = businessName;
+                    return true;
+                } else {
+                    // 이미 존재하는 이름
+                    const errorText = await response.text();
+                    searchResult.className = 'search-result error';
+                    searchResultIcon.className = 'fas fa-exclamation-circle search-result-icon';
+                    searchResultText.textContent = errorText;
+                    businessNameGroup.classList.add('error');
+                    return false;
+                }
+            } catch (error) {
+                // 오류 발생
+                console.error('Error validating business name:', error);
+                searchResult.className = 'search-result error';
+                searchResultIcon.className = 'fas fa-exclamation-circle search-result-icon';
+                searchResultText.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+                return false;
+            } finally {
+                // 로딩 상태 해제
+                nameCheckSpinner.style.display = 'none';
+                btnCheckName.disabled = false;
+                searchResult.style.display = 'block';
+            }
+        }
+
+        // 비즈니스 정보 제출 함수
+        async function submitBusinessInfo() {
+            // 필수 입력 필드 검증
+            const category = document.getElementById('business-category').value;
+            const address = document.getElementById('business-address').value.trim();
+            const phone = document.getElementById('business-phone').value.trim();
+
+            let isValid = true;
+
+            // 카테고리 검증
+            if (!category) {
+                document.getElementById('category-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('category-error').style.display = 'none';
+            }
+
+            // 주소 검증
+            if (!address) {
+                document.getElementById('address-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('address-error').style.display = 'none';
+            }
+
+            // 전화번호 검증
+            if (!phone) {
+                document.getElementById('phone-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('phone-error').style.display = 'none';
+            }
+
+            if (!isValid) return false;
+
+            // 로딩 상태 표시
+            submitSpinner.style.display = 'inline-block';
+            btnSubmit.disabled = true;
+
+            // 비즈니스 정보 객체 생성
+            const businessInfo = {
+                title: validBusinessName,
+                category: category,
+                address: address,
+                roadAddress: document.getElementById('business-road-address').value.trim(),
+                telephone: phone,
+                link: document.getElementById('business-website').value.trim(),
+                description: document.getElementById('business-description').value.trim()
+                // 영업시간은 별도로 처리하거나 필요에 따라 추가
+            };
+
+            try {
+                // 서버에 비즈니스 정보 제출
+                const response = await fetch('/claim/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken
+                    },
+                    body: JSON.stringify(businessInfo)
+                });
+
+                // 응답 처리
+                if (response.ok) {
+                    // 성공적으로 등록됨
+                    goToStep(3);
+                    return true;
+                } else {
+                    // 등록 실패
+                    alert('비즈니스 등록에 실패했습니다. 다시 시도해주세요.');
+                    return false;
+                }
+            } catch (error) {
+                // 오류 발생
+                console.error('Error submitting business info:', error);
+                alert('오류가 발생했습니다. 다시 시도해주세요.');
+                return false;
+            } finally {
+                // 로딩 상태 해제
+                submitSpinner.style.display = 'none';
+                btnSubmit.disabled = false;
+            }
+        }
+
+        // 단계 이동 함수
+        function goToStep(stepNumber) {
+            // 모든 단계 비활성화
+            [step1, step2, step3].forEach(step => {
+                step.classList.remove('active');
+                step.classList.remove('completed');
+            });
+
+            [formStep1, formStep2, formStep3].forEach(form => {
+                form.classList.remove('active');
+            });
+
+            // 선택한 단계까지 활성화 및 완료 처리
+            for (let i = 1; i < stepNumber; i++) {
+                document.getElementById(`step-${i}`).classList.add('completed');
+            }
+
+            // 현재 단계 활성화
+            document.getElementById(`step-${stepNumber}`).classList.add('active');
+            document.getElementById(`form-step-${stepNumber}`).classList.add('active');
+        }
+
+        // 이벤트 리스너
+        btnCheckName.addEventListener('click', async function() {
+            const isValid = await validateBusinessName();
+            if (isValid) {
+                goToStep(2);
+            }
+        });
+
+        btnBackStep1.addEventListener('click', function() {
+            goToStep(1);
+        });
+
+        btnSubmit.addEventListener('click', submitBusinessInfo);
+
+        // 비즈니스 이름 입력 시 검증 결과 초기화
+        businessNameInput.addEventListener('input', function() {
+            searchResult.style.display = 'none';
+            businessNameGroup.classList.remove('error');
+        });
+    });
+</script>
+
+</body>
+</html>
