@@ -114,7 +114,7 @@ public class ReviewsService{
     public boolean updateReview(ReviewsDto reviewsDto) {
         return getReviewById(reviewsDto.getId())
                 .map(review -> {
-                    review.updateReview(reviewsDto.getContent(), reviewsDto.getRating());
+                    review.updateReview(reviewsDto.getContent(), reviewsDto.getRating(), reviewsDto.getFileName() ,reviewsDto.getFilePath());
                     return true;
                 })
                 .orElse(false);

@@ -72,8 +72,10 @@ public class ReviewHandler {
 
     @PutMapping("/modify")
     public ResponseEntity modify(@ModelAttribute ReviewsDto dto,
-                                 @RequestParam(value = "image", required = false) MultipartFile image) {
-        boolean isUpdated = reviewsService.updateReview(dto);
+                                 @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+        ReviewsDto reviewsDto = reviewsService.addImage(image, dto);
+
+        boolean isUpdated = reviewsService.updateReview(reviewsDto);
         if (isUpdated) {
             return ResponseEntity.ok(true);
         }

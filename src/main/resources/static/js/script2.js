@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/api/modify`, {
             method: 'PUT',
             headers: {
-                [csrfHeader]: csrfToken // CSRF 토큰을 'X-CSRF-TOKEN'으로 설정
+                [csrfHeader]: csrfToken
             },
             body: formData // JSON 대신 FormData 사용
         })

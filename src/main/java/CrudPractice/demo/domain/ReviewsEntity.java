@@ -61,9 +61,11 @@ public class ReviewsEntity {
                 .build();
     }
 
-    public void updateReview(String content, int rating) {
+    public void updateReview(String content, int rating, String fileName, String filePath) {
         this.content = content;
         this.rating = rating;
+        this.fileName = fileName;
+        this.filePath = filePath;
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
