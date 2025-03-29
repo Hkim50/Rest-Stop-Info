@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch(`/api/delete/${reviewId}`, {
             method: 'DELETE',
             headers: {
-                [csrfHeader]: csrfToken // CSRF 토큰을 'X-CSRF-TOKEN'으로 설정
+                [csrfHeader]: csrfToken
             },
         })
         .then(response => {

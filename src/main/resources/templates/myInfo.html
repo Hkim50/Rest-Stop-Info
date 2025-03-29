@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org/extras/spring-security">
 <head>
+  <meta name="_csrf_header" data-th-content="${_csrf.headerName}"/>
+  <meta name="_csrf" data-th-content="${_csrf.token}" />
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>내 정보 - SPOT</title>
@@ -502,6 +505,10 @@
 <script>
   // Tab switching functionality
   document.addEventListener('DOMContentLoaded', function() {
+        // CSRF 토큰 가져오기
+      const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+      const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
       const tabs = document.querySelectorAll('.profile-tab');
       const tabContents = document.querySelectorAll('.tab-content');
 
@@ -548,40 +555,24 @@
               const rating = document.getElementById('edit-rating-' + reviewId).value;
               const content = document.getElementById('edit-content-' + reviewId).value;
 
-              // Send update request to server
-              fetch(`/review/update/${reviewId}`, {
-                  method: 'POST',
+              const formData = new FormData();
+              formData.append('id', reviewId);
+              formData.append('rating', rating);
+              formData.append('content', content);
+
+              fetch(`/api/modify`, {
+                  method: 'PUT',
                   headers: {
-                      'Content-Type': 'application/json',
-                      'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.getAttribute('content')
+                      [csrfHeader]: csrfToken
                   },
-                  body: JSON.stringify({
-                      rating: rating,
-                      content: content
-                  })
+                  body: formData // JSON 대신 FormData 사용
               })
               .then(response => {
                   if (response.ok) {
-                      // Update the review in the DOM
-                      const reviewItem = document.getElementById('edit-form-' + reviewId).closest('.review-item');
-                      const starsElement = reviewItem.querySelector('.stars');
-                      const contentElement = reviewItem.querySelector('.review-text');
-
-                      // Update stars
-                      starsElement.innerHTML = '';
-                      for (let i = 1; i <= 5; i++) {
-                          if (i <= rating) {
-                              starsElement.innerHTML += '★';
-                          } else {
-                              starsElement.innerHTML += '☆';
-                          }
-                      }
-
-                      // Update content
-                      contentElement.textContent = content;
-
-                      // Hide edit form
-                      document.getElementById('edit-form-' + reviewId).style.display = 'none';
+                      alert('리뷰가 수정되었습니다');
+                      // 페이지 새로고침
+                      location.reload();
+                      return;
                   } else {
                       alert('리뷰 수정에 실패했습니다. 다시 시도해주세요.');
                   }
@@ -600,35 +591,19 @@
               const reviewId = this.getAttribute('data-review-id');
               if (confirm('정말로 이 리뷰를 삭제하시겠습니까?')) {
                   // Send delete request to server
-                  fetch(`/review/delete/${reviewId}`, {
-                      method: 'POST',
+                  fetch(`/api/delete/${reviewId}`, {
+                      method: 'DELETE',
                       headers: {
                           'Content-Type': 'application/json',
-                          'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]')?.getAttribute('content')
+                          [csrfHeader]: csrfToken
                       }
                   })
                   .then(response => {
                       if (response.ok) {
-                          // Remove the review card from the DOM
-                          const reviewItem = this.closest('.review-item');
-                          reviewItem.remove();
-
-                          // Update review count
-                          const reviewCountElement = document.querySelector('.stat-item:first-child span');
-                          const currentCount = parseInt(reviewCountElement.textContent);
-                          reviewCountElement.textContent = currentCount - 1;
-
-                          // Show "no reviews" message if all reviews are deleted
-                          if (currentCount - 1 === 0) {
-                              const reviewsList = document.querySelector('.reviews-list');
-                              reviewsList.innerHTML = `
-                                  <div class="no-reviews">
-                                      <i class="far fa-comment-alt"></i>
-                                      <p>아직 작성한 리뷰가 없습니다.</p>
-                                      <a href="/" class="btn-primary">음식점 찾아보기</a>
-                                  </div>
-                              `;
-                          }
+                        alert('리뷰 삭제되었습니다');
+                        // 페이지 새로고침
+                        location.reload();
+                        return;
                       } else {
                           alert('리뷰 삭제에 실패했습니다. 다시 시도해주세요.');
                       }
