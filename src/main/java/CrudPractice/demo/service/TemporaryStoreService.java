@@ -1,11 +1,11 @@
 package CrudPractice.demo.service;
 
-import CrudPractice.demo.domain.ApiListEntity;
 import CrudPractice.demo.dto.ApiListDto;
-import CrudPractice.demo.domain.StoreForm;
+import CrudPractice.demo.domain.TempStore;
 import CrudPractice.demo.repository.TemporaryStoreRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,13 +17,21 @@ public class TemporaryStoreService {
     }
 
     public Long save(ApiListDto dto) {
-        StoreForm save = temporaryStoreRepository.save(dto.toStoreForm());
+        TempStore save = temporaryStoreRepository.save(dto.toStoreForm());
 
         return save.getId();
     }
 
-    public Optional<StoreForm> findByTitle(String title) {
+    public Optional<TempStore> findByTitle(String title) {
         return temporaryStoreRepository.findByTitle(title);
+    }
+
+    public List<TempStore> getAllTempStore() {
+        return temporaryStoreRepository.findAll();
+    }
+
+    public void delete(Long id) {
+        temporaryStoreRepository.deleteById(id);
     }
 
 }

@@ -1,6 +1,6 @@
 package CrudPractice.demo.dto;
 
-import CrudPractice.demo.domain.StoreForm;
+import CrudPractice.demo.domain.TempStore;
 import CrudPractice.demo.domain.ApiListEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -57,8 +57,8 @@ public class ApiListDto {
                 .build();
     }
 
-    public StoreForm toStoreForm() {
-        return StoreForm.builder()
+    public TempStore toStoreForm() {
+        return TempStore.builder()
                 .id(this.id)
                 .title(this.title)
                 .link(this.link)

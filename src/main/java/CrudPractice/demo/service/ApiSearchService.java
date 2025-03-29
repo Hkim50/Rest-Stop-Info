@@ -108,5 +108,4 @@ public class ApiSearchService {
         return apiListRepository.save(dto.toEntity()).getId();
     }
 
-
 }

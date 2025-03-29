@@ -1,16 +1,16 @@
 package CrudPractice.demo.controller;
 
 import CrudPractice.demo.domain.ReportedEntity;
+import CrudPractice.demo.domain.TempStore;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.service.MemberService2;
 import CrudPractice.demo.service.ReviewReportService;
-import lombok.RequiredArgsConstructor;
+import CrudPractice.demo.service.TemporaryStoreService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -18,10 +18,12 @@ import java.util.List;
 public class AdminController {
     private final MemberService2 memberService2;
     private final ReviewReportService reportService;
+    private final TemporaryStoreService temporaryStoreService;
 
-    public AdminController(MemberService2 memberService2, ReviewReportService reportService) {
+    public AdminController(MemberService2 memberService2, ReviewReportService reportService, TemporaryStoreService temporaryStoreService) {
         this.memberService2 = memberService2;
         this.reportService = reportService;
+        this.temporaryStoreService = temporaryStoreService;
     }
 
     @GetMapping
@@ -59,5 +61,15 @@ public class AdminController {
         model.addAttribute("admin", user);
         model.addAttribute("users", allUsers);
         return "userList";
+    }
+
+    @GetMapping("/store-list")
+    public String storeList(Model model) {
+        List<TempStore> allTempStore = temporaryStoreService.getAllTempStore();
+        UserEntity user = memberService2.getUser();
+
+        model.addAttribute("admin", user);
+        model.addAttribute("pendingBusinesses", allTempStore);
+        return "tempStoreList";
     }
 }
