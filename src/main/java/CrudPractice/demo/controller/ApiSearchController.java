@@ -60,11 +60,20 @@ public class ApiSearchController {
 
         List<ApiListDto> dtos = reviewsService.getProfPhoto(entities, reviews);
 
+        // 리뷰 갯수 계산
         Map<ApiListEntity, Long> reviewCountMap = reviews.stream()
                 .collect(Collectors.groupingBy(ReviewsEntity::getApiListEntity, Collectors.counting()));
 
+        // 평균 평점 계산
+        Map<ApiListEntity, Double> avgRatingMap = reviews.stream()
+                .collect(Collectors.groupingBy(
+                        ReviewsEntity::getApiListEntity,
+                        Collectors.averagingDouble(ReviewsEntity::getRating)
+                ));
+
         dtos.stream().forEach(f -> {
             f.setNumOfReviews(reviewCountMap.getOrDefault(f.toEntity(), 0L));
+            f.setAvgRating(Math.round(avgRatingMap.getOrDefault(f.toEntity(), 0.0) * 100.0) / 100.0);
         });
 
 
@@ -86,6 +95,8 @@ public class ApiSearchController {
         }
         else {
             dto = reviews.get(0).getApiListEntity().toDto();
+            double avg = reviewsService.getAvg(reviews.stream().map(ReviewsEntity::toDto).toList());
+            dto.setAvgRating(avg);
         }
 
         List<String> photos = reviewsService.getPhotos(reviews);
@@ -95,7 +106,6 @@ public class ApiSearchController {
         model.addAttribute("name", user);
         model.addAttribute("reviews", reviews);
         model.addAttribute("restaurant", dto);
-        model.addAttribute("numReviews", reviews.size());
         model.addAttribute("hasImages", hasImages);
         model.addAttribute("photos", photos);
         model.addAttribute("currentSort", sort);

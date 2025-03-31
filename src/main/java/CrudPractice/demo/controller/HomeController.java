@@ -52,6 +52,13 @@ public class HomeController {
 
         // DTO에 리뷰 개수 설정
         topSpots.forEach(dto -> dto.setNumOfReviews(reviewCountMap.getOrDefault(dto.toEntity(), 0L)));
+        // 리뷰 평균 rating 설정
+        topSpots.forEach(dto -> dto.setAvgRating(reviewsService.getAvg(allReviews.stream()
+                .filter(review -> review.getApiListEntity()
+                        .equals(dto.toEntity()))
+                .collect(Collectors.toList())
+                .stream()
+                .map(ReviewsEntity::toDto).toList())));
 
         model.addAttribute("topSpots", topSpots);
         return "newhome";

@@ -44,6 +44,8 @@ public class ApiListDto {
 
     private String topReview;
 
+    private double avgRating;
+
     public ApiListEntity toEntity() {
         return ApiListEntity.builder()
                 .id(this.id)

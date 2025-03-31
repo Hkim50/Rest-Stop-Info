@@ -79,6 +79,7 @@ public class RestListDto {
     @JsonProperty("lastDtime")
     private String lastDtime;
 
+
     public RestListEntity toEntity() {
         return RestListEntity.builder()
                 .pageNo(this.pageNo)

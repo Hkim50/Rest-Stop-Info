@@ -40,6 +40,7 @@ public class RestInfoDto {
     @JsonProperty("code")
     private String code;
 
+
     public RestInfoEntity toEntity() {
         List<RestListEntity> Rlist = new ArrayList<>();
 

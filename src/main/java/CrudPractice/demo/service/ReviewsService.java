@@ -71,9 +71,6 @@ public class ReviewsService{
         return reviewsByRestInfoEntity;
     }
 
-
-
-
     public List<ReviewsDto> getReviewByUser(UserEntity user) {
         List<ReviewsDto> reviews = reviewsRepository.getReviewByUser(user).stream().map(ReviewsEntity::toDto).toList();
 

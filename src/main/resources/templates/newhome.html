@@ -123,13 +123,11 @@
                         <h3 th:text="${spot.title}">스팟 이름</h3>
                         <div class="rating">
                             <span class="stars">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="far fa-star"></i>
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <i th:class="${spot.avgRating >= i} ? 'fas fa-star' : (${spot.avgRating >= i - 0.5} ? 'fas fa-star-half-alt' : 'far fa-star')"></i>
+                                </span>
                             </span>
-                            <span class="review-count" th:text="${spot.numOfReviews + ' reviews'}">0 reviews</span>
+                            <span class="review-count" th:text="${#numbers.formatDecimal(spot.avgRating, 1, 1)} + ' (' + ${spot.numOfReviews} + '개의 리뷰)'">0 reviews</span>
                         </div>
                         <div class="categories">
                             <span th:text="${spot.category}">카테고리</span>

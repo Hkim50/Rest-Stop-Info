@@ -295,13 +295,11 @@
                 <h1 class="biz-page-title" th:text="${restName}"></h1>
                 <div class="biz-rating">
                     <div class="stars-large">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
+                        <span th:each="i : ${#numbers.sequence(1, 5)}">
+                            <i th:class="${avg >= i} ? 'fas fa-star' : (${avg >= i - 0.5} ? 'fas fa-star-half-alt' : 'far fa-star')"></i>
+                        </span>
                     </div>
-                    <span class="review-count" th:text="'총 ' + ${reviews.size()} + '개의 리뷰'">254 reviews</span>
+                    <span class="review-count" th:text="${#numbers.formatDecimal(avg, 1, 1)} + ' (' + ${reviews.size()} + '개의 리뷰)'">254 reviews</span>
                 </div>
                 <div class="price-category">
                     <span class="price">₩₩</span>

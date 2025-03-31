@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class SearchInfoController {
@@ -52,13 +53,22 @@ public class SearchInfoController {
             return "/error/errorPage";
         }
 
+
         List<ReviewsEntity> reviews = reviewsService.getReviews(restInfoDto.toEntity(), sort);
+
+        double avg = 0.0;
+        if (reviews.size() > 0) {
+            // 리뷰 평균 rating 설정
+            avg = reviewsService.getAvg(reviews.stream().map(ReviewsEntity::toDto).collect(Collectors.toList()));
+        }
+
         UserEntity user = memberService2.getUser();
 
         List<String> photos = reviewsService.getPhotos(reviews);
         boolean hasImages = photos.size() > 0;
 
         model.addAttribute("lists", restInfoDto.getList());
+        model.addAttribute("avg", avg);
         model.addAttribute("restName", name);
         model.addAttribute("reviews", reviews);
         model.addAttribute("name", user);

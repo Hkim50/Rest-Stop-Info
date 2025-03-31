@@ -432,6 +432,8 @@
     background-color: transparent;
     color: #d32323;
 }
+
+
   </style>
 </head>
 <body>
@@ -488,8 +490,7 @@
               <a th:href="@{/api/{title}(title=${restaurant.title})}" th:text="${restaurant.title}">식당 이름</a>
             </h2>
             <div class="restaurant-card-rating">
-              <span class="restaurant-card-review-count"
-                    th:text="'총 ' + ${restaurant.numOfReviews} + '개의 리뷰'"></span>
+              <span class="restaurant-card-review-count" th:text="${#numbers.formatDecimal(restaurant.avgRating, 1, 1)} + ' (' + ${restaurant.numOfReviews} + '개의 리뷰)'"></span>
             </div>
             <div class="restaurant-card-categories">
               <span class="restaurant-card-category" th:text="${restaurant.category}">카테고리</span>
