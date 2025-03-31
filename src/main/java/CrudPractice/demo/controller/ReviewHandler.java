@@ -70,14 +70,22 @@ public class ReviewHandler {
         return ResponseEntity.ok(id);
     }
 
+    // UPDATE
     @PutMapping("/modify")
     public ResponseEntity modify(@ModelAttribute ReviewsDto dto,
-                                 @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
-        ReviewsDto reviewsDto = reviewsService.addImage(image, dto);
+                                 @RequestParam(value = "image", required = false) MultipartFile image,
+                                 @RequestParam(value ="deleteImage", required = false) Boolean isDeleted) throws IOException {
+        boolean isUpdated;
+        if (isDeleted != null) {
+            isUpdated = reviewsService.updateReview2(dto);
+        }
+        else {
+            ReviewsDto reviewsDto = reviewsService.addImage(image, dto);
+            isUpdated = reviewsService.updateReview(reviewsDto);
+        }
 
-        boolean isUpdated = reviewsService.updateReview(reviewsDto);
         if (isUpdated) {
-            return ResponseEntity.ok(true);
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }

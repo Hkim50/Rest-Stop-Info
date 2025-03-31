@@ -6,7 +6,9 @@ import CrudPractice.demo.domain.ReviewsEntity;
 import CrudPractice.demo.domain.UserEntity;
 import CrudPractice.demo.dto.ApiListDto;
 import CrudPractice.demo.dto.ReviewsDto;
+import CrudPractice.demo.repository.ReportRepository;
 import CrudPractice.demo.repository.ReviewsRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +24,13 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewsService{
     private final ReviewsRepository reviewsRepository;
+    private final S3Service s3Service;
+    private final ReportRepository reportRepository;
 
-    @Autowired
-    public ReviewsService(ReviewsRepository reviewsRepository) {
+    public ReviewsService(ReviewsRepository reviewsRepository, S3Service s3Service, ReportRepository reportRepository) {
         this.reviewsRepository = reviewsRepository;
+        this.s3Service = s3Service;
+        this.reportRepository = reportRepository;
     }
 
     public ReviewsEntity addUserInReview(ReviewsDto reviewsDto, UserEntity user) {
@@ -44,15 +49,17 @@ public class ReviewsService{
 
     public ReviewsDto addImage(MultipartFile image, ReviewsDto reviewsDto) throws IOException {
         if (image != null && !image.isEmpty()) {
-            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-            UUID uuid = UUID.randomUUID();
-            String fileName = uuid + "_" + image.getOriginalFilename();
-
-            File saveFile = new File(projectPath, fileName);
-            image.transferTo(saveFile);
+//            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+//            UUID uuid = UUID.randomUUID();
+//            String fileName = uuid + "_" + image.getOriginalFilename();
+//
+//            File saveFile = new File(projectPath, fileName);
+//            image.transferTo(saveFile);
+            String filePath = s3Service.uploadFile(image);
+            String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
 
             reviewsDto.setFileName(fileName);
-            reviewsDto.setFilePath("/files/" + fileName);
+            reviewsDto.setFilePath(filePath);
         }
         return reviewsDto;
     }
@@ -103,15 +110,59 @@ public class ReviewsService{
         reviewsRepository.delete(reviewByNameAndCreatedAt);
     }
 
+    @Transactional
     public void deleteReview(Long id) {
-        reviewsRepository.deleteById(id);
+        reviewsRepository.findById(id).ifPresentOrElse(review -> {
+            // 신고된 리뷰이면 신고 리스트에서 삭제
+            reportRepository.findByReview(review).ifPresent(reported -> {
+                reportRepository.deleteById(reported.getId());
+            });
+            // 리뷰 삭제
+            reviewsRepository.deleteById(id);
+            // 이미지 삭제
+            if (review.getFilePath() != null) {
+                s3Service.deleteFile(review.getFilePath());
+            }
+        }, () ->{
+            throw new EntityNotFoundException("리뷰를 찾을 수 없습니다. id: " + id);
+        });
     }
 
     @Transactional
     public boolean updateReview(ReviewsDto reviewsDto) {
         return getReviewById(reviewsDto.getId())
                 .map(review -> {
-                    review.updateReview(reviewsDto.getContent(), reviewsDto.getRating(), reviewsDto.getFileName() ,reviewsDto.getFilePath());
+                    // 기존 파일 삭제 (기존 파일이 있고, 새로운 파일이 존재하며 변경된 경우만 삭제)
+                    if (review.getFilePath() != null && (reviewsDto.getFilePath() != null && !review.getFilePath().equals(reviewsDto.getFilePath()))) {
+                        s3Service.deleteFile(review.getFilePath());
+                    }
+
+                    // 리뷰 업데이트 (filePath가 없는 경우를 고려)
+                    if (reviewsDto.getFilePath() != null) {
+                        review.updateReview(
+                                reviewsDto.getContent(),
+                                reviewsDto.getRating(),
+                                reviewsDto.getFileName(),
+                                reviewsDto.getFilePath()
+                        );
+                    } else {
+                        review.updateReview(
+                                reviewsDto.getContent(),
+                                reviewsDto.getRating()
+                        );
+                    }
+                    return true;
+                })
+                .orElse(false);
+    }
+
+    @Transactional
+    public boolean updateReview2(ReviewsDto reviewsDto) {
+
+        return getReviewById(reviewsDto.getId())
+                .map(review -> {
+                    s3Service.deleteFile(review.getFilePath());
+                    review.updateReview(reviewsDto.getContent(), reviewsDto.getRating(), reviewsDto.getFileName(), reviewsDto.getFilePath());
                     return true;
                 })
                 .orElse(false);

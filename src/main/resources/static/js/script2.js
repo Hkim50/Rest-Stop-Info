@@ -163,15 +163,22 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(response => {
             if (!response.ok) {
-                return response.json().then(err => { throw new Error(err.message); });
+                throw new Error('리뷰 수정에 실패했습니다.');
             }
-            return response.json();
+            return response.text().then(text => {
+                // 응답이 JSON인 경우에만 파싱
+                if (text && text.trim().startsWith('{')) {
+                    return JSON.parse(text);
+                }
+                return { success: true };
+            });
         })
         .then(() => {
             alert('리뷰가 수정되었습니다.');
             window.location.reload(); // 페이지 새로고침
         })
         .catch(error => {
+            console.error('Error:', error);
             alert('리뷰 수정 실패: ' + error.message);
         });
     };
@@ -214,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // 현재 수정 폼 열기
                 editForm.style.display = 'block';
 
-                // 현재 리뷰 데이터 가져오��
+                // 현재 리뷰 데이터 가져오기
                 const rating = reviewItem.querySelector('input[name="rating"]').value;
                 const content = reviewItem.querySelector('input[name="content"]').value;
 
